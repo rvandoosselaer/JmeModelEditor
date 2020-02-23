@@ -1,0 +1,30 @@
+Configuration:
+  appenders:
+    Console:
+      name: STDOUT
+      PatternLayout:
+        Pattern: "%d %-5p [%t] %C (%F:%L) - %m%n"
+#    RollingFile:
+#      name: RollingFile
+#      fileName: logs/app.log
+#      filePattern: "logs/$${date:yyyy-MM}/app-%d{dd-MM-yyyy}-%i.log.gz"
+#      PatternLayout:
+#        Pattern: "%d %-5p [%t] %C:%L - %m%n"
+#      Policies:
+#        TimeBasedTriggeringPolicy:
+#          interval: 1
+#          modulate: true
+
+  Loggers:
+    logger:
+      - name: com.rvandoosselaer
+        level: all
+#      - name: com.jme3
+#        level: info
+#      - name: com.simsilica
+#        level: info
+    Root:
+      level: error
+      AppenderRef:
+        - ref: STDOUT
+#        - ref: RollingFile

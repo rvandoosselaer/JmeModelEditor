@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+ext {
+    jmeUtilsVersion = "[1.0,)"
+    jmeVersion = "[3.2,)"
+    slf4jVersion = "[2.0,)"
+    log4j2Version = "[2.13,)"
+    jacksonVersion = "[2.10,)"
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+}
+
+dependencies {
+    implementation "com.rvandoosselaer:jme-utils:${jmeUtilsVersion}"
+
+    // JME
+    implementation "org.jmonkeyengine:jme3-core:${jmeVersion}"
+
+    // Logging
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "org.slf4j:jul-to-slf4j:${slf4jVersion}"
+    implementation "org.apache.logging.log4j:log4j-api:${log4j2Version}"
+    implementation "org.apache.logging.log4j:log4j-core:${log4j2Version}"
+    implementation "org.apache.logging.log4j:log4j-slf4j18-impl:${log4j2Version}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+}
+
+application {
+    // Define the main class for the application.
+    mainClassName = 'com.rvandoosselaer.jmemodelviewer.Main'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task cleanNatives(type: Delete) {
+    delete "$projectDir/liblwjgl.dylib"
+    delete "$projectDir/libopenal.dylib"
+}
+
+clean {
+    dependsOn cleanNatives
+}
