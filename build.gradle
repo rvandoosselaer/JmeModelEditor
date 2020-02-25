@@ -21,6 +21,8 @@ dependencies {
 
     // JME
     implementation "org.jmonkeyengine:jme3-core:${jmeVersion}"
+    implementation "org.jmonkeyengine:jme3-desktop:${jmeVersion}"
+    implementation "org.jmonkeyengine:jme3-lwjgl:${jmeVersion}"
 
     // Logging
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -33,8 +35,11 @@ dependencies {
 }
 
 application {
-    // Define the main class for the application.
     mainClassName = 'com.rvandoosselaer.jmemodelviewer.Main'
+    applicationDefaultJvmArgs = [
+            "-Dlog4j.configurationFile=[MY_APP_HOME]/conf/log4j2.yml",
+            "-Dapplication.configurationFile=[MY_APP_HOME]/conf/application.properties"
+    ]
 }
 
 test {
@@ -46,6 +51,30 @@ task cleanNatives(type: Delete) {
     delete "$projectDir/libopenal.dylib"
 }
 
+task cleanDistFolder(type: Delete) {
+    delete "$projectDir/src/dist"
+}
+
+task copyDistFiles(type: Copy) {
+    from file("$projectDir/src/main/resources/application.properties") into file("$projectDir/src/dist/conf")
+    from file("$projectDir/src/main/resources/log4j2.yml") into file("$projectDir/src/dist/conf")
+}
+
 clean {
     dependsOn cleanNatives
+    dependsOn cleanDistFolder
+}
+
+build {
+    dependsOn copyDistFiles
+}
+
+jar {
+    exclude("**/application.properties")
+    exclude("**/log4j2.yml")
+}
+
+startScripts.doLast {
+    unixScript.text = unixScript.text.replace('[MY_APP_HOME]', '\$APP_HOME')
+    windowsScript.text = windowsScript.text.replace('[MY_APP_HOME]', '%~dp0..')
 }
