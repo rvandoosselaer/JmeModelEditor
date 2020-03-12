@@ -42,6 +42,20 @@ application {
     ]
 }
 
+build {
+    dependsOn copyDistFiles
+}
+
+clean {
+    dependsOn cleanNatives
+    dependsOn cleanDistFolder
+}
+
+jar {
+    exclude("**/application.properties")
+    exclude("**/log4j2.yml")
+}
+
 test {
     useJUnitPlatform()
 }
@@ -58,20 +72,6 @@ task cleanDistFolder(type: Delete) {
 task copyDistFiles(type: Copy) {
     from file("$projectDir/src/main/resources/application.properties") into file("$projectDir/src/dist/conf")
     from file("$projectDir/src/main/resources/log4j2.yml") into file("$projectDir/src/dist/conf")
-}
-
-clean {
-    dependsOn cleanNatives
-    dependsOn cleanDistFolder
-}
-
-build {
-    dependsOn copyDistFiles
-}
-
-jar {
-    exclude("**/application.properties")
-    exclude("**/log4j2.yml")
 }
 
 startScripts.doLast {
