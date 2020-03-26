@@ -1,1 +1,3 @@
 rootProject.name = 'jmemodeleditor'
+
+include ':assets'
