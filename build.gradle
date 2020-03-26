@@ -9,20 +9,28 @@ ext {
     slf4jVersion = "[2.0,)"
     log4j2Version = "[2.13,)"
     jacksonVersion = "[2.10,)"
+    lemurVersion = "[1.13,)"
+    lombokVersion = "[1.18,)"
 }
 
 repositories {
-    mavenLocal()
     jcenter()
+    maven {
+        url  'https://dl.bintray.com/remyvd/rvandoosselaer'
+    }
 }
 
 dependencies {
-    implementation "com.rvandoosselaer:jme-utils:${jmeUtilsVersion}"
-
     // JME
     implementation "org.jmonkeyengine:jme3-core:${jmeVersion}"
     implementation "org.jmonkeyengine:jme3-desktop:${jmeVersion}"
     implementation "org.jmonkeyengine:jme3-lwjgl:${jmeVersion}"
+
+    // Utils
+    implementation "com.rvandoosselaer:jme-utils:${jmeUtilsVersion}"
+    implementation "com.simsilica:lemur:${lemurVersion}"
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     // Logging
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -35,10 +43,9 @@ dependencies {
 }
 
 application {
-    mainClassName = 'com.rvandoosselaer.jmemodelviewer.Main'
+    mainClassName = 'com.rvandoosselaer.jmemodeleditor.Main'
     applicationDefaultJvmArgs = [
-            "-Dlog4j.configurationFile=[MY_APP_HOME]/conf/log4j2.yml",
-            "-Dapplication.configurationFile=[MY_APP_HOME]/conf/application.properties"
+            "-Dlog4j.configurationFile=[MY_APP_HOME]/conf/log4j2.yml"
     ]
 }
 
@@ -56,7 +63,6 @@ task cleanDistFolder(type: Delete) {
 }
 
 task copyDistFiles(type: Copy) {
-    from file("$projectDir/src/main/resources/application.properties") into file("$projectDir/src/dist/conf")
     from file("$projectDir/src/main/resources/log4j2.yml") into file("$projectDir/src/dist/conf")
 }
 
@@ -70,7 +76,6 @@ build {
 }
 
 jar {
-    exclude("**/application.properties")
     exclude("**/log4j2.yml")
 }
 
