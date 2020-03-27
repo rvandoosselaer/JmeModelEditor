@@ -57,8 +57,8 @@ public class OpenFileWindow extends Window {
         getContainer().addChild(createTopBar());
 
         fileBrowser = getContainer().addChild(new ListBox<>(new VersionedList<>(), ELEMENT_ID.child(ListBox.ELEMENT_ID), GuiState.STYLE));
-        fileBrowser.setVisibleItems(20);
         fileBrowser.setCellRenderer(new FileBrowserItemRenderer());
+        fileBrowser.setVisibleItems(20);
         fileBrowser.addControl(new ListBoxControl());
         MouseEventControl.addListenersToSpatial(fileBrowser, new FileBrowserItemClickListener());
 
@@ -91,12 +91,12 @@ public class OpenFileWindow extends Window {
      */
     private Container createButtonBar() {
         Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Last, FillMode.Even));
-        Button cancel = container.addChild(new Button(GuiTranslations.getInstance().t("common.cancel")));
+        Button cancel = container.addChild(new Button(GuiTranslations.getInstance().t("common.cancel"), ELEMENT_ID.child(Button.ELEMENT_ID)));
         Vector3f size = cancel.getPreferredSize();
         cancel.setPreferredSize(size.mult(new Vector3f(3, 1.2f, 1)));
         cancel.addClickCommands(source -> onCancel());
 
-        Button open = container.addChild(new Button(GuiTranslations.getInstance().t("common.open"), new ElementId("primary-button")));
+        Button open = container.addChild(new Button(GuiTranslations.getInstance().t("common.open"), ELEMENT_ID.child("primary-button")));
         size = open.getPreferredSize();
         open.setPreferredSize(size.mult(new Vector3f(3, 1.2f, 1)));
         open.addClickCommands(source -> onOpen());
@@ -114,6 +114,7 @@ public class OpenFileWindow extends Window {
     }
 
     private void onCancel() {
+        removeFromParent();
     }
 
     /**
@@ -148,7 +149,7 @@ public class OpenFileWindow extends Window {
             try {
                 return Files.list(path)
                         .filter(p -> !p.getFileName().toString().startsWith("."))
-                        .sorted()
+                        .sorted((o1, o2) -> String.CASE_INSENSITIVE_ORDER.compare(o1.getFileName().toString(), o2.getFileName().toString()))
                         .collect(Collectors.toList());
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
@@ -175,7 +176,7 @@ public class OpenFileWindow extends Window {
     }
 
     private static Button createButton(String iconPath) {
-        Button button = new Button("");
+        Button button = new Button("", ELEMENT_ID.child(Button.ELEMENT_ID));
         IconComponent icon = new IconComponent(iconPath);
         icon.setIconSize(new Vector2f(16, 16));
         icon.setMargin(2, 2);
@@ -208,9 +209,28 @@ public class OpenFileWindow extends Window {
     private static class FileBrowserItemRenderer implements CellRenderer<Path> {
 
         @Override
-        public Panel getView(Path value, boolean selected, Panel existing) {
+        public Panel getView(Path item, boolean selected, Panel existing) {
             ElementId elementId = ELEMENT_ID.child(ListBox.ELEMENT_ID).child(Label.ELEMENT_ID);
-            return new Label(value.getFileName().toString(), elementId);
+            Label label = new Label(item.getFileName().toString(), elementId);
+            label.setTextVAlignment(VAlignment.Center);
+            label.setIcon(createIcon(item));
+            return label;
+        }
+
+        private IconComponent createIcon(Path item) {
+            IconComponent icon = new IconComponent(getIconPath(item));
+            icon.setMargin(4, 2);
+            icon.setHAlignment(HAlignment.Left);
+            icon.setVAlignment(VAlignment.Center);
+            return icon;
+        }
+
+        private String getIconPath(Path item) {
+            return Files.isDirectory(item) ? "/Interface/folder.png" : isJ3o(item) ? "/Interface/jme-monkey.png" : "/Interface/file.png";
+        }
+
+        private boolean isJ3o(Path item) {
+            return item.getFileName().toString().toLowerCase().endsWith(".j3o");
         }
 
     }

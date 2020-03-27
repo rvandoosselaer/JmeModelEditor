@@ -59,7 +59,6 @@ def buttonCmds = [
 
 selector("button", "editor-style") {
     background = new QuadBackgroundComponent(color(0.345, 0.345, 0.345, 1))
-    insets = new Insets3f(6, 6, 6, 6)
     buttonCommands = buttonCmds
     textHAlignment = HAlignment.Center
     textVAlignment = VAlignment.Center
@@ -100,7 +99,6 @@ def primaryButtonCmds = [
 ]
 selector("primary-button", "editor-style") {
     background = new QuadBackgroundComponent(color(0.298, 0.498, 0.78, 1))
-    insets = new Insets3f(6, 6, 6, 6)
     buttonCommands = primaryButtonCmds
     textHAlignment = HAlignment.Center
     textVAlignment = VAlignment.Center
@@ -109,10 +107,6 @@ selector("primary-button", "editor-style") {
 //
 // Listbox
 //
-selector("list.container", "editor-style") {
-    insets = new Insets3f(6, 6, 6, 6)
-}
-
 selector("list.selector", "editor-style") {
     background = new QuadBackgroundComponent(color(0.282, 0.463, 0.718, 0.5))
     background.material.material.additionalRenderState.blendMode = BlendMode.AlphaAdditive;
@@ -122,7 +116,6 @@ selector("list.selector", "editor-style") {
 // TextField
 //
 selector("textField", "editor-style") {
-    insets = new Insets3f(6, 6, 6, 6)
     background = new QuadBackgroundComponent(color(0.114, 0.114, 0.114, 1))
 }
 
@@ -166,8 +159,8 @@ def toolbarCmds = [
 ]
 
 selector("toolbar", "button", "editor-style") {
+    insets = new Insets3f(4, 4, 4, 0)
     background = new QuadBackgroundComponent(color(0.137, 0.137, 0.137, 1))
-    insets = new Insets3f(6, 6, 6, 6)
     buttonCommands = toolbarCmds
 }
 
@@ -195,10 +188,27 @@ selector("window", "button-wrapper", "editor-style") {
 //
 // Open file
 //
+selector("open-file", "button", "editor-style") {
+    insets = new Insets3f(8, 8, 8, 0)
+}
+
+selector("open-file", "primary-button", "editor-style") {
+    insets = new Insets3f(8, 8, 8, 8)
+}
+
+selector("open-file", "textField", "editor-style") {
+    insets = new Insets3f(8, 8, 8, 8)
+}
+
+selector("open-file", "list.container", "editor-style") {
+    insets = new Insets3f(0, 8, 0, 8)
+    background = new QuadBackgroundComponent(color(0.2, 0.2, 0.2, 1))
+}
+
 selector("open-file", "list.container", "editor-style") {
     background = new QuadBackgroundComponent(color(0.2, 0.2, 0.2, 1))
 }
 
 selector("open-file.list", "label", "editor-style") {
-    insets = new Insets3f(3, 6, 3, 6)
+    insets = new Insets3f(4, 4, 4, 4)
 }
