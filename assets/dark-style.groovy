@@ -1,14 +1,24 @@
+import com.jme3.math.Vector3f
 import com.simsilica.lemur.Button
 import com.simsilica.lemur.Button.ButtonAction
 import com.simsilica.lemur.Command
 import com.simsilica.lemur.Insets3f
+import com.simsilica.lemur.component.DynamicInsetsComponent
+import com.simsilica.lemur.HAlignment
+import com.simsilica.lemur.VAlignment
 import com.simsilica.lemur.component.QuadBackgroundComponent
 
-selector( "editor-style" ) {
+//
+// Global styling
+//
+selector("editor-style") {
     fontSize = 14
 }
 
-selector( "toolbar", "editor-style" ) {
+//
+// Toolbar
+//
+selector("toolbar", "editor-style") {
     background = new QuadBackgroundComponent(color(0.137, 0.137, 0.137, 1))
 }
 
@@ -46,9 +56,29 @@ def toolbarCmds = [
 ];
 
 
-selector( "toolbar", "button", "editor-style" ) {
+selector("toolbar", "button", "editor-style") {
     insets = new Insets3f(6, 6, 6, 6)
     buttonCommands = toolbarCmds
+}
+
+//
+// Window
+//
+selector("window", "title-wrapper", "editor-style") {
+    background = new QuadBackgroundComponent(color(0.2, 0.2, 0.2, 1))
+}
+
+selector("window", "title", "editor-style") {
+    color = color(0.894, 0.894, 0.894, 1)
+    shadowColor = color(0, 0, 0, 0.75f)
+    shadowOffset = new Vector3f(1, -1, -1);
+    insets = new Insets3f(2, 0, 2, 0)
+    textHAlignment = HAlignment.Center
+    textVAlignment = VAlignment.Center
+}
+
+selector("window", "button-wrapper", "editor-style") {
+    insetsComponent = new DynamicInsetsComponent(0.5, 1, 0.5, 0)
 }
 
 //
