@@ -43,13 +43,18 @@ public class Main extends SimpleApplication {
         GuiGlobals.getInstance().getStyles().setDefaultStyle(GuiState.STYLE);
     }
 
+    @Override
+    public void requestClose(boolean esc) {
+        super.requestClose(esc);
+    }
+
     private AppSettings createSettings() {
         AppSettings settings = new AppSettings(true);
         settings.setRenderer(AppSettings.LWJGL_OPENGL32);
         settings.setGammaCorrection(true);
         settings.setResizable(true);
         settings.setSamples(4);
-        settings.setTitle("JmeModelEditor");
+        settings.setTitle(String.format("JmeModelEditor - v%s", VersionHelper.getVersion()));
         Resolution resolution = ResolutionHelper.getFirstHDResolution();
         settings.setResolution(resolution.getWidth(), resolution.getHeight());
         settings.setBitsPerPixel(resolution.getBpp());

@@ -1,7 +1,15 @@
 plugins {
     id 'java'
+    id 'idea'
     id 'application'
+    id 'maven-publish'
+    id 'com.jfrog.bintray' version "1.8.4"
 }
+
+group = "com.rvandoosselaer"
+version = "1.0.0-SNAPSHOT"
+
+sourceCompatibility = 1.8
 
 ext {
     jmeUtilsVersion = "[1.0,)"
@@ -53,6 +61,32 @@ application {
     ]
 }
 
+// create a properties file with the version in
+task createProperties(dependsOn: processResources) {
+    doLast {
+        new File("$buildDir/resources/main/version.properties").withWriter { w ->
+            Properties p = new Properties()
+            p['version'] = project.version.toString()
+            p.store w, null
+        }
+    }
+}
+
+// copy the generated javadocs into the /docs folder for the github pages
+task copyJavadoc(dependsOn: javadoc) {
+    doLast {
+        copy {
+            from "$buildDir/docs"
+            into "$projectDir/docs"
+        }
+    }
+}
+
+// remove the generated javadocs in the /docs folder
+task cleanJavadoc(type: Delete) {
+    delete "$projectDir/docs/javadoc/"
+}
+
 test {
     useJUnitPlatform()
 }
@@ -72,11 +106,17 @@ task copyDistFiles(type: Copy) {
 
 clean {
     dependsOn cleanNatives
+    dependsOn cleanJavadoc
     dependsOn cleanDistFolder
+}
+
+classes {
+    dependsOn createProperties
 }
 
 build {
     dependsOn copyDistFiles
+    dependsOn copyJavadoc
 }
 
 jar {
@@ -86,4 +126,45 @@ jar {
 startScripts.doLast {
     unixScript.text = unixScript.text.replace('[MY_APP_HOME]', '\$APP_HOME')
     windowsScript.text = windowsScript.text.replace('[MY_APP_HOME]', '%~dp0..')
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+javadoc {
+    failOnError = false
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            artifactId 'jmemodeleditor'
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_APIKEY')
+    publications = ['MyPublication']
+    pkg {
+        repo = 'rvandoosselaer'
+        name = rootProject.getName()
+        licenses = ['BSD 3-Clause']
+        vcsUrl = 'https://github.com/rvandoosselaer/JmeModelEditor.git'
+        version {
+            name = '1.0.0-SNAPSHOT'
+            released = new Date()
+        }
+    }
 }

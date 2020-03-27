@@ -2,6 +2,8 @@ plugins {
     id 'java'
 }
 
+sourceCompatibility = 1.8
+
 sourceSets {
     main {
         resources {
