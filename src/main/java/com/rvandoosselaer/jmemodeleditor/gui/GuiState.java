@@ -41,11 +41,20 @@ public class GuiState extends BaseAppState {
     @Override
     protected void onEnable() {
         guiNode.attachChild(toolbar);
+
+        Window window = new OpenFileWindow();
+        window.setPreferredSize(window.getPreferredSize()
+                .setX(GuiUtils.getWidth() * 0.8f)
+                .setY(GuiUtils.getHeight() * 0.8f)
+                .setZ(zIndex + 10));
+        GuiUtils.center(window);
+        guiNode.attachChild(window);
     }
 
     @Override
     protected void onDisable() {
         toolbar.removeFromParent();
+        guiNode.detachAllChildren();
     }
 
     @Override
