@@ -8,6 +8,8 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
+import com.rvandoosselaer.jmemodeleditor.EditorState;
+import com.rvandoosselaer.jmeutils.ApplicationGlobals;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.rvandoosselaer.jmeutils.input.DoubleClickMouseListener;
 import com.simsilica.lemur.Axis;
@@ -40,6 +42,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
+ * A window to browse the file system and load the selected model into the editor.
+ *
  * @author: rvandoosselaer
  */
 @Slf4j
@@ -50,10 +54,17 @@ public class OpenFileWindow extends Window {
     private Path currentDir;
     private TextField currentDirTextField;
     private ListBox<Path> fileBrowser;
+    private EditorState editorState;
 
     public OpenFileWindow() {
         super(GuiTranslations.getInstance().t("window.open-file.title"));
 
+        buildGUI();
+
+        editorState = ApplicationGlobals.getInstance().getApplication().getStateManager().getState(EditorState.class);
+    }
+
+    private void buildGUI() {
         getContainer().addChild(createTopBar());
 
         fileBrowser = getContainer().addChild(new ListBox<>(new VersionedList<>(), ELEMENT_ID.child(ListBox.ELEMENT_ID), GuiState.STYLE));
@@ -109,12 +120,15 @@ public class OpenFileWindow extends Window {
         if (selection.isPresent()) {
             if (Files.isDirectory(selection.get())) {
                 setDirectory(selection.get());
+            } else {
+                editorState.loadModel(selection.get());
+                closeWindow();
             }
         }
     }
 
     private void onCancel() {
-        removeFromParent();
+        closeWindow();
     }
 
     /**
@@ -126,10 +140,22 @@ public class OpenFileWindow extends Window {
         if (path != null && Files.isDirectory(path)) {
             fileBrowser.getModel().clear();
             fileBrowser.getModel().addAll(getFiles(path));
-            fileBrowser.getSelectionModel().setSelection(-1);
+            clearSelection();
             currentDirTextField.setText(path.toString());
             currentDir = path;
         }
+    }
+
+    private void closeWindow() {
+        clearSelection();
+        removeFromParent();
+    }
+
+    /**
+     * Remove the selected item in the file browser
+     */
+    private void clearSelection() {
+        fileBrowser.getSelectionModel().setSelection(-1);
     }
 
     private void goDirectoryUp() {

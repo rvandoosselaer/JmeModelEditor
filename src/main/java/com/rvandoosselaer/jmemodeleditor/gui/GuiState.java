@@ -17,6 +17,8 @@ import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.style.ElementId;
 
 /**
+ * The state that manages all GUI elements and user interactions.
+ *
  * @author: rvandoosselaer
  */
 public class GuiState extends BaseAppState {
