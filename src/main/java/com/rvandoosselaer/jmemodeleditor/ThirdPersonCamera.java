@@ -54,7 +54,7 @@ public class ThirdPersonCamera extends BaseAppState implements AnalogFunctionLis
     private float zoomSpeed = 8f;
     @Getter
     @Setter
-    private float yaw = 0; // rotation on the Y axis
+    private float yaw = 45 * FastMath.DEG_TO_RAD; // rotation on the Y axis
     @Getter
     @Setter
     private float pitch = 30 * FastMath.DEG_TO_RAD; // rotation on the X axis

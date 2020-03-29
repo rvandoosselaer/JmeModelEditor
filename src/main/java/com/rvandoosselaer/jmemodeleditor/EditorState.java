@@ -8,6 +8,7 @@ import com.jme3.asset.plugins.FileLocator;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.rvandoosselaer.jmeutils.util.GeometryUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,10 +24,12 @@ public class EditorState extends BaseAppState {
 
     @Getter
     private Node scene = new Node("scene");
+    private Node coordinateAxis;
 
     @Override
     protected void initialize(Application app) {
         setBackgroundColor(app);
+        coordinateAxis = GeometryUtils.createCoordinateAxes();
     }
 
     @Override
@@ -35,12 +38,16 @@ public class EditorState extends BaseAppState {
 
     @Override
     protected void onEnable() {
-        ((SimpleApplication) getApplication()).getRootNode().attachChild(scene);
+        Node rootNode = ((SimpleApplication) getApplication()).getRootNode();
+
+        rootNode.attachChild(scene);
+        rootNode.attachChild(coordinateAxis);
     }
 
     @Override
     protected void onDisable() {
         scene.removeFromParent();
+        coordinateAxis.removeFromParent();
     }
 
     public void loadModel(Path path) {
