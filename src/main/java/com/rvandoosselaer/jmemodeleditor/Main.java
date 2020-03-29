@@ -26,6 +26,7 @@ public class Main extends SimpleApplication {
 
     public Main() {
         super(new GuiState(),
+                new LightsState(),
                 new EditorState());
 
         setSettings(createSettings());

@@ -8,6 +8,7 @@ import com.jme3.asset.plugins.FileLocator;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
@@ -20,6 +21,7 @@ import java.nio.file.Path;
 @Slf4j
 public class EditorState extends BaseAppState {
 
+    @Getter
     private Node scene = new Node("scene");
 
     @Override
