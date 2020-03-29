@@ -27,7 +27,8 @@ public class Main extends SimpleApplication {
     public Main() {
         super(new GuiState(),
                 new LightsState(),
-                new EditorState());
+                new EditorState(),
+                new ThirdPersonCamera());
 
         setSettings(createSettings());
 
