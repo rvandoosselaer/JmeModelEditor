@@ -26,37 +26,29 @@ public class GuiState extends BaseAppState {
 
     private Node guiNode;
     private Container toolbar;
+    private OpenFileWindow openFileWindow;
     private float zIndex = 99;
 
     @Override
     protected void initialize(Application app) {
         guiNode = ((SimpleApplication) app).getGuiNode();
         toolbar = createToolbar();
+        openFileWindow = createOpenFileWindow();
     }
 
     @Override
     protected void cleanup(Application app) {
+        openFileWindow.cleanup();
     }
 
     @Override
     protected void onEnable() {
         guiNode.attachChild(toolbar);
-
-        Window window = new OpenFileWindow();
-
-        getApplication().enqueue(() -> {
-            window.setPreferredSize(window.getPreferredSize()
-                    .setX(GuiUtils.getWidth() * 0.8f)
-                    .setZ(zIndex + 10));
-            GuiUtils.center(window);
-        });
-        guiNode.attachChild(window);
     }
 
     @Override
     protected void onDisable() {
         toolbar.removeFromParent();
-        guiNode.detachAllChildren();
     }
 
     @Override
@@ -76,12 +68,33 @@ public class GuiState extends BaseAppState {
         toolbar.setLocalTranslation(0, height, zIndex);
     }
 
+    private void layoutOpenFileWindow(OpenFileWindow window, int width, int height) {
+        window.setPreferredSize(window.getPreferredSize()
+                .setX(width * 0.8f)
+                .setZ(zIndex + 10));
+        GuiUtils.center(window);
+    }
+
     private Container createToolbar() {
         Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.None, FillMode.None), new ElementId("toolbar"));
         Button open = container.addChild(createToolbarButton("/Interface/open.png"));
+        open.addClickCommands(source -> onOpenFile());
         Button save = container.addChild(createToolbarButton("/Interface/save.png"));
 
         return container;
+    }
+
+    private OpenFileWindow createOpenFileWindow() {
+        return new OpenFileWindow();
+    }
+
+    private void onOpenFile() {
+        if (!openFileWindow.isAttached()) {
+            // the Lemur ListBox has soms 'quirks'. It needs to be rendered before it's size is correctly calculated.
+            // that's why we layout the modal 1 frame after it's attached
+            getApplication().enqueue(() -> layoutOpenFileWindow(openFileWindow, GuiUtils.getWidth(), GuiUtils.getHeight()));
+            guiNode.attachChild(openFileWindow);
+        }
     }
 
     private static Button createToolbarButton(String iconPath) {

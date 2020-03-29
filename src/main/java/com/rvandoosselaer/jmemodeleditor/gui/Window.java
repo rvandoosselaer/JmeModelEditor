@@ -41,8 +41,14 @@ public class Window extends Container {
     }
 
     public void cleanup() {
-        removeFromParent();
+        if (isAttached()) {
+            removeFromParent();
+        }
         CursorEventControl.removeListenersFromSpatial(draggable, dragHandler);
+    }
+
+    public boolean isAttached() {
+        return getParent() != null;
     }
 
 }
