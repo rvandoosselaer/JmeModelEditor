@@ -2,7 +2,6 @@ package com.rvandoosselaer.jmemodeleditor;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -12,12 +11,12 @@ import com.jme3.scene.Spatial;
 import lombok.Getter;
 
 /**
- * An appstate that handles the lifecycle of the overlay viewport. The location and rotation of the main viewport camera
- * is copied to the camera of the overlay viewport.
+ * An appstate that handles the lifecycle of the coordinate axes viewport. The camera of the viewport is updated based
+ * on the direction of the main viewport's camera.
  *
  * @author: rvandoosselaer
  */
-public class OverLayViewPortState extends BaseAppState {
+public class CoordinateAxesViewPortState extends BaseAppState {
 
     @Getter
     private Node node;
@@ -26,12 +25,16 @@ public class OverLayViewPortState extends BaseAppState {
 
     @Override
     protected void initialize(Application app) {
-        node = new Node("root-overlay");
+        node = new Node("root-coordinate");
         node.setCullHint(Spatial.CullHint.Never);
 
-        viewPortCamera = app.getCamera().clone();
+        viewPortCamera = new Camera(80, 80);
+        viewPortCamera.setFrustumPerspective(45f, 1, 1f, 5f);
+        viewPortCamera.setLocation(new Vector3f(0, 0, 3));
+        viewPortCamera.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
+        viewPortCamera.setViewPort(0, 1, 0, 1);
 
-        viewPort = app.getRenderManager().createMainView("Overlay", viewPortCamera);
+        viewPort = app.getRenderManager().createMainView("Overlay-coordinate", viewPortCamera);
         viewPort.setClearFlags(false, true, false);
         viewPort.attachScene(node);
     }
@@ -52,8 +55,11 @@ public class OverLayViewPortState extends BaseAppState {
 
     @Override
     public void update(float tpf) {
-        viewPortCamera.setLocation(new Vector3f(getApplication().getCamera().getLocation()));
-        viewPortCamera.setRotation(new Quaternion(getApplication().getCamera().getRotation()));
+        Vector3f dir = getApplication().getCamera().getDirection();
+        dir.negateLocal().multLocal(3);
+
+        viewPortCamera.setLocation(dir);
+        viewPortCamera.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
 
         node.updateLogicalState(tpf);
     }

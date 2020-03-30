@@ -30,7 +30,7 @@ public class EditorState extends BaseAppState {
     private Node scene = new Node("scene");
     private Geometry grid;
     private Geometry centerPoint;
-    private Node overlayRoot;
+    private Node overlayViewPortNode;
 
     @Override
     protected void initialize(Application app) {
@@ -38,7 +38,7 @@ public class EditorState extends BaseAppState {
 
         grid = createGrid(new Vector2f(20, 20), 0.25f);
         centerPoint = createCenterPoint();
-        overlayRoot = getState(OverLayViewPortState.class).getRoot();
+        overlayViewPortNode = getState(OverLayViewPortState.class).getNode();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class EditorState extends BaseAppState {
         rootNode.attachChild(scene);
         rootNode.attachChild(grid);
 
-        overlayRoot.attachChild(centerPoint);
+        overlayViewPortNode.attachChild(centerPoint);
     }
 
     @Override

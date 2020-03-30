@@ -27,6 +27,7 @@ public class Main extends SimpleApplication {
     public Main() {
         super(new LightsState(),
                 new OverLayViewPortState(),
+                new CoordinateAxesViewPortState(),
                 new GuiState(),
                 new EditorState(),
                 new ThirdPersonCamera());
