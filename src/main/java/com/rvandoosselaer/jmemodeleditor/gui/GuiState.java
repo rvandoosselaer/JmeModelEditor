@@ -6,6 +6,7 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.rvandoosselaer.jmeutils.gui.GuiUtils;
+import com.rvandoosselaer.jmeutils.util.GeometryUtils;
 import com.simsilica.lemur.Axis;
 import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Container;
@@ -30,12 +31,14 @@ public class GuiState extends BaseAppState {
     private Container toolbar;
     private OpenFileWindow openFileWindow;
     private float zIndex = 99;
+    private Node coordinateAxis;
 
     @Override
     protected void initialize(Application app) {
         guiNode = ((SimpleApplication) app).getGuiNode();
         toolbar = createToolbar();
         openFileWindow = createOpenFileWindow();
+        coordinateAxis = createCoordinateAxis();
     }
 
     @Override
@@ -46,11 +49,13 @@ public class GuiState extends BaseAppState {
     @Override
     protected void onEnable() {
         guiNode.attachChild(toolbar);
+        guiNode.attachChild(coordinateAxis);
     }
 
     @Override
     protected void onDisable() {
         toolbar.removeFromParent();
+        coordinateAxis.removeFromParent();
     }
 
     @Override
@@ -58,11 +63,25 @@ public class GuiState extends BaseAppState {
         refreshLayout();
     }
 
+    private void onOpenFile() {
+        if (!openFileWindow.isAttached()) {
+            // the Lemur ListBox has soms 'quirks'. It needs to be rendered before it's size is correctly calculated.
+            // that's why we layout the modal 1 frame after it's attached
+            getApplication().enqueue(() -> layoutOpenFileWindow(openFileWindow, GuiUtils.getWidth(), GuiUtils.getHeight()));
+            guiNode.attachChild(openFileWindow);
+        }
+    }
+
     private void refreshLayout() {
         int w = GuiUtils.getWidth();
         int h = GuiUtils.getHeight();
 
         layoutToolbar(toolbar, w, h);
+        layoutCoordinateAxis(coordinateAxis, w, h);
+    }
+
+    private void layoutCoordinateAxis(Node coordinateAxis, int w, int h) {
+        coordinateAxis.setLocalTranslation(60, 60, zIndex);
     }
 
     private void layoutToolbar(Container toolbar, int width, int height) {
@@ -77,6 +96,12 @@ public class GuiState extends BaseAppState {
         GuiUtils.center(window);
     }
 
+    private Node createCoordinateAxis() {
+        Node axis = GeometryUtils.createCoordinateAxes();
+        axis.setLocalScale(50);
+        return axis;
+    }
+
     private Container createToolbar() {
         Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.None, FillMode.None), new ElementId("toolbar"));
         Button open = container.addChild(createToolbarButton("/Interface/open.png"));
@@ -88,15 +113,6 @@ public class GuiState extends BaseAppState {
 
     private OpenFileWindow createOpenFileWindow() {
         return new OpenFileWindow();
-    }
-
-    private void onOpenFile() {
-        if (!openFileWindow.isAttached()) {
-            // the Lemur ListBox has soms 'quirks'. It needs to be rendered before it's size is correctly calculated.
-            // that's why we layout the modal 1 frame after it's attached
-            getApplication().enqueue(() -> layoutOpenFileWindow(openFileWindow, GuiUtils.getWidth(), GuiUtils.getHeight()));
-            guiNode.attachChild(openFileWindow);
-        }
     }
 
     private static Button createToolbarButton(String iconPath) {
