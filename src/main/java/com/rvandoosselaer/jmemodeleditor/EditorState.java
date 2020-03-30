@@ -50,6 +50,7 @@ public class EditorState extends BaseAppState {
     @Override
     protected void onDisable() {
         scene.removeFromParent();
+        grid.removeFromParent();
     }
 
     public void loadModel(Path path) {

@@ -6,7 +6,6 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.rvandoosselaer.jmeutils.gui.GuiUtils;
-import com.rvandoosselaer.jmeutils.util.GeometryUtils;
 import com.simsilica.lemur.Axis;
 import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Container;
@@ -31,14 +30,12 @@ public class GuiState extends BaseAppState {
     private Container toolbar;
     private OpenFileWindow openFileWindow;
     private float zIndex = 99;
-    private Node coordinateAxis;
 
     @Override
     protected void initialize(Application app) {
         guiNode = ((SimpleApplication) app).getGuiNode();
         toolbar = createToolbar();
         openFileWindow = createOpenFileWindow();
-        coordinateAxis = createCoordinateAxis();
     }
 
     @Override
@@ -49,13 +46,11 @@ public class GuiState extends BaseAppState {
     @Override
     protected void onEnable() {
         guiNode.attachChild(toolbar);
-        guiNode.attachChild(coordinateAxis);
     }
 
     @Override
     protected void onDisable() {
         toolbar.removeFromParent();
-        coordinateAxis.removeFromParent();
     }
 
     @Override
@@ -77,11 +72,6 @@ public class GuiState extends BaseAppState {
         int h = GuiUtils.getHeight();
 
         layoutToolbar(toolbar, w, h);
-        layoutCoordinateAxis(coordinateAxis, w, h);
-    }
-
-    private void layoutCoordinateAxis(Node coordinateAxis, int w, int h) {
-        coordinateAxis.setLocalTranslation(60, 60, zIndex);
     }
 
     private void layoutToolbar(Container toolbar, int width, int height) {
@@ -94,12 +84,6 @@ public class GuiState extends BaseAppState {
                 .setX(width * 0.8f)
                 .setZ(zIndex + 10));
         GuiUtils.center(window);
-    }
-
-    private Node createCoordinateAxis() {
-        Node axis = GeometryUtils.createCoordinateAxes();
-        axis.setLocalScale(50);
-        return axis;
     }
 
     private Container createToolbar() {
