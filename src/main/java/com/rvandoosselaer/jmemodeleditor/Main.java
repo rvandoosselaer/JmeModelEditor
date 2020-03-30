@@ -30,7 +30,7 @@ public class Main extends SimpleApplication {
                 new CoordinateAxesViewPortState(),
                 new GuiState(),
                 new EditorState(),
-                new ThirdPersonCamera());
+                new CameraState());
 
         setSettings(createSettings());
 
