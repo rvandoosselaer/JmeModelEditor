@@ -25,8 +25,9 @@ public class Main extends SimpleApplication {
     }
 
     public Main() {
-        super(new GuiState(),
-                new LightsState(),
+        super(new LightsState(),
+                new OverLayViewPortState(),
+                new GuiState(),
                 new EditorState(),
                 new ThirdPersonCamera());
 

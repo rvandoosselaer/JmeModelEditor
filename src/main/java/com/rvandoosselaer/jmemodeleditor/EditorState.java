@@ -11,6 +11,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Grid;
+import com.jme3.scene.shape.Sphere;
 import com.rvandoosselaer.jmeutils.util.GeometryUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +29,16 @@ public class EditorState extends BaseAppState {
     @Getter
     private Node scene = new Node("scene");
     private Geometry grid;
+    private Geometry centerPoint;
+    private Node overlayRoot;
 
     @Override
     protected void initialize(Application app) {
         setBackgroundColor(app);
+
         grid = createGrid(new Vector2f(20, 20), 0.25f);
+        centerPoint = createCenterPoint();
+        overlayRoot = getState(OverLayViewPortState.class).getRoot();
     }
 
     @Override
@@ -45,12 +51,15 @@ public class EditorState extends BaseAppState {
 
         rootNode.attachChild(scene);
         rootNode.attachChild(grid);
+
+        overlayRoot.attachChild(centerPoint);
     }
 
     @Override
     protected void onDisable() {
         scene.removeFromParent();
         grid.removeFromParent();
+        centerPoint.removeFromParent();
     }
 
     public void loadModel(Path path) {
@@ -69,6 +78,10 @@ public class EditorState extends BaseAppState {
 
     private void resetScene() {
         scene.detachAllChildren();
+    }
+
+    private Geometry createCenterPoint() {
+        return GeometryUtils.createGeometry(new Sphere(32, 32, 0.05f), new ColorRGBA(1, 0, 0, 0.1f), false);
     }
 
     private void setBackgroundColor(Application app) {
