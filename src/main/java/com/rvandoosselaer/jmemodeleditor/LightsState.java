@@ -69,7 +69,7 @@ public class LightsState extends BaseAppState {
     @Override
     public void update(float tpf) {
         if (updateLightDir) {
-            directionalLight.setDirection(camera.getDirection());
+            directionalLight.setDirection(new Vector3f(camera.getDirection()));
         }
     }
 
@@ -77,9 +77,12 @@ public class LightsState extends BaseAppState {
 
         @Override
         public LightProbe get() {
-            String lightProbe = "/Scene/lightProbe.j3o";
-            log.trace("Loading {}", lightProbe);
-            return (LightProbe) getApplication().getAssetManager().loadAsset(lightProbe);
+            String lightProbeLocation = "/Scene/lightProbe-white.j3o";
+            log.trace("Loading {}", lightProbeLocation);
+            LightProbe lightProbe = (LightProbe) getApplication().getAssetManager().loadAsset(lightProbeLocation);
+            lightProbe.setPosition(new Vector3f(0, 0, 0));
+            lightProbe.getArea().setRadius(100);
+            return lightProbe;
         }
 
     }
