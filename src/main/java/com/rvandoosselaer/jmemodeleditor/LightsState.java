@@ -4,23 +4,33 @@ import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.LightProbe;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A state that manages the lights in the editor.
  *
  * @author: rvandoosselaer
  */
+@Slf4j
 public class LightsState extends BaseAppState {
 
     private Node scene;
     private AmbientLight ambientLight;
     private DirectionalLight directionalLight;
+    @Setter(AccessLevel.PRIVATE)
+    private LightProbe lightProbe;
     @Getter
     @Setter
     private boolean updateLightDir = true;
@@ -33,6 +43,8 @@ public class LightsState extends BaseAppState {
 
         scene = getState(EditorState.class).getScene();
         camera = app.getCamera();
+
+        CompletableFuture.supplyAsync(new LightProbeSupplier()).thenAccept(new LightProbeConsumer());
     }
 
     @Override
@@ -49,6 +61,9 @@ public class LightsState extends BaseAppState {
     protected void onDisable() {
         scene.removeLight(ambientLight);
         scene.removeLight(directionalLight);
+        if (lightProbe != null) {
+            scene.removeLight(lightProbe);
+        }
     }
 
     @Override
@@ -56,6 +71,30 @@ public class LightsState extends BaseAppState {
         if (updateLightDir) {
             directionalLight.setDirection(camera.getDirection());
         }
+    }
+
+    private class LightProbeSupplier implements Supplier<LightProbe> {
+
+        @Override
+        public LightProbe get() {
+            String lightProbe = "/Scene/lightProbe.j3o";
+            log.trace("Loading {}", lightProbe);
+            return (LightProbe) getApplication().getAssetManager().loadAsset(lightProbe);
+        }
+
+    }
+
+    private class LightProbeConsumer implements Consumer<LightProbe> {
+
+        @Override
+        public void accept(LightProbe lightProbe) {
+            log.trace("Adding {} to {}", lightProbe, scene);
+            getApplication().enqueue(() -> {
+                scene.addLight(lightProbe);
+                setLightProbe(lightProbe);
+            });
+        }
+
     }
 
 }
