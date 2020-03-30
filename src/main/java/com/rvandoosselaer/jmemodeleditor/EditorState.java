@@ -6,8 +6,11 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.Grid;
 import com.rvandoosselaer.jmeutils.util.GeometryUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +27,12 @@ public class EditorState extends BaseAppState {
 
     @Getter
     private Node scene = new Node("scene");
-    private Node coordinateAxis;
+    private Geometry grid;
 
     @Override
     protected void initialize(Application app) {
         setBackgroundColor(app);
-        coordinateAxis = GeometryUtils.createCoordinateAxes();
+        grid = createGrid(new Vector2f(20, 20), 0.25f);
     }
 
     @Override
@@ -41,13 +44,12 @@ public class EditorState extends BaseAppState {
         Node rootNode = ((SimpleApplication) getApplication()).getRootNode();
 
         rootNode.attachChild(scene);
-        rootNode.attachChild(coordinateAxis);
+        rootNode.attachChild(grid);
     }
 
     @Override
     protected void onDisable() {
         scene.removeFromParent();
-        coordinateAxis.removeFromParent();
     }
 
     public void loadModel(Path path) {
@@ -70,6 +72,16 @@ public class EditorState extends BaseAppState {
 
     private void setBackgroundColor(Application app) {
         app.getViewPort().setBackgroundColor(new ColorRGBA().setAsSrgb(0.22f, 0.22f, 0.22f, 1));
+    }
+
+    private Geometry createGrid(Vector2f gridSize, float lineDistance) {
+        int linesX = (int) (gridSize.x / lineDistance);
+        int linesY = (int) (gridSize.y / lineDistance);
+
+        Geometry grid = GeometryUtils.createGeometry(new Grid(linesX, linesY, lineDistance), new ColorRGBA().setAsSrgb(0.294f, 0.294f, 0.294f, 1), false);
+        grid.setLocalTranslation(gridSize.x * -0.5f, 0, gridSize.y * -0.5f);
+
+        return grid;
     }
 
 }
