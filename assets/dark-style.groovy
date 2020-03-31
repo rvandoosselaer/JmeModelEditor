@@ -5,6 +5,7 @@ import com.simsilica.lemur.Button.ButtonAction
 import com.simsilica.lemur.Command
 import com.simsilica.lemur.Insets3f
 import com.simsilica.lemur.component.DynamicInsetsComponent
+import com.simsilica.lemur.component.IconComponent
 import com.simsilica.lemur.HAlignment
 import com.simsilica.lemur.VAlignment
 import com.simsilica.lemur.component.QuadBackgroundComponent
@@ -141,6 +142,23 @@ selector("primary-button", "editor-style") {
 selector("list.selector", "editor-style") {
     background = new QuadBackgroundComponent(listSelectionColor)
     background.material.material.additionalRenderState.blendMode = BlendMode.AlphaAdditive;
+}
+
+//
+// Slider
+//
+selector("slider.up.button", "editor-style") {
+    text = ""
+    icon = new IconComponent( "/Interface/scroll-up.png", 1f, 0, 0, 1f, false)
+}
+
+selector("slider.down.button", "editor-style") {
+    text = ""
+    icon = new IconComponent( "/Interface/scroll-down.png", 1f, 0, 0, 1f, false )
+}
+
+selector("slider.thumb.button", "editor-style") {
+    text = ""
 }
 
 //
