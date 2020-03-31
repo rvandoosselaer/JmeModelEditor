@@ -27,10 +27,12 @@ import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.core.VersionedList;
 import com.simsilica.lemur.event.KeyAction;
+import com.simsilica.lemur.event.KeyModifiers;
 import com.simsilica.lemur.event.MouseEventControl;
 import com.simsilica.lemur.list.CellRenderer;
 import com.simsilica.lemur.style.ElementId;
 import lombok.extern.slf4j.Slf4j;
+import org.lwjgl.Sys;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -93,6 +95,8 @@ public class OpenFileWindow extends Window {
             setDirectory(Paths.get(textEntryComponent.getText()));
             GuiGlobals.getInstance().releaseFocus(currentDirTextField);
         });
+        KeyAction pasteKeyCombo = new KeyAction(KeyInput.KEY_V, KeyModifiers.CONTROL_DOWN);
+        currentDirTextField.getActionMap().put(pasteKeyCombo, (textEntryComponent, keyAction) -> textEntryComponent.setText(Sys.getClipboard() != null ? Sys.getClipboard() : ""));
 
         return container;
     }
@@ -167,6 +171,14 @@ public class OpenFileWindow extends Window {
     }
 
     /**
+     * @return the folder to open when the window is created
+     */
+    private Path getStartFolder() {
+        //return Paths.get(System.getProperty("user.home"));
+        return Paths.get("/Users/remy/Projects/rvandoosselaer/desolated-woods/assets/Models/Human");
+    }
+
+    /**
      * @param path
      * @return the files in the given path sorted alphabetically
      */
@@ -183,13 +195,6 @@ public class OpenFileWindow extends Window {
         }
 
         return Collections.emptyList();
-    }
-
-    /**
-     * @return the folder to open when the window is created
-     */
-    private Path getStartFolder() {
-        return Paths.get(System.getProperty("user.home"));
     }
 
     private Optional<Path> getSelectedItem() {
