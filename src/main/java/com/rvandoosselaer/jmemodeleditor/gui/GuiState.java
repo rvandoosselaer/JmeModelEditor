@@ -13,9 +13,12 @@ import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.FillMode;
 import com.simsilica.lemur.HAlignment;
+import com.simsilica.lemur.Label;
 import com.simsilica.lemur.VAlignment;
 import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.SpringGridLayout;
+import com.simsilica.lemur.core.VersionedHolder;
+import com.simsilica.lemur.core.VersionedReference;
 import com.simsilica.lemur.style.ElementId;
 
 /**
@@ -34,6 +37,11 @@ public class GuiState extends BaseAppState {
     private Node coordinateAxes;
     private Node coordinateAxesViewPortNode;
     private float zIndex = 99;
+    private Label fpsLabel;
+    private VersionedHolder<Integer> fps = new VersionedHolder<>(0);
+    private VersionedReference<Integer> fpsRef = fps.createReference();
+    private int frameCounter;
+    private float timeCounter;
 
     @Override
     protected void initialize(Application app) {
@@ -41,6 +49,7 @@ public class GuiState extends BaseAppState {
         toolbar = createToolbar();
         openFileWindow = createOpenFileWindow();
         coordinateAxes = GeometryUtils.createCoordinateAxes();
+        fpsLabel = createFpsLabel();
 
         coordinateAxesViewPortNode = getState(CoordinateAxesViewPortState.class).getNode();
     }
@@ -53,17 +62,23 @@ public class GuiState extends BaseAppState {
     @Override
     protected void onEnable() {
         guiNode.attachChild(toolbar);
+        guiNode.attachChild(fpsLabel);
         coordinateAxesViewPortNode.attachChild(coordinateAxes);
     }
 
     @Override
     protected void onDisable() {
         toolbar.removeFromParent();
+        fpsLabel.removeFromParent();
         coordinateAxes.removeFromParent();
     }
 
     @Override
     public void update(float tpf) {
+        calculateFps(tpf);
+        if (fpsRef.update()) {
+            fpsLabel.setText(String.format("%d", fpsRef.get()));
+        }
         refreshLayout();
     }
 
@@ -81,6 +96,7 @@ public class GuiState extends BaseAppState {
         int h = GuiUtils.getHeight();
 
         layoutToolbar(toolbar, w, h);
+        layoutFpsLabel(fpsLabel, w, h);
     }
 
     private void layoutToolbar(Container toolbar, int width, int height) {
@@ -93,6 +109,24 @@ public class GuiState extends BaseAppState {
                 .setX(width * 0.8f)
                 .setZ(zIndex + 10));
         GuiUtils.center(window);
+    }
+
+    private void layoutFpsLabel(Label label, int width, int height) {
+        label.setLocalTranslation(width - label.getPreferredSize().x, height, zIndex + 1);
+    }
+
+    private void calculateFps(float tpf) {
+        timeCounter += tpf;
+        frameCounter++;
+        if (timeCounter >= 1.0f) {
+            fps.setObject((int) (frameCounter / timeCounter));
+            timeCounter = 0;
+            frameCounter = 0;
+        }
+    }
+
+    private Label createFpsLabel() {
+        return new Label("0");
     }
 
     private Container createToolbar() {
