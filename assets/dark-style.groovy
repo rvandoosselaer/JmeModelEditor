@@ -41,6 +41,10 @@ def buttonToolBarColor = color(0, 0, 0, 0)
 
 def windowColor = color(0.294, 0.294, 0.294, 1)
 def windowTitleColor = color(0.2, 0.2, 0.2, 1)
+
+def sliderColor = color(0.18, 0.18, 0.18, 1)
+def sliderThumbColor = color(0.345, 0.345, 0.345, 1)
+
 //
 // Global styling
 //
@@ -147,18 +151,59 @@ selector("list.selector", "editor-style") {
 //
 // Slider
 //
+def repeatCommand = new Command<Button>() {
+    private long startTime;
+    private long lastClick;
+
+    public void execute(Button source) {
+        // Only do the repeating click while the mouse is
+        // over the button (and pressed of course)
+        if (source.pressed && source.highlightOn) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            // After half a second pause, click 8 times a second
+            if (elapsedTime > 500) {
+                if (elapsedTime - lastClick > 125) {
+                    source.click()
+
+                    // Try to quantize the last click time to prevent drift
+                    lastClick = ((elapsedTime - 500) / 125) * 125 + 500
+                }
+            }
+        } else {
+            startTime = System.currentTimeMillis()
+            lastClick = 0
+        }
+    }
+}
+
+def sliderButtonCommands = [
+        (ButtonAction.Hover): [repeatCommand]
+]
+
+selector("slider", "editor-style") {
+    background = new QuadBackgroundComponent(sliderColor)
+}
+
 selector("slider.up.button", "editor-style") {
     text = ""
-    icon = new IconComponent( "/Interface/scroll-up.png", 1f, 0, 0, 1f, false)
+    insets = null
+    buttonCommands = sliderButtonCommands
+    icon = new IconComponent( "/Interface/scroll-up.png", 1f, 2, 2, 1f, false)
 }
 
 selector("slider.down.button", "editor-style") {
     text = ""
-    icon = new IconComponent( "/Interface/scroll-down.png", 1f, 0, 0, 1f, false )
+    insets = null
+    buttonCommands = sliderButtonCommands
+    icon = new IconComponent( "/Interface/scroll-down.png", 1f, 2, 2, 1f, false )
 }
 
 selector("slider.thumb.button", "editor-style") {
     text = ""
+    insets = new Insets3f(4, 4, 4, 4)
+    buttonCommands = null
+    preferredSize = vec3(20, 60, 2)
+    background = new QuadBackgroundComponent(sliderThumbColor)
 }
 
 //
