@@ -12,6 +12,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Sphere;
 import com.rvandoosselaer.jmeutils.util.GeometryUtils;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
@@ -28,6 +29,7 @@ public class EditorState extends BaseAppState {
     private Geometry centerPoint;
     private Node overlayNode;
     private Node editorNode;
+    @Getter
     private Spatial model;
     private AssetManager assetManager;
 
@@ -40,6 +42,8 @@ public class EditorState extends BaseAppState {
         editorNode = getState(ViewPortsState.class).getEditorNode();
 
         assetManager = app.getAssetManager();
+
+        setBackgroundColor();
     }
 
     @Override
@@ -59,7 +63,7 @@ public class EditorState extends BaseAppState {
         removeModel();
     }
 
-    public void loadModel(Path path) {
+    public Spatial loadModel(Path path) {
         log.info("Opening {}", path);
 
         // remove the previous model
@@ -83,6 +87,8 @@ public class EditorState extends BaseAppState {
 //        });
 
         editorNode.attachChild(model);
+
+        return model;
     }
 
     private void removeModel() {
@@ -103,6 +109,10 @@ public class EditorState extends BaseAppState {
         grid.setLocalTranslation(gridSize.x * -0.5f, 0, gridSize.y * -0.5f);
 
         return grid;
+    }
+
+    private void setBackgroundColor() {
+        getState(ViewPortsState.class).getEditorViewPort().setBackgroundColor(new ColorRGBA().setAsSrgb(0.22f, 0.22f, 0.22f, 0));
     }
 
 }

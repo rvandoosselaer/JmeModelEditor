@@ -45,6 +45,10 @@ def windowTitleColor = color(0.2, 0.2, 0.2, 1)
 def sliderColor = color(0.18, 0.18, 0.18, 1)
 def sliderThumbColor = color(0.345, 0.345, 0.345, 1)
 
+def propertiesColor = color(0.137, 0.137, 0.137, 1)
+def propertiesTitleColor = color(0.259, 0.259, 0.259, 1)
+def propertiesContainerColor = color(0.204, 0.204, 0.204, 1)
+
 //
 // Global styling
 //
@@ -299,5 +303,26 @@ selector("open-file", "list.container", "editor-style") {
 }
 
 selector("open-file.list", "label", "editor-style") {
+    insets = new Insets3f(4, 4, 4, 4)
+}
+
+//
+// Properties
+//
+selector("properties", "editor-style") {
+    background = new QuadBackgroundComponent(propertiesColor)
+}
+
+selector("properties", "scenegraph", "editor-style") {
+    insets = new Insets3f(0, 2, 0, 0)
+    background = new QuadBackgroundComponent(propertiesContainerColor)
+}
+
+selector("properties", "title", "editor-style") {
+    background = new QuadBackgroundComponent(propertiesTitleColor)
+    background.setMargin(10, 4)
+}
+
+selector("properties.list", "item", "editor-style") {
     insets = new Insets3f(4, 4, 4, 4)
 }

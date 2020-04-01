@@ -4,11 +4,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.RenderManager;
-import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.control.AbstractControl;
-import com.rvandoosselaer.jmemodeleditor.EditorState;
 import com.rvandoosselaer.jmeutils.ApplicationGlobals;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.rvandoosselaer.jmeutils.input.DoubleClickMouseListener;
@@ -56,14 +52,14 @@ public class OpenFileWindow extends Window {
     private Path currentDir;
     private TextField currentDirTextField;
     private ListBox<Path> fileBrowser;
-    private EditorState editorState;
+    private GuiState guiState;
 
     public OpenFileWindow() {
         super(GuiTranslations.getInstance().t("window.open-file.title"));
 
         buildGUI();
 
-        editorState = ApplicationGlobals.getInstance().getApplication().getStateManager().getState(EditorState.class);
+        guiState = ApplicationGlobals.getInstance().getApplication().getStateManager().getState(GuiState.class);
     }
 
     private void buildGUI() {
@@ -72,7 +68,7 @@ public class OpenFileWindow extends Window {
         fileBrowser = getContainer().addChild(new ListBox<>(new VersionedList<>(), ELEMENT_ID.child(ListBox.ELEMENT_ID), GuiState.STYLE));
         fileBrowser.setCellRenderer(new FileBrowserItemRenderer());
         fileBrowser.setVisibleItems(20);
-        fileBrowser.addControl(new ListBoxControl());
+        fileBrowser.addControl(new ListBoxSliderControl());
         MouseEventControl.addListenersToSpatial(fileBrowser, new FileBrowserItemClickListener());
 
         setDirectory(getStartFolder());
@@ -125,7 +121,7 @@ public class OpenFileWindow extends Window {
             if (Files.isDirectory(selection.get())) {
                 setDirectory(selection.get());
             } else {
-                editorState.loadModel(selection.get());
+                guiState.loadModel(selection.get());
                 closeWindow();
             }
         }
@@ -218,25 +214,6 @@ public class OpenFileWindow extends Window {
         return button;
     }
 
-    private static class ListBoxControl extends AbstractControl {
-
-        @Override
-        protected void controlUpdate(float tpf) {
-            ListBox<Path> listBox = (ListBox<Path>) getSpatial();
-            // show / hide the scrollbar based on the available items
-            if (listBox.getVisibleItems() < listBox.getModel().size()) {
-                listBox.getSlider().setCullHint(CullHint.Dynamic);
-            } else {
-                listBox.getSlider().setCullHint(CullHint.Always);
-            }
-        }
-
-        @Override
-        protected void controlRender(RenderManager rm, ViewPort vp) {
-        }
-
-    }
-
     private static class FileBrowserItemRenderer implements CellRenderer<Path> {
 
         @Override
@@ -274,6 +251,7 @@ public class OpenFileWindow extends Window {
                 getSelectedItem().ifPresent(OpenFileWindow.this::setDirectory);
             }
         }
+
     }
 
 }

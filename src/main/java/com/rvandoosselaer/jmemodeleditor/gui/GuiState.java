@@ -5,6 +5,8 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.rvandoosselaer.jmemodeleditor.EditorState;
 import com.rvandoosselaer.jmeutils.gui.GuiUtils;
 import com.simsilica.lemur.Axis;
 import com.simsilica.lemur.Button;
@@ -19,6 +21,8 @@ import com.simsilica.lemur.core.VersionedHolder;
 import com.simsilica.lemur.core.VersionedReference;
 import com.simsilica.lemur.style.ElementId;
 
+import java.nio.file.Path;
+
 /**
  * The state that manages all GUI elements and user interactions.
  *
@@ -32,7 +36,9 @@ public class GuiState extends BaseAppState {
     private Node guiNode;
     private Container toolbar;
     private OpenFileWindow openFileWindow;
+    private PropertiesPanel propertiesPanel;
     private float zIndex = 99;
+    private EditorState editorState;
     private Label fpsLabel;
     private VersionedHolder<Integer> fps = new VersionedHolder<>(0);
     private VersionedReference<Integer> fpsRef = fps.createReference();
@@ -41,10 +47,13 @@ public class GuiState extends BaseAppState {
 
     @Override
     protected void initialize(Application app) {
-        guiNode = ((SimpleApplication) app).getGuiNode();
         toolbar = createToolbar();
-        openFileWindow = createOpenFileWindow();
         fpsLabel = createFpsLabel();
+        openFileWindow = createOpenFileWindow();
+        propertiesPanel = createPropertiesPanel();
+
+        editorState = getState(EditorState.class);
+        guiNode = ((SimpleApplication) app).getGuiNode();
     }
 
     @Override
@@ -56,12 +65,17 @@ public class GuiState extends BaseAppState {
     protected void onEnable() {
         guiNode.attachChild(toolbar);
         guiNode.attachChild(fpsLabel);
+        guiNode.attachChild(propertiesPanel);
     }
 
     @Override
     protected void onDisable() {
         toolbar.removeFromParent();
         fpsLabel.removeFromParent();
+        propertiesPanel.removeFromParent();
+        if (openFileWindow.getParent() != null) {
+            openFileWindow.removeFromParent();
+        }
     }
 
     @Override
@@ -71,6 +85,11 @@ public class GuiState extends BaseAppState {
             fpsLabel.setText(String.format("%d", fpsRef.get()));
         }
         refreshLayout();
+    }
+
+    public void loadModel(Path path) {
+        Spatial model = editorState.loadModel(path);
+        propertiesPanel.setModel(model);
     }
 
     private void onOpenFile() {
@@ -88,6 +107,7 @@ public class GuiState extends BaseAppState {
 
         layoutToolbar(toolbar, w, h);
         layoutFpsLabel(fpsLabel, w, h);
+        layoutPropertiesPanel(propertiesPanel, w, h);
     }
 
     private void layoutToolbar(Container toolbar, int width, int height) {
@@ -95,15 +115,19 @@ public class GuiState extends BaseAppState {
         toolbar.setLocalTranslation(0, height, zIndex);
     }
 
-    private void layoutOpenFileWindow(OpenFileWindow window, int width, int height) {
-        window.setPreferredSize(window.getPreferredSize()
-                .setX(width * 0.8f)
-                .setZ(zIndex + 10));
-        GuiUtils.center(window);
-    }
-
     private void layoutFpsLabel(Label label, int width, int height) {
         label.setLocalTranslation(width - label.getPreferredSize().x, height, zIndex + 1);
+    }
+
+    private void layoutPropertiesPanel(PropertiesPanel propertiesPanel, int width, int height) {
+        propertiesPanel.setPreferredSize(propertiesPanel.getPreferredSize().setX(width * 0.25f).setY(height - toolbar.getPreferredSize().y));
+        propertiesPanel.setLocalTranslation(width * 0.75f, height - toolbar.getPreferredSize().y, zIndex);
+    }
+
+    private void layoutOpenFileWindow(OpenFileWindow window, int width, int height) {
+        window.setPreferredSize(window.getPreferredSize().setX(width * 0.8f));
+        GuiUtils.center(window);
+        window.move(0, 0, zIndex + 10);
     }
 
     private void calculateFps(float tpf) {
@@ -114,6 +138,11 @@ public class GuiState extends BaseAppState {
             timeCounter = 0;
             frameCounter = 0;
         }
+    }
+
+    private PropertiesPanel createPropertiesPanel() {
+        PropertiesPanel propertiesPanel = new PropertiesPanel();
+        return propertiesPanel;
     }
 
     private Label createFpsLabel() {
@@ -144,5 +173,4 @@ public class GuiState extends BaseAppState {
 
         return button;
     }
-
 }
