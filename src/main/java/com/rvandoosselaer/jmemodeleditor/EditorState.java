@@ -72,6 +72,17 @@ public class EditorState extends BaseAppState {
         Spatial model = assetManager.loadModel(path.getFileName().toString());
         assetManager.unregisterLocator(parent.toAbsolutePath().toString(), FileLocator.class);
 
+//        model.depthFirstTraversal(new SceneGraphVisitor() {
+//            @Override
+//            public void visit(Spatial spatial) {
+//                AnimComposer animComposer = spatial.getControl(AnimComposer.class);
+//                if (animComposer != null) {
+//                    log.info("Animations: {}", animComposer.getAnimClipsNames());
+//                    animComposer.setCurrentAction("walk");
+//                }
+//            }
+//        });
+
         resetScene();
         scene.attachChild(model);
     }

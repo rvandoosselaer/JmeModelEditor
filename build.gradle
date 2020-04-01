@@ -21,6 +21,8 @@ ext {
     lemurProtoVersion = "[1.11,)"
     lombokVersion = "[1.18,)"
     groovyVersion = "[3.0,)"
+//    commonsLang3Version = "[3.10,)"
+//    simMathVersion = "[1,)"
 }
 
 repositories {
@@ -45,6 +47,8 @@ dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     runtime "org.codehaus.groovy:groovy-all:${groovyVersion}"
+//    implementation "com.simsilica:sim-math:${simMathVersion}"
+//    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
 
     // Logging
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"

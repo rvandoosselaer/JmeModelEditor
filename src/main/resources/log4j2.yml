@@ -19,8 +19,8 @@ Configuration:
     logger:
       - name: com.rvandoosselaer
         level: all
-#      - name: com.jme3
-#        level: info
+      - name: com.jme3.material.Material
+        level: all
 #      - name: com.simsilica
 #        level: info
     Root:

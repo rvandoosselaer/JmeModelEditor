@@ -1,6 +1,7 @@
 package com.rvandoosselaer.jmemodeleditor;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.material.TechniqueDef;
 import com.jme3.system.AppSettings;
 import com.rvandoosselaer.jmemodeleditor.gui.GuiState;
 import com.rvandoosselaer.jmeutils.ApplicationGlobals;
@@ -41,10 +42,12 @@ public class Main extends SimpleApplication {
     public void simpleInitApp() {
         GuiGlobals.initialize(this);
         ApplicationGlobals.initialize(this);
-        getInputManager().deleteMapping(SimpleApplication.INPUT_MAPPING_EXIT);
 
-        BaseStyles.loadStyleResources(GuiState.DARK_STYLE_RESOURCE);
-        GuiGlobals.getInstance().getStyles().setDefaultStyle(GuiState.STYLE);
+        removeDefaultMappings();
+
+        loadEditorStyle();
+
+        renderManager.setPreferredLightMode(TechniqueDef.LightMode.SinglePass);
     }
 
     @Override
@@ -66,6 +69,15 @@ public class Main extends SimpleApplication {
         log.debug("Settings: {}", settings);
 
         return settings;
+    }
+
+    private void loadEditorStyle() {
+        BaseStyles.loadStyleResources(GuiState.DARK_STYLE_RESOURCE);
+        GuiGlobals.getInstance().getStyles().setDefaultStyle(GuiState.STYLE);
+    }
+
+    private void removeDefaultMappings() {
+        getInputManager().deleteMapping(SimpleApplication.INPUT_MAPPING_EXIT);
     }
 
 }
