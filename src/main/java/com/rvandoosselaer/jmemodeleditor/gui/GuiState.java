@@ -5,9 +5,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
-import com.rvandoosselaer.jmemodeleditor.CoordinateAxesViewPortState;
 import com.rvandoosselaer.jmeutils.gui.GuiUtils;
-import com.rvandoosselaer.jmeutils.util.GeometryUtils;
 import com.simsilica.lemur.Axis;
 import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Container;
@@ -34,8 +32,6 @@ public class GuiState extends BaseAppState {
     private Node guiNode;
     private Container toolbar;
     private OpenFileWindow openFileWindow;
-    private Node coordinateAxes;
-    private Node coordinateAxesViewPortNode;
     private float zIndex = 99;
     private Label fpsLabel;
     private VersionedHolder<Integer> fps = new VersionedHolder<>(0);
@@ -48,10 +44,7 @@ public class GuiState extends BaseAppState {
         guiNode = ((SimpleApplication) app).getGuiNode();
         toolbar = createToolbar();
         openFileWindow = createOpenFileWindow();
-        coordinateAxes = GeometryUtils.createCoordinateAxes();
         fpsLabel = createFpsLabel();
-
-        coordinateAxesViewPortNode = getState(CoordinateAxesViewPortState.class).getNode();
     }
 
     @Override
@@ -63,14 +56,12 @@ public class GuiState extends BaseAppState {
     protected void onEnable() {
         guiNode.attachChild(toolbar);
         guiNode.attachChild(fpsLabel);
-        coordinateAxesViewPortNode.attachChild(coordinateAxes);
     }
 
     @Override
     protected void onDisable() {
         toolbar.removeFromParent();
         fpsLabel.removeFromParent();
-        coordinateAxes.removeFromParent();
     }
 
     @Override

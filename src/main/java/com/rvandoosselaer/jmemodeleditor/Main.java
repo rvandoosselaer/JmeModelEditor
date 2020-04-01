@@ -2,7 +2,9 @@ package com.rvandoosselaer.jmemodeleditor;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.TechniqueDef;
+import com.jme3.math.ColorRGBA;
 import com.jme3.system.AppSettings;
+import com.rvandoosselaer.jmemodeleditor.gui.CoordinateAxesState;
 import com.rvandoosselaer.jmemodeleditor.gui.GuiState;
 import com.rvandoosselaer.jmeutils.ApplicationGlobals;
 import com.rvandoosselaer.jmeutils.Resolution;
@@ -26,11 +28,11 @@ public class Main extends SimpleApplication {
     }
 
     public Main() {
-        super(new LightsState(),
-                new OverLayViewPortState(),
-                new CoordinateAxesViewPortState(),
+        super(new ViewPortsState(),
+                new LightsState(),
                 new GuiState(),
                 new EditorState(),
+                new CoordinateAxesState(),
                 new CameraState());
 
         setSettings(createSettings());
@@ -48,6 +50,8 @@ public class Main extends SimpleApplication {
         loadEditorStyle();
 
         renderManager.setPreferredLightMode(TechniqueDef.LightMode.SinglePass);
+
+        setBackgroundColor();
     }
 
     @Override
@@ -78,6 +82,10 @@ public class Main extends SimpleApplication {
 
     private void removeDefaultMappings() {
         getInputManager().deleteMapping(SimpleApplication.INPUT_MAPPING_EXIT);
+    }
+
+    private void setBackgroundColor() {
+        getViewPort().setBackgroundColor(new ColorRGBA().setAsSrgb(0.22f, 0.22f, 0.22f, 0));
     }
 
 }

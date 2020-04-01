@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 @Slf4j
 public class LightsState extends BaseAppState {
 
-    private Node scene;
+    private Node editorNode;
     private AmbientLight ambientLight;
     private DirectionalLight directionalLight;
     @Setter(AccessLevel.PRIVATE)
@@ -41,8 +41,8 @@ public class LightsState extends BaseAppState {
         ambientLight = new AmbientLight(new ColorRGBA(0.3f, 0.3f, 0.3f, 1));
         directionalLight = new DirectionalLight(Vector3f.UNIT_Z.negate(), ColorRGBA.White);
 
-        scene = getState(EditorState.class).getScene();
-        camera = app.getCamera();
+        editorNode = getState(ViewPortsState.class).getEditorNode();
+        camera = getState(ViewPortsState.class).getEditorCamera();
 
         CompletableFuture.supplyAsync(new LightProbeSupplier()).thenAccept(new LightProbeConsumer());
     }
@@ -53,16 +53,16 @@ public class LightsState extends BaseAppState {
 
     @Override
     protected void onEnable() {
-        scene.addLight(ambientLight);
-        scene.addLight(directionalLight);
+        editorNode.addLight(ambientLight);
+        editorNode.addLight(directionalLight);
     }
 
     @Override
     protected void onDisable() {
-        scene.removeLight(ambientLight);
-        scene.removeLight(directionalLight);
+        editorNode.removeLight(ambientLight);
+        editorNode.removeLight(directionalLight);
         if (lightProbe != null) {
-            scene.removeLight(lightProbe);
+            editorNode.removeLight(lightProbe);
         }
     }
 
@@ -91,9 +91,9 @@ public class LightsState extends BaseAppState {
 
         @Override
         public void accept(LightProbe lightProbe) {
-            log.trace("Adding {} to {}", lightProbe, scene);
+            log.trace("Adding {} to {}", lightProbe, editorNode);
             getApplication().enqueue(() -> {
-                scene.addLight(lightProbe);
+                editorNode.addLight(lightProbe);
                 setLightProbe(lightProbe);
             });
         }

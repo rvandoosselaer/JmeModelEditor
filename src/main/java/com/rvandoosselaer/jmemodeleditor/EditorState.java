@@ -1,7 +1,6 @@
 package com.rvandoosselaer.jmemodeleditor;
 
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
@@ -13,7 +12,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Sphere;
 import com.rvandoosselaer.jmeutils.util.GeometryUtils;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
@@ -26,19 +24,22 @@ import java.nio.file.Path;
 @Slf4j
 public class EditorState extends BaseAppState {
 
-    @Getter
-    private Node scene = new Node("scene");
     private Geometry grid;
     private Geometry centerPoint;
-    private Node overlayViewPortNode;
+    private Node overlayNode;
+    private Node editorNode;
+    private Spatial model;
+    private AssetManager assetManager;
 
     @Override
     protected void initialize(Application app) {
-        setBackgroundColor(app);
-
         grid = createGrid(new Vector2f(20, 20), 0.25f);
         centerPoint = createCenterPoint();
-        overlayViewPortNode = getState(OverLayViewPortState.class).getNode();
+
+        overlayNode = getState(ViewPortsState.class).getOverlayNode();
+        editorNode = getState(ViewPortsState.class).getEditorNode();
+
+        assetManager = app.getAssetManager();
     }
 
     @Override
@@ -47,29 +48,27 @@ public class EditorState extends BaseAppState {
 
     @Override
     protected void onEnable() {
-        Node rootNode = ((SimpleApplication) getApplication()).getRootNode();
-
-        rootNode.attachChild(scene);
-        rootNode.attachChild(grid);
-
-        overlayViewPortNode.attachChild(centerPoint);
+        editorNode.attachChild(grid);
+        overlayNode.attachChild(centerPoint);
     }
 
     @Override
     protected void onDisable() {
-        scene.removeFromParent();
         grid.removeFromParent();
         centerPoint.removeFromParent();
+        removeModel();
     }
 
     public void loadModel(Path path) {
         log.info("Opening {}", path);
 
+        // remove the previous model
+        removeModel();
+
         // add the folder of the model to the asset manager; load the model; remove the folder from the asset manager
         Path parent = path.getParent();
-        AssetManager assetManager = getApplication().getAssetManager();
         assetManager.registerLocator(parent.toAbsolutePath().toString(), FileLocator.class);
-        Spatial model = assetManager.loadModel(path.getFileName().toString());
+        model = assetManager.loadModel(path.getFileName().toString());
         assetManager.unregisterLocator(parent.toAbsolutePath().toString(), FileLocator.class);
 
 //        model.depthFirstTraversal(new SceneGraphVisitor() {
@@ -83,20 +82,17 @@ public class EditorState extends BaseAppState {
 //            }
 //        });
 
-        resetScene();
-        scene.attachChild(model);
+        editorNode.attachChild(model);
     }
 
-    private void resetScene() {
-        scene.detachAllChildren();
+    private void removeModel() {
+        if (model != null) {
+            model.removeFromParent();
+        }
     }
 
     private Geometry createCenterPoint() {
         return GeometryUtils.createGeometry(new Sphere(32, 32, 0.05f), new ColorRGBA(1, 0, 0, 0.1f), false);
-    }
-
-    private void setBackgroundColor(Application app) {
-        app.getViewPort().setBackgroundColor(new ColorRGBA().setAsSrgb(0.22f, 0.22f, 0.22f, 1));
     }
 
     private Geometry createGrid(Vector2f gridSize, float lineDistance) {

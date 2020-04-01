@@ -67,7 +67,7 @@ public class CameraState extends BaseAppState implements AnalogFunctionListener,
 
     @Override
     protected void initialize(Application app) {
-        camera = app.getCamera();
+        camera = getState(ViewPortsState.class).getEditorCamera();
         upVector = camera.getUp(new Vector3f());
 
         inputMapper = GuiGlobals.getInstance().getInputMapper();
