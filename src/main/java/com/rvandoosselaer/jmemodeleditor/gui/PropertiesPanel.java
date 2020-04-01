@@ -5,7 +5,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.simsilica.lemur.Axis;
-import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.FillMode;
 import com.simsilica.lemur.HAlignment;
@@ -79,20 +78,35 @@ public class PropertiesPanel extends Container {
 
     }
 
+    //TODO: clean up
     private static class SceneGraphItemRenderer implements CellRenderer<SceneGraphItem> {
 
-        public static final ElementId ELEMENT_ID = new ElementId("item");
+        private boolean odd;
+        public static final ElementId ELEMENT_ID = SceneGraphListBox.ELEMENT_ID.child("item");
         private final int INDENT_SIZE = 10;
 
         @Override
         public Panel getView(SceneGraphItem value, boolean selected, Panel existing) {
-            Button button = new Button(value.getSpatial().getName(), SceneGraphListBox.ELEMENT_ID.child(ELEMENT_ID));
-            button.setIcon(createIcon(value.getSpatial()));
+            Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), ELEMENT_ID.child(odd ? "odd" : "even"));
+            odd = !odd;
+
+            Label label = container.addChild(new Label(value.getSpatial().getName(), ELEMENT_ID));
+            label.setIcon(createIcon(value.getSpatial()));
             QuadBackgroundComponent background = new QuadBackgroundComponent(ColorRGBA.BlackNoAlpha);
             background.setMargin(INDENT_SIZE * value.getDepth(), 0);
-            button.setBackground(background);
+            label.setBackground(background);
 
-            return button;
+            if (value.getSpatial().getNumControls() > 0) {
+                Label controls = container.addChild(new Label(""));
+                IconComponent icon = new IconComponent("/Interface/control.png");
+                icon.setMargin(10, 2);
+                icon.setVAlignment(VAlignment.Center);
+                icon.setHAlignment(HAlignment.Center);
+                controls.setIcon(icon);
+                container.addChild(controls);
+            }
+
+            return container;
         }
 
         private IconComponent createIcon(Spatial spatial) {
@@ -103,15 +117,6 @@ public class PropertiesPanel extends Container {
             icon.setVAlignment(VAlignment.Center);
 
             return icon;
-        }
-
-        private String getIndent(int depth) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < depth; i++) {
-                sb.append(" ");
-            }
-
-            return sb.toString();
         }
 
     }

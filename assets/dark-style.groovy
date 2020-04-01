@@ -30,6 +30,8 @@ def buttonPrimaryHighlightColor = color(0.443, 0.62, 0.863, 1)
 
 def listColor = color(0.2, 0.2, 0.2, 1)
 def listSelectionColor = color(0.282, 0.463, 0.718, 0.5)
+def listItemEvenColor = color(0.157, 0.157, 0.157, 1)
+def listItemOddColor = color(0.176, 0.176, 0.176, 1)
 
 def textFieldColor = color(0.114, 0.114, 0.114, 1)
 
@@ -302,10 +304,17 @@ selector("open-file", "list.container", "editor-style") {
     background = new QuadBackgroundComponent(listColor)
 }
 
-selector("open-file.list", "label", "editor-style") {
+selector("open-file.list", "item", "editor-style") {
     insets = new Insets3f(4, 4, 4, 4)
 }
 
+selector("open-file.list.item", "even", "editor-style") {
+    background = new QuadBackgroundComponent(listItemEvenColor)
+}
+
+selector("open-file.list.item", "odd", "editor-style") {
+    background = new QuadBackgroundComponent(listItemOddColor)
+}
 //
 // Properties
 //
@@ -325,4 +334,12 @@ selector("properties", "title", "editor-style") {
 
 selector("properties.list", "item", "editor-style") {
     insets = new Insets3f(4, 4, 4, 4)
+}
+
+selector("properties.list.item", "even", "editor-style") {
+    background = new QuadBackgroundComponent(listItemEvenColor)
+}
+
+selector("properties.list.item", "odd", "editor-style") {
+    background = new QuadBackgroundComponent(listItemOddColor)
 }

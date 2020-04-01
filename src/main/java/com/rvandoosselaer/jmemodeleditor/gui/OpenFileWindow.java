@@ -214,15 +214,23 @@ public class OpenFileWindow extends Window {
         return button;
     }
 
+    //TODO: cleanup
     private static class FileBrowserItemRenderer implements CellRenderer<Path> {
+
+        public static final ElementId ELEMENT_ID = OpenFileWindow.ELEMENT_ID.child(ListBox.ELEMENT_ID).child("item");
+
+        private boolean odd;
 
         @Override
         public Panel getView(Path item, boolean selected, Panel existing) {
-            ElementId elementId = ELEMENT_ID.child(ListBox.ELEMENT_ID).child(Label.ELEMENT_ID);
-            Label label = new Label(item.getFileName().toString(), elementId);
+            Container container = new Container(new SpringGridLayout(), ELEMENT_ID.child(odd ? "odd" : "even"));
+            odd = !odd;
+
+            Label label = container.addChild(new Label(item.getFileName().toString(), ELEMENT_ID));
             label.setTextVAlignment(VAlignment.Center);
             label.setIcon(createIcon(item));
-            return label;
+
+            return container;
         }
 
         private IconComponent createIcon(Path item) {
