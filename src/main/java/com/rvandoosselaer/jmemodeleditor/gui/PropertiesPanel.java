@@ -78,7 +78,6 @@ public class PropertiesPanel extends Container {
 
     }
 
-    //TODO: clean up
     private static class SceneGraphItemRenderer implements CellRenderer<SceneGraphItem> {
 
         private boolean odd;
@@ -87,36 +86,51 @@ public class PropertiesPanel extends Container {
 
         @Override
         public Panel getView(SceneGraphItem value, boolean selected, Panel existing) {
-            Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), ELEMENT_ID.child(odd ? "odd" : "even"));
-            odd = !odd;
+            Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), updateAlternatingRowElementId());
 
             Label label = container.addChild(new Label(value.getSpatial().getName(), ELEMENT_ID));
-            label.setIcon(createIcon(value.getSpatial()));
+            label.setIcon(createSpatialIcon(value.getSpatial()));
             QuadBackgroundComponent background = new QuadBackgroundComponent(ColorRGBA.BlackNoAlpha);
             background.setMargin(INDENT_SIZE * value.getDepth(), 0);
             label.setBackground(background);
 
-            if (value.getSpatial().getNumControls() > 0) {
+            if (hasControls(value.getSpatial())) {
                 Label controls = container.addChild(new Label(""));
-                IconComponent icon = new IconComponent("/Interface/control.png");
-                icon.setMargin(10, 2);
-                icon.setVAlignment(VAlignment.Center);
-                icon.setHAlignment(HAlignment.Center);
-                controls.setIcon(icon);
+                controls.setIcon(createControlIcon());
                 container.addChild(controls);
             }
 
             return container;
         }
 
-        private IconComponent createIcon(Spatial spatial) {
-            String path = spatial instanceof Node ? "/Interface/node.png" : "/Interface/geometry.png";
-            IconComponent icon = new IconComponent(path);
+        private boolean hasControls(Spatial spatial) {
+            return spatial.getNumControls() > 0;
+        }
+
+        private IconComponent createSpatialIcon(Spatial spatial) {
+            String iconPath = spatial instanceof Node ? "/Interface/node.png" : "/Interface/geometry.png";
+            IconComponent icon = new IconComponent(iconPath);
             icon.setMargin(4, 2);
             icon.setHAlignment(HAlignment.Left);
             icon.setVAlignment(VAlignment.Center);
 
             return icon;
+        }
+
+        private IconComponent createControlIcon() {
+            IconComponent icon = new IconComponent("/Interface/control.png");
+            icon.setMargin(10, 2);
+            icon.setHAlignment(HAlignment.Center);
+            icon.setVAlignment(VAlignment.Center);
+
+            return icon;
+        }
+
+        private ElementId updateAlternatingRowElementId() {
+            ElementId elementId = ELEMENT_ID.child(odd ? "odd" : "even");
+            odd = !odd;
+
+            return elementId;
         }
 
     }

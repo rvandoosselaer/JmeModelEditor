@@ -214,17 +214,14 @@ public class OpenFileWindow extends Window {
         return button;
     }
 
-    //TODO: cleanup
     private static class FileBrowserItemRenderer implements CellRenderer<Path> {
 
         public static final ElementId ELEMENT_ID = OpenFileWindow.ELEMENT_ID.child(ListBox.ELEMENT_ID).child("item");
-
         private boolean odd;
 
         @Override
         public Panel getView(Path item, boolean selected, Panel existing) {
-            Container container = new Container(new SpringGridLayout(), ELEMENT_ID.child(odd ? "odd" : "even"));
-            odd = !odd;
+            Container container = new Container(new SpringGridLayout(), updateAlternatingRowElementId());
 
             Label label = container.addChild(new Label(item.getFileName().toString(), ELEMENT_ID));
             label.setTextVAlignment(VAlignment.Center);
@@ -247,6 +244,13 @@ public class OpenFileWindow extends Window {
 
         private boolean isJ3o(Path item) {
             return item.getFileName().toString().toLowerCase().endsWith(".j3o");
+        }
+
+        private ElementId updateAlternatingRowElementId() {
+            ElementId elementId = ELEMENT_ID.child(odd ? "odd" : "even");
+            odd = !odd;
+
+            return elementId;
         }
 
     }
