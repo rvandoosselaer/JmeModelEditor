@@ -47,9 +47,9 @@ def windowTitleColor = color(0.2, 0.2, 0.2, 1)
 def sliderColor = color(0.18, 0.18, 0.18, 1)
 def sliderThumbColor = color(0.345, 0.345, 0.345, 1)
 
-def propertiesColor = color(0.137, 0.137, 0.137, 1)
-def propertiesTitleColor = color(0.259, 0.259, 0.259, 1)
-def propertiesContainerColor = color(0.204, 0.204, 0.204, 1)
+def panelColor = color(0.137, 0.137, 0.137, 1)
+def panelTitleColor = color(0.259, 0.259, 0.259, 1)
+def panelContainerColor = color(0.204, 0.204, 0.204, 1)
 
 def tooltipBackgroundColor = color(0.106, 0.106, 0.106, 1)
 
@@ -65,6 +65,15 @@ selector("editor-style") {
     highlightShadowColor = textShadowHighlightColor
     focusShadowColor = textShadowFocusColor
     shadowOffset = new Vector3f(1, -1, -1);
+}
+
+
+//
+// Tooltip
+//
+selector("tooltip", "editor-style") {
+    background = new QuadBackgroundComponent(tooltipBackgroundColor)
+    background.setMargin(6, 6)
 }
 
 //
@@ -318,38 +327,63 @@ selector("open-file.list.item", "odd", "editor-style") {
     background = new QuadBackgroundComponent(listItemOddColor)
 }
 //
-// Properties
+// panel
 //
-selector("properties", "editor-style") {
-    background = new QuadBackgroundComponent(propertiesColor)
+selector("panel", "editor-style") {
+    background = new QuadBackgroundComponent(panelColor)
 }
 
-selector("properties", "scenegraph", "editor-style") {
+selector("panel", "scenegraph", "editor-style") {
     insets = new Insets3f(0, 2, 0, 0)
-    background = new QuadBackgroundComponent(propertiesContainerColor)
+    background = new QuadBackgroundComponent(panelContainerColor)
 }
 
-selector("properties", "title", "editor-style") {
-    background = new QuadBackgroundComponent(propertiesTitleColor)
+selector("panel", "title", "editor-style") {
+    background = new QuadBackgroundComponent(panelTitleColor)
     background.setMargin(10, 4)
 }
 
-selector("properties.list", "item", "editor-style") {
+selector("panel.list", "item", "editor-style") {
     insets = new Insets3f(4, 4, 4, 4)
 }
 
-selector("properties.list.item", "even", "editor-style") {
+selector("panel.list.item", "even", "editor-style") {
     background = new QuadBackgroundComponent(listItemEvenColor)
 }
 
-selector("properties.list.item", "odd", "editor-style") {
+selector("panel.list.item", "odd", "editor-style") {
     background = new QuadBackgroundComponent(listItemOddColor)
 }
 
-//
-// Tooltip
-//
-selector("tooltip", "editor-style") {
-    background = new QuadBackgroundComponent(tooltipBackgroundColor)
-    background.setMargin(6, 6)
+selector("panel", "properties", "editor-style") {
+    insets = new Insets3f(2, 2, 0, 0)
+}
+
+selector("panel.properties", "tabs", "editor-style") {
+    // tabs container
+}
+
+selector("panel.properties.tabs", "button", "editor-style") {
+    insets = new Insets3f(0, 0, 0, 2)
+}
+
+selector("panel.properties", "content", "editor-style") {
+    // tab content container
+    insets = new Insets3f(2, 0, 0, 0)
+    background = new QuadBackgroundComponent(panelContainerColor)
+}
+
+selector("panel.properties", "label", "editor-style") {
+    // key of an item
+    insets = new Insets3f(4, 4, 4, 4)
+    textHAlignment = HAlignment.Right
+    textVAlignment = VAlignment.Center
+
+}
+
+selector("panel.properties", "textField", "editor-style") {
+    // textField value of an item
+    insets = new Insets3f(2, 2, 2, 2)
+    textHAlignment = HAlignment.Left
+    textVAlignment = VAlignment.Center
 }

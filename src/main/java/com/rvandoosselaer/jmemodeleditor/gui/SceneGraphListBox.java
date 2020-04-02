@@ -35,10 +35,10 @@ public class SceneGraphListBox extends ListBox<SceneGraphItem> {
 
         // Sometimes the click listener doesn't fire.
         // we need to find the selected item by hooking into the update loop.
-        setSelected(getSelected());
+        setSelectedItem(getSelectedItem());
     }
 
-    public SceneGraphItem getSelected() {
+    public SceneGraphItem getSelectedItem() {
         Integer index = getSelectionModel().getSelection();
         if (index != null && index >= 0 && index < getModel().size()) {
             return getModel().get(index);
@@ -51,7 +51,7 @@ public class SceneGraphListBox extends ListBox<SceneGraphItem> {
         this.selectItemCommands.add(selectItemCommand);
     }
 
-    private void setSelected(SceneGraphItem item) {
+    private void setSelectedItem(SceneGraphItem item) {
         if (selected == item) {
             return;
         }
