@@ -64,10 +64,12 @@ public class CameraState extends BaseAppState implements AnalogFunctionListener,
     @Getter
     @Setter
     private float moveSpeed = 2f;
+    private ViewPortsState viewPortsState;
 
     @Override
     protected void initialize(Application app) {
-        camera = getState(ViewPortsState.class).getEditorCamera();
+        viewPortsState = getState(ViewPortsState.class);
+        camera = viewPortsState.getEditorCamera();
         upVector = camera.getUp(new Vector3f());
 
         inputMapper = GuiGlobals.getInstance().getInputMapper();
@@ -136,6 +138,10 @@ public class CameraState extends BaseAppState implements AnalogFunctionListener,
 
     @Override
     public void valueActive(FunctionId func, double value, double tpf) {
+        if (!viewPortsState.isMouseOverViewPort(viewPortsState.getEditorViewPort())) {
+            return;
+        }
+
         if (func == FUNCTION_X_ROTATE && (dragging || !dragToRotate)) {
             calculateYaw(value, tpf);
         } else if (func == FUNCTION_Y_ROTATE && (dragging || !dragToRotate)) {
@@ -153,6 +159,10 @@ public class CameraState extends BaseAppState implements AnalogFunctionListener,
 
     @Override
     public void valueChanged(FunctionId func, InputState value, double tpf) {
+        if (!viewPortsState.isMouseOverViewPort(viewPortsState.getEditorViewPort())) {
+            return;
+        }
+
         if (func == FUNCTION_DRAG && dragToRotate) {
             // update the dragging boolean and set the cursor accordingly
             dragging = value != InputState.Off;

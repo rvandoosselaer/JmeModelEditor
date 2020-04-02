@@ -20,7 +20,7 @@ import java.util.Arrays;
  * - mainViewPort : the main 3D viewport.
  * - overlayViewPort : an overlay on the mainViewPort
  * - coordinateAxesViewPort: a viewport in the bottom right of the window that displays the coordinate axes
- *
+ * <p>
  * The same camera is used for the mainViewPort and the overlayViewPort!
  *
  * @author: rvandoosselaer
@@ -96,6 +96,27 @@ public class ViewPortsState extends BaseAppState {
         editorNode.updateGeometricState();
         overlayNode.updateGeometricState();
         coordinateAxesNode.updateGeometricState();
+    }
+
+    /**
+     * A utility method to check if the cursor is currently over the given viewport.
+     *
+     * @param viewPort
+     * @return true if the cursor is over the viewport
+     */
+    public boolean isMouseOverViewPort(ViewPort viewPort) {
+        int width = viewPort.getCamera().getWidth();
+        int height = viewPort.getCamera().getHeight();
+
+        float x1 = viewPort.getCamera().getViewPortLeft();
+        float x2 = viewPort.getCamera().getViewPortRight();
+        float y1 = viewPort.getCamera().getViewPortBottom();
+        float y2 = viewPort.getCamera().getViewPortTop();
+
+        float mouseX = getApplication().getInputManager().getCursorPosition().x;
+        float mouseY = getApplication().getInputManager().getCursorPosition().y;
+
+        return mouseX >= x1 * width && mouseX <= x2 * width && mouseY >= y1 * height && mouseY <= y2 * height;
     }
 
     private void destroyViewPort(ViewPort... viewPorts) {
