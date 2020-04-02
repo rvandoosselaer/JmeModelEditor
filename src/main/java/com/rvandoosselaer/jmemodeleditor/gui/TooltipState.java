@@ -103,6 +103,7 @@ public class TooltipState extends BaseAppState {
         public void mouseExited(MouseMotionEvent event, Spatial target, Spatial capture) {
             if (tooltip != null && tooltip.getParent() != null) {
                 tooltip.removeFromParent();
+                tooltip = null; // force the tooltip to recreate
             }
 
             hoverStartTimestamp = -1;
