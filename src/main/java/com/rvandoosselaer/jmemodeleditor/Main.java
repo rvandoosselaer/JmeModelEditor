@@ -5,6 +5,7 @@ import com.jme3.material.TechniqueDef;
 import com.jme3.system.AppSettings;
 import com.rvandoosselaer.jmemodeleditor.gui.CoordinateAxesState;
 import com.rvandoosselaer.jmemodeleditor.gui.GuiState;
+import com.rvandoosselaer.jmemodeleditor.gui.TooltipState;
 import com.rvandoosselaer.jmeutils.ApplicationGlobals;
 import com.rvandoosselaer.jmeutils.Resolution;
 import com.rvandoosselaer.jmeutils.ResolutionHelper;
@@ -32,6 +33,7 @@ public class Main extends SimpleApplication {
                 new GuiState(),
                 new EditorState(),
                 new CoordinateAxesState(),
+                new TooltipState(),
                 new CameraState());
 
         setSettings(createSettings());

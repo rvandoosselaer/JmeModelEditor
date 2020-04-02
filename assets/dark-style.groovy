@@ -51,6 +51,8 @@ def propertiesColor = color(0.137, 0.137, 0.137, 1)
 def propertiesTitleColor = color(0.259, 0.259, 0.259, 1)
 def propertiesContainerColor = color(0.204, 0.204, 0.204, 1)
 
+def tooltipBackgroundColor = color(0.106, 0.106, 0.106, 1)
+
 //
 // Global styling
 //
@@ -342,4 +344,12 @@ selector("properties.list.item", "even", "editor-style") {
 
 selector("properties.list.item", "odd", "editor-style") {
     background = new QuadBackgroundComponent(listItemOddColor)
+}
+
+//
+// Tooltip
+//
+selector("tooltip", "editor-style") {
+    background = new QuadBackgroundComponent(tooltipBackgroundColor)
+    background.setMargin(6, 6)
 }

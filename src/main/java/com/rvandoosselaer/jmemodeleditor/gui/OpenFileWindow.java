@@ -53,13 +53,15 @@ public class OpenFileWindow extends Window {
     private TextField currentDirTextField;
     private ListBox<Path> fileBrowser;
     private GuiState guiState;
+    private TooltipState tooltipState;
 
     public OpenFileWindow() {
         super(GuiTranslations.getInstance().t("window.open-file.title"));
 
-        buildGUI();
-
         guiState = ApplicationGlobals.getInstance().getApplication().getStateManager().getState(GuiState.class);
+        tooltipState = ApplicationGlobals.getInstance().getApplication().getStateManager().getState(TooltipState.class);
+
+        buildGUI();
     }
 
     private void buildGUI() {
@@ -83,8 +85,10 @@ public class OpenFileWindow extends Window {
         Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Last, FillMode.Even));
         Button homeDir = container.addChild(createButton("/Interface/home.png"));
         homeDir.addClickCommands(source -> setDirectory(getHomeDirectory()));
+        tooltipState.addTooltip(homeDir, GuiTranslations.getInstance().t("window.open-file.home.tooltip"));
         Button upDir = container.addChild(createButton("/Interface/up-arrow.png"));
         upDir.addClickCommands(source -> goDirectoryUp());
+        tooltipState.addTooltip(upDir, GuiTranslations.getInstance().t("window.open-file.up.tooltip"));
 
         currentDirTextField = container.addChild(new TextField(getStartFolder().toAbsolutePath().toString(), ELEMENT_ID.child(TextField.ELEMENT_ID)));
         currentDirTextField.getActionMap().put(new KeyAction(KeyInput.KEY_RETURN), (textEntryComponent, key) -> {

@@ -7,6 +7,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.rvandoosselaer.jmemodeleditor.EditorState;
+import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.rvandoosselaer.jmeutils.gui.GuiUtils;
 import com.simsilica.lemur.Axis;
 import com.simsilica.lemur.Button;
@@ -20,6 +21,7 @@ import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.core.VersionedHolder;
 import com.simsilica.lemur.core.VersionedReference;
 import com.simsilica.lemur.style.ElementId;
+import lombok.Getter;
 
 import java.nio.file.Path;
 
@@ -33,12 +35,14 @@ public class GuiState extends BaseAppState {
     public static final String STYLE = "editor-style";
     public static final String DARK_STYLE_RESOURCE = "dark-style.groovy";
 
+    @Getter
     private Node guiNode;
     private Container toolbar;
     private OpenFileWindow openFileWindow;
     private PropertiesPanel propertiesPanel;
     private float zIndex = 99;
     private EditorState editorState;
+    private TooltipState tooltipState;
     private Label fpsLabel;
     private VersionedHolder<Integer> fps = new VersionedHolder<>(0);
     private VersionedReference<Integer> fpsRef = fps.createReference();
@@ -47,13 +51,14 @@ public class GuiState extends BaseAppState {
 
     @Override
     protected void initialize(Application app) {
+        editorState = getState(EditorState.class);
+        tooltipState = getState(TooltipState.class);
+        guiNode = ((SimpleApplication) app).getGuiNode();
+
         toolbar = createToolbar();
         fpsLabel = createFpsLabel();
         openFileWindow = createOpenFileWindow();
         propertiesPanel = createPropertiesPanel();
-
-        editorState = getState(EditorState.class);
-        guiNode = ((SimpleApplication) app).getGuiNode();
     }
 
     @Override
@@ -153,7 +158,9 @@ public class GuiState extends BaseAppState {
         Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.None, FillMode.None), new ElementId("toolbar"));
         Button open = container.addChild(createToolbarButton("/Interface/open.png"));
         open.addClickCommands(source -> onOpenFile());
+        tooltipState.addTooltip(open, GuiTranslations.getInstance().t("toolbar.open.tooltip"));
         Button save = container.addChild(createToolbarButton("/Interface/save.png"));
+        tooltipState.addTooltip(save, GuiTranslations.getInstance().t("toolbar.save.tooltip"));
 
         return container;
     }

@@ -45,7 +45,7 @@ public class PropertiesPanel extends Container {
 
     private void buildSceneGraph() {
         sceneGraph = addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), ELEMENT_ID.child("scenegraph")));
-        sceneGraph.addChild(new Label(GuiTranslations.getInstance().t("properties.scenegraph"), ELEMENT_ID.child("title")));
+        sceneGraph.addChild(new Label(GuiTranslations.getInstance().t("properties.scenegraph.title"), ELEMENT_ID.child("title")));
 
         sceneGraphListBox = sceneGraph.addChild(new SceneGraphListBox());
         sceneGraphListBox.setVisibleItems(10);
@@ -80,9 +80,10 @@ public class PropertiesPanel extends Container {
 
     private static class SceneGraphItemRenderer implements CellRenderer<SceneGraphItem> {
 
-        private boolean odd;
         public static final ElementId ELEMENT_ID = SceneGraphListBox.ELEMENT_ID.child("item");
-        private final int INDENT_SIZE = 10;
+        private static final int INDENT_SIZE = 10;
+
+        private boolean odd;
 
         @Override
         public Panel getView(SceneGraphItem value, boolean selected, Panel existing) {
