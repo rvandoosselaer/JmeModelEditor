@@ -205,14 +205,14 @@ selector("slider.up.button", "editor-style") {
     text = ""
     insets = null
     buttonCommands = sliderButtonCommands
-    icon = new IconComponent( "/Interface/scroll-up.png", 1f, 2, 2, 1f, false)
+    icon = new IconComponent("/Interface/scroll-up.png", 1f, 2, 2, 1f, false)
 }
 
 selector("slider.down.button", "editor-style") {
     text = ""
     insets = null
     buttonCommands = sliderButtonCommands
-    icon = new IconComponent( "/Interface/scroll-down.png", 1f, 2, 2, 1f, false )
+    icon = new IconComponent("/Interface/scroll-down.png", 1f, 2, 2, 1f, false)
 }
 
 selector("slider.thumb.button", "editor-style") {
@@ -381,9 +381,38 @@ selector("panel.properties", "label", "editor-style") {
 
 }
 
+def setButtonCmd = new Command<Button>() {
+    @Override
+    void execute(Button source) {
+        if (source.pressed) {
+            source.background = new QuadBackgroundComponent(buttonPressedColor)
+        } else {
+            if (source.highlightOn) {
+                source.background = new QuadBackgroundComponent(buttonHighlightColor)
+            } else {
+                source.background = new QuadBackgroundComponent(buttonColor)
+            }
+        }
+        source.background.setMargin(2, 2)
+    }
+}
+
+selector("panel.properties", "button", "editor-style") {
+    insets = new Insets3f(2, 0, 2, 2)
+    background = new QuadBackgroundComponent(buttonColor)
+    background.setMargin(2, 2)
+    buttonCommands = [
+            (ButtonAction.Down)        : [setButtonCmd],
+            (ButtonAction.Up)          : [setButtonCmd],
+            (ButtonAction.HighlightOn) : [setButtonCmd],
+            (ButtonAction.HighlightOff): [setButtonCmd]
+    ]
+}
+
 selector("panel.properties", "textField", "editor-style") {
     // textField value of an item
     insets = new Insets3f(2, 2, 2, 2)
     textHAlignment = HAlignment.Left
     textVAlignment = VAlignment.Center
+    singleLine = true
 }

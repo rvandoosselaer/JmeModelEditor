@@ -19,8 +19,8 @@ public class SceneTab extends Tab {
 
     private static final String ID = "scene-tab";
 
-    public SceneTab(SceneGraphItem sceneGraphItem, Command<Tab> tabClickCommand) {
-        super(sceneGraphItem, tabClickCommand);
+    public SceneTab(Command<Tab> tabClickCommand) {
+        super(null, tabClickCommand);
     }
 
     @Override

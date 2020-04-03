@@ -88,7 +88,7 @@ public class PropertiesPanel extends Container {
         // clear the tabs
         tabs.getLayout().clearChildren();
 
-        Tab scene = new SceneTab(sceneGraphItem, this::selectTab);
+        Tab scene = new SceneTab(this::selectTab);
         tabs.addChild(scene.getTab());
 
         if (sceneGraphItem != null) {

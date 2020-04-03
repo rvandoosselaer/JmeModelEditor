@@ -94,7 +94,7 @@ public class TooltipState extends BaseAppState {
             long currentTimestamp = System.currentTimeMillis();
             boolean showTooltip = currentTimestamp - hoverStartTimestamp >= delay;
 
-            if (showTooltip && tooltip.getParent() == null) {
+            if (showTooltip && tooltip != null && tooltip.getParent() == null) {
                 guiNode.attachChild(tooltip);
             }
         }
