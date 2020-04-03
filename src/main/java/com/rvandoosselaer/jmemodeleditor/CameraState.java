@@ -138,15 +138,13 @@ public class CameraState extends BaseAppState implements AnalogFunctionListener,
 
     @Override
     public void valueActive(FunctionId func, double value, double tpf) {
-        if (!viewPortsState.isMouseOverViewPort(viewPortsState.getEditorViewPort())) {
-            return;
-        }
+        boolean isMouseOverViewPort = viewPortsState.isMouseOverViewPort(viewPortsState.getEditorViewPort());
 
         if (func == FUNCTION_X_ROTATE && (dragging || !dragToRotate)) {
             calculateYaw(value, tpf);
         } else if (func == FUNCTION_Y_ROTATE && (dragging || !dragToRotate)) {
             calculatePitch(value, tpf);
-        } else if (func == FUNCTION_ZOOM) {
+        } else if (func == FUNCTION_ZOOM && isMouseOverViewPort) {
             calculateZoom(value, tpf);
         } else if (func == FUNCTION_MOVE) {
             calculateMove(value, tpf);
@@ -159,7 +157,9 @@ public class CameraState extends BaseAppState implements AnalogFunctionListener,
 
     @Override
     public void valueChanged(FunctionId func, InputState value, double tpf) {
-        if (!viewPortsState.isMouseOverViewPort(viewPortsState.getEditorViewPort())) {
+        // If we started dragging in the viewport, allow the 'up' (up = InputState.Off) event to be fired even if it is
+        // outside the viewport.
+        if (value != InputState.Off && !viewPortsState.isMouseOverViewPort(viewPortsState.getEditorViewPort())) {
             return;
         }
 
