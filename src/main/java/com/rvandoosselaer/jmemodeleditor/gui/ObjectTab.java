@@ -46,7 +46,7 @@ public class ObjectTab extends Tab {
         container.addChild(new Label(title, PropertiesPanel.ELEMENT_ID.child("title")));
 
         // name
-        container.addChild(createTextField(GuiTranslations.getInstance().t("panel.properties.object.name"),
+        container.addChild(createTextFieldInput(GuiTranslations.getInstance().t("panel.properties.object.name"),
                 sceneGraphItem.getSpatial().getName(), source -> {
                     sceneGraphItem.getSpatial().setName(source);
                     if (refreshSceneGraphCommand != null) {
@@ -55,17 +55,17 @@ public class ObjectTab extends Tab {
                 }));
         container.addChild(createSeparator());
         // location
-        container.addChild(createVector3f(GuiTranslations.getInstance().t("panel.properties.object.location"),
+        container.addChild(createVector3fInput(GuiTranslations.getInstance().t("panel.properties.object.location"),
                 sceneGraphItem.getSpatial().getLocalTranslation(),
                 source -> sceneGraphItem.getSpatial().setLocalTranslation(source)));
         container.addChild(createSeparator());
         // rotation
-        container.addChild(createQuaternion(GuiTranslations.getInstance().t("panel.properties.object.rotation"),
+        container.addChild(createQuaternionInput(GuiTranslations.getInstance().t("panel.properties.object.rotation"),
                 sceneGraphItem.getSpatial().getLocalRotation().toAngles(new float[3]),
                 source -> sceneGraphItem.getSpatial().setLocalRotation(new Quaternion(source))));
         container.addChild(createSeparator());
         // scale
-        container.addChild(createVector3f(GuiTranslations.getInstance().t("panel.properties.object.scale"),
+        container.addChild(createVector3fInput(GuiTranslations.getInstance().t("panel.properties.object.scale"),
                 sceneGraphItem.getSpatial().getLocalScale(),
                 source -> sceneGraphItem.getSpatial().setLocalScale(source)));
 

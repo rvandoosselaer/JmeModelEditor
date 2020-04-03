@@ -52,7 +52,7 @@ public abstract class Tab {
         return button;
     }
 
-    protected Container createTextField(String string, String value, Command<String> updateValueAction) {
+    protected Container createTextFieldInput(String string, String value, Command<String> updateValueAction) {
         Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.ForcedEven, FillMode.Even));
 
         container.addChild(new Label(string, getLabelElementId()));
@@ -66,7 +66,7 @@ public abstract class Tab {
         return container;
     }
 
-    protected Container createVector3f(String string, Vector3f value, Command<Vector3f> updateValueAction) {
+    protected Container createVector3fInput(String string, Vector3f value, Command<Vector3f> updateValueAction) {
         Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.ForcedEven, FillMode.Even));
 
         Container labels = container.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.Even, FillMode.Even)));
@@ -86,7 +86,7 @@ public abstract class Tab {
         return container;
     }
 
-    protected Container createQuaternion(String string, float[] angles, Command<float[]> updateValueAction) {
+    protected Container createQuaternionInput(String string, float[] angles, Command<float[]> updateValueAction) {
         Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.ForcedEven, FillMode.Even));
 
         Container labels = container.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.Even, FillMode.Even)));
