@@ -53,6 +53,8 @@ def panelContainerColor = color(0.204, 0.204, 0.204, 1)
 
 def tooltipBackgroundColor = color(0.106, 0.106, 0.106, 1)
 
+def separatorColor = color(0.137, 0.137, 0.137, 1)
+
 //
 // Global styling
 //
@@ -371,6 +373,11 @@ selector("panel.properties", "content", "editor-style") {
     // tab content container
     insets = new Insets3f(2, 0, 0, 0)
     background = new QuadBackgroundComponent(panelContainerColor)
+}
+
+selector("panel.properties", "separator", "editor-style") {
+    background = new QuadBackgroundComponent(separatorColor)
+    insets = new Insets3f(0, 4, 0, 4)
 }
 
 selector("panel.properties", "label", "editor-style") {

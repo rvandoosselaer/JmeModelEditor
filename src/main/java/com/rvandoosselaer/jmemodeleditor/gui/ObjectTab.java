@@ -1,5 +1,7 @@
 package com.rvandoosselaer.jmemodeleditor.gui;
 
+import com.jme3.math.Quaternion;
+import com.jme3.scene.Node;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.simsilica.lemur.Axis;
 import com.simsilica.lemur.Button;
@@ -40,8 +42,10 @@ public class ObjectTab extends Tab {
     @Override
     public Panel getContent() {
         Container container = new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even));
-        container.addChild(new Label(GuiTranslations.getInstance().t("panel.properties.object.title"), PropertiesPanel.ELEMENT_ID.child("title")));
+        String title = sceneGraphItem.getSpatial() instanceof Node ? GuiTranslations.getInstance().t("common.node") : GuiTranslations.getInstance().t("common.geometry");
+        container.addChild(new Label(title, PropertiesPanel.ELEMENT_ID.child("title")));
 
+        // name
         container.addChild(createTextField(GuiTranslations.getInstance().t("panel.properties.object.name"),
                 sceneGraphItem.getSpatial().getName(), source -> {
                     sceneGraphItem.getSpatial().setName(source);
@@ -49,6 +53,21 @@ public class ObjectTab extends Tab {
                         refreshSceneGraphCommand.execute(null);
                     }
                 }));
+        container.addChild(createSeparator());
+        // location
+        container.addChild(createVector3f(GuiTranslations.getInstance().t("panel.properties.object.location"),
+                sceneGraphItem.getSpatial().getLocalTranslation(),
+                source -> sceneGraphItem.getSpatial().setLocalTranslation(source)));
+        container.addChild(createSeparator());
+        // rotation
+        container.addChild(createQuaternion(GuiTranslations.getInstance().t("panel.properties.object.rotation"),
+                sceneGraphItem.getSpatial().getLocalRotation().toAngles(new float[3]),
+                source -> sceneGraphItem.getSpatial().setLocalRotation(new Quaternion(source))));
+        container.addChild(createSeparator());
+        // scale
+        container.addChild(createVector3f(GuiTranslations.getInstance().t("panel.properties.object.scale"),
+                sceneGraphItem.getSpatial().getLocalScale(),
+                source -> sceneGraphItem.getSpatial().setLocalScale(source)));
 
         return container;
     }
