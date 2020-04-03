@@ -232,8 +232,9 @@ public abstract class Tab {
         label.setTextVAlignment(VAlignment.Top);
 
         ListBox<String> listBox = container.addChild(new ListBox<>(new VersionedList<>(list), PropertiesPanel.ELEMENT_ID.child(ListBox.ELEMENT_ID), GuiState.STYLE));
-        listBox.setVisibleItems(6);
+        listBox.setVisibleItems(Math.min(list.size(), 6));
         listBox.setCellRenderer(createStringCellRenderer());
+        listBox.addControl(new ListBoxSliderControl());
 
         return container;
     }

@@ -15,10 +15,12 @@ import com.simsilica.lemur.Container;
 import com.simsilica.lemur.FillMode;
 import com.simsilica.lemur.Insets3f;
 import com.simsilica.lemur.Label;
+import com.simsilica.lemur.ListBox;
 import com.simsilica.lemur.Panel;
 import com.simsilica.lemur.component.SpringGridLayout;
 import jme3utilities.debug.SkeletonVisualizer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +54,25 @@ public class ControlsTab extends Tab {
         for (int i = 0; i < sceneGraphItem.getSpatial().getNumControls(); i++) {
             Control control = sceneGraphItem.getSpatial().getControl(i);
             if (control instanceof AnimComposer) {
+                container.addChild(new Label(GuiTranslations.getInstance().t("common.animcomposer"), PropertiesPanel.ELEMENT_ID.child("title")));
 
+                container.addChild(createStringListBox(GuiTranslations.getInstance().t("panel.properties.controls.anim.names"), new ArrayList<>(((AnimComposer) control).getAnimClipsNames())));
+                final ListBox<String>[] listBox = new ListBox[1];
+                container.depthFirstTraversal(spatial -> {
+                    if (spatial instanceof ListBox) {
+                        listBox[0] = (ListBox<String>) spatial;
+                    }
+                });
+
+                Button play = container.addChild(new Button("play"));
+                play.addClickCommands(cmd -> {
+                    Integer index = listBox[0].getSelectionModel().getSelection();
+                    if (index != null && index >= 0 && index < listBox[0].getModel().size()) {
+                        ((AnimComposer) control).setCurrentAction(listBox[0].getModel().get(index));
+                    }
+                });
+                Button stop = container.addChild(new Button("stop"));
+                stop.addClickCommands(cmd -> ((AnimComposer) control).reset());
             } else if (control instanceof SkinningControl) {
                 container.addChild(new Label(GuiTranslations.getInstance().t("common.skinningcontrol"), PropertiesPanel.ELEMENT_ID.child("title")));
                 container.addChild(createBooleanInput(GuiTranslations.getInstance().t("panel.properties.controls.skinning.skeleton"),
@@ -67,6 +87,7 @@ public class ControlsTab extends Tab {
                         .collect(Collectors.toList());
                 container.addChild(createStringListBox(GuiTranslations.getInstance().t("panel.properties.controls.skinning.joints"), joints));
             }
+            container.addChild(createSeparator());
         }
         return container;
     }
