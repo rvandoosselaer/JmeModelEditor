@@ -43,7 +43,7 @@ public class PropertiesPanel extends Container {
         sceneGraph.addChild(new Label(GuiTranslations.getInstance().t("panel.scenegraph.title"), ELEMENT_ID.child("title")));
 
         sceneGraphListBox = sceneGraph.addChild(new SceneGraphListBox());
-        sceneGraphListBox.setVisibleItems(10);
+        sceneGraphListBox.setVisibleItems(8);
         sceneGraphListBox.addControl(new ListBoxSliderControl());
         sceneGraphListBox.addSelectItemCommand(listBox -> onSelectSceneGraphItem(listBox.getSelectedItem()));
     }

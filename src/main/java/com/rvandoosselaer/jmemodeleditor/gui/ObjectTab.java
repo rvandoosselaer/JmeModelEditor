@@ -68,6 +68,9 @@ public class ObjectTab extends Tab {
         container.addChild(createVector3fInput(GuiTranslations.getInstance().t("panel.properties.object.scale"),
                 sceneGraphItem.getSpatial().getLocalScale(),
                 source -> sceneGraphItem.getSpatial().setLocalScale(source)));
+        container.addChild(createSeparator());
+        // cullhint
+        container.addChild(createLabelInput(GuiTranslations.getInstance().t("panel.properties.object.cullhint"), sceneGraphItem.getSpatial().getCullHint().toString()));
 
         return container;
     }
