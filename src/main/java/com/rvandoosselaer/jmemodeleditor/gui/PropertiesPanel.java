@@ -1,5 +1,6 @@
 package com.rvandoosselaer.jmemodeleditor.gui;
 
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
@@ -96,6 +97,11 @@ public class PropertiesPanel extends Container {
             ObjectTab object = new ObjectTab(sceneGraphItem, this::selectTab);
             object.setRefreshSceneGraphCommand(cmd -> refreshSceneGraph(spatial));
             tabs.addChild(object.getTab());
+            // material tab
+            if (sceneGraphItem.getSpatial() instanceof Geometry) {
+                MaterialTab material = new MaterialTab(sceneGraphItem, this::selectTab);
+                tabs.addChild(material.getTab());
+            }
         }
 
         if (selectDefault) {

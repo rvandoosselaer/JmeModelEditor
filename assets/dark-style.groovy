@@ -388,6 +388,13 @@ selector("panel.properties", "label", "editor-style") {
 
 }
 
+selector("panel.properties", "label-ro", "editor-style") {
+    insets = new Insets3f(4, 4, 4, 4)
+    textHAlignment = HAlignment.Left
+    textVAlignment = VAlignment.Center
+    background = new QuadBackgroundComponent(textFieldColor);
+}
+
 def setButtonCmd = new Command<Button>() {
     @Override
     void execute(Button source) {
@@ -422,4 +429,15 @@ selector("panel.properties", "textField", "editor-style") {
     textHAlignment = HAlignment.Left
     textVAlignment = VAlignment.Center
     singleLine = true
+}
+
+selector("panel.properties", "checkbox", "editor-style") {
+    def on = new IconComponent("/Interface/checkbox-on.png", 1f, 0, 0, 1f, false)
+    on.setMargin(2, 0);
+
+    def off = new IconComponent("/Interface/checkbox-off.png", 1f, 0, 0, 1f, false);
+    off.setMargin(2, 0);
+
+    onView = on;
+    offView = off;
 }
