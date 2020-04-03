@@ -47,6 +47,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     runtime "org.codehaus.groovy:groovy-all:${groovyVersion}"
+    implementation "com.github.stephengold:Heart:5.2.0for33"
 //    implementation "com.simsilica:sim-math:${simMathVersion}"
 //    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
 

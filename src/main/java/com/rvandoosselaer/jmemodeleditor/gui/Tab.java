@@ -15,16 +15,21 @@ import com.simsilica.lemur.DefaultCheckboxModel;
 import com.simsilica.lemur.FillMode;
 import com.simsilica.lemur.HAlignment;
 import com.simsilica.lemur.Label;
+import com.simsilica.lemur.ListBox;
 import com.simsilica.lemur.Panel;
 import com.simsilica.lemur.TextField;
 import com.simsilica.lemur.VAlignment;
 import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.SpringGridLayout;
+import com.simsilica.lemur.core.VersionedList;
+import com.simsilica.lemur.list.CellRenderer;
 import com.simsilica.lemur.style.ElementId;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /**
  * @author: rvandoosselaer
@@ -221,8 +226,42 @@ public abstract class Tab {
         return container;
     }
 
+    protected Container createStringListBox(String string, List<String> list) {
+        Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Last, FillMode.Even));
+        Label label = container.addChild(new Label(string, getLabelElementId()));
+        label.setTextVAlignment(VAlignment.Top);
+
+        ListBox<String> listBox = container.addChild(new ListBox<>(new VersionedList<>(list), PropertiesPanel.ELEMENT_ID.child(ListBox.ELEMENT_ID), GuiState.STYLE));
+        listBox.setVisibleItems(6);
+        listBox.setCellRenderer(createStringCellRenderer());
+
+        return container;
+    }
+
     protected Panel createSeparator() {
         return new Panel(2, 2, PropertiesPanel.ELEMENT_ID.child("properties").child("separator"), GuiState.STYLE);
+    }
+
+    private static CellRenderer<String> createStringCellRenderer() {
+        return new CellRenderer<String>() {
+
+            private boolean odd;
+
+            @Override
+            public Panel getView(String value, boolean selected, Panel existing) {
+                Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Even, FillMode.Even), updateAlternatingRowElementId());
+                container.addChild(new Label(value, SceneGraphItemRenderer.ELEMENT_ID));
+
+                return container;
+            }
+
+            private ElementId updateAlternatingRowElementId() {
+                ElementId elementId = SceneGraphItemRenderer.ELEMENT_ID.child(odd ? "odd" : "even");
+                odd = !odd;
+
+                return elementId;
+            }
+        };
     }
 
     private static String cleanFloat(TextField textField) {

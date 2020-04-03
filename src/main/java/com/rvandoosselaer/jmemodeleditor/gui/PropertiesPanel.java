@@ -102,6 +102,9 @@ public class PropertiesPanel extends Container {
                 MaterialTab material = new MaterialTab(sceneGraphItem, this::selectTab);
                 tabs.addChild(material.getTab());
             }
+            // controls tab
+            ControlsTab controls = new ControlsTab(sceneGraphItem, this::selectTab);
+            tabs.addChild(controls.getTab());
         }
 
         if (selectDefault) {
