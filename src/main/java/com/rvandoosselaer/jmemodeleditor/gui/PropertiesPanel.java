@@ -11,6 +11,8 @@ import com.simsilica.lemur.Label;
 import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.style.ElementId;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -20,10 +22,11 @@ public class PropertiesPanel extends Container {
 
     public static final ElementId ELEMENT_ID = new ElementId("panel");
 
-    private Spatial spatial;
     private Tab currentTab;
-    private Container tabContent;
-    private Container tabs;
+    private List<Tab> tabs = new ArrayList<>();
+    private Spatial spatial;
+    private Container tabContainer;
+    private Container contentContainer;
     private SceneGraphListBox sceneGraphListBox;
 
     public PropertiesPanel() {
@@ -36,6 +39,7 @@ public class PropertiesPanel extends Container {
     public void setModel(Spatial spatial) {
         this.spatial = spatial;
         refreshSceneGraph(spatial);
+        //TODO: update tabs and tab content
     }
 
     private void buildSceneGraph() {
@@ -62,11 +66,11 @@ public class PropertiesPanel extends Container {
     private void buildProperties() {
         Container properties = addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), ELEMENT_ID.child("properties")));
 
-        tabs = properties.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.None, FillMode.Even), properties.getElementId().child("tabs")));
-        tabContent = properties.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), properties.getElementId().child("content")));
+        tabContainer = properties.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.None, FillMode.Even), properties.getElementId().child("tabs")));
+        contentContainer = properties.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), properties.getElementId().child("content")));
 
-        // create the tabs
-        updateTabs(null, true);
+        createTabs();
+        tabs.stream().filter(tab -> SceneTab.ID.equals(tab.getId())).findFirst().ifPresent(this::selectTab);
     }
 
     private void refreshSceneGraph(Spatial spatial) {
@@ -75,41 +79,63 @@ public class PropertiesPanel extends Container {
     }
 
     private void onSelectSceneGraphItem(SceneGraphItem sceneGraphItem) {
-        updateTabs(sceneGraphItem, false);
+        updateTabs(sceneGraphItem);
         refreshCurrentTab();
     }
 
-    /**
-     * Update the tabs based on the specified scene graph item. When null is passed, only the scene tab is created.
-     *
-     * @param sceneGraphItem
-     * @param selectDefault true if the default (scene) tab should be selected
-     */
-    private void updateTabs(SceneGraphItem sceneGraphItem, boolean selectDefault) {
-        // clear the tabs
-        tabs.getLayout().clearChildren();
+    private void createTabs() {
+        Tab scene = new SceneTab(this::selectTab);
+        tabContainer.addChild(scene.getTab());
+        tabs.add(scene);
+    }
+
+    private void updateTabs(SceneGraphItem sceneGraphItem) {
+        tabs.forEach(tab -> tab.getTab().removeFromParent());
+        tabs.clear();
 
         Tab scene = new SceneTab(this::selectTab);
-        tabs.addChild(scene.getTab());
+        tabs.add(scene);
+        tabContainer.addChild(scene.getTab());
 
-        if (sceneGraphItem != null) {
-            // object tab
-            ObjectTab object = new ObjectTab(sceneGraphItem, this::selectTab);
-            object.setRefreshSceneGraphCommand(cmd -> refreshSceneGraph(spatial));
-            tabs.addChild(object.getTab());
-            // material tab
-            if (sceneGraphItem.getSpatial() instanceof Geometry) {
-                MaterialTab material = new MaterialTab(sceneGraphItem, this::selectTab);
-                tabs.addChild(material.getTab());
-            }
-            // controls tab
-            ControlsTab controls = new ControlsTab(sceneGraphItem, this::selectTab);
-            tabs.addChild(controls.getTab());
+        if (sceneGraphItem == null) {
+            return;
         }
 
-        if (selectDefault) {
-            selectTab(scene);
+        Tab object = new ObjectTab(sceneGraphItem, this::selectTab, cmd -> refreshSceneGraph(spatial));
+        tabs.add(object);
+        tabContainer.addChild(object.getTab());
+
+        if (sceneGraphItem.getSpatial() instanceof Geometry) {
+            Tab material = new MaterialTab(sceneGraphItem, this::selectTab);
+            tabs.add(material);
+            tabContainer.addChild(material.getTab());
         }
+
+        if (sceneGraphItem.getSpatial().getNumControls() > 0) {
+            Tab controls = new ControlsTab(sceneGraphItem, this::selectTab);
+            tabs.add(controls);
+            tabContainer.addChild(controls.getTab());
+        }
+
+//        Tab scene = new SceneTab(this::selectTab);
+//        tabContainer.addChild(scene.getTab());
+//
+//        if (sceneGraphItem != null) {
+//            // object tab
+//            ObjectTab object = new ObjectTab(sceneGraphItem, this::selectTab);
+//            object.setRefreshSceneGraphCommand(cmd -> refreshSceneGraph(spatial));
+//            tabContainer.addChild(object.getTab());
+//            // material tab
+//            if (sceneGraphItem.getSpatial() instanceof Geometry) {
+//                MaterialTab material = new MaterialTab(sceneGraphItem, this::selectTab);
+//                tabContainer.addChild(material.getTab());
+//            }
+//            // controls tab
+//            // TODO: only show when we have controls
+//            ControlsTab controls = new ControlsTab(sceneGraphItem, this::selectTab);
+//            tabContainer.addChild(controls.getTab());
+//        }
+
     }
 
     private void selectTab(Tab tab) {
@@ -127,10 +153,10 @@ public class PropertiesPanel extends Container {
             return;
         }
 
-        tabContent.getLayout().clearChildren();
+        contentContainer.getLayout().clearChildren();
 
         currentTab.setSceneGraphItem(sceneGraphListBox.getSelectedItem());
-        tabContent.addChild(currentTab.getContent());
+        contentContainer.addChild(currentTab.getContent());
     }
 
 }

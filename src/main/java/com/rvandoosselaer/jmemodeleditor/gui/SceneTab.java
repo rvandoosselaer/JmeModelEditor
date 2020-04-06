@@ -2,7 +2,6 @@ package com.rvandoosselaer.jmemodeleditor.gui;
 
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.simsilica.lemur.Axis;
-import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Command;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.FillMode;
@@ -17,7 +16,7 @@ import com.simsilica.lemur.component.SpringGridLayout;
  */
 public class SceneTab extends Tab {
 
-    private static final String ID = "scene-tab";
+    public static final String ID = "scene-tab";
 
     public SceneTab(Command<Tab> tabClickCommand) {
         super(null, tabClickCommand);
@@ -29,8 +28,13 @@ public class SceneTab extends Tab {
     }
 
     @Override
-    public Button getTab() {
-        return createTab("/Interface/scene.png", GuiTranslations.getInstance().t("panel.properties.scene.tooltip"));
+    protected String getTabIconPath() {
+        return "/Interface/scene.png";
+    }
+
+    @Override
+    protected String getTabTooltip() {
+        return GuiTranslations.getInstance().t("panel.properties.scene.tooltip");
     }
 
     @Override

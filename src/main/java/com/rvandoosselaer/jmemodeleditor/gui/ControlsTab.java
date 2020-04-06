@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  */
 public class ControlsTab extends Tab {
 
-    private static final String ID = "controls-tab";
+    public static final String ID = "controls-tab";
 
     public ControlsTab(SceneGraphItem sceneGraphItem, Command<Tab> tabClickCommand) {
         super(sceneGraphItem, tabClickCommand);
@@ -48,8 +48,13 @@ public class ControlsTab extends Tab {
     }
 
     @Override
-    public Button getTab() {
-        return createTab("/Interface/control.png", GuiTranslations.getInstance().t("panel.properties.controls.tooltip"));
+    protected String getTabIconPath() {
+        return "/Interface/control.png";
+    }
+
+    @Override
+    protected String getTabTooltip() {
+        return GuiTranslations.getInstance().t("panel.properties.controls.tooltip");
     }
 
     @Override
@@ -90,7 +95,6 @@ public class ControlsTab extends Tab {
                         .collect(Collectors.toList());
                 container.addChild(createStringListBox(GuiTranslations.getInstance().t("panel.properties.controls.skinning.joints"), joints));
             }
-            container.addChild(createSeparator());
         }
         return container;
     }

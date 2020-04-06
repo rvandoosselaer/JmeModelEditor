@@ -8,7 +8,6 @@ import com.jme3.shader.VarType;
 import com.jme3.texture.Texture2D;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.simsilica.lemur.Axis;
-import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Command;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.FillMode;
@@ -23,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MaterialTab extends Tab {
 
-    private static final String ID = "material-tab";
+    public static final String ID = "material-tab";
 
     public MaterialTab(SceneGraphItem sceneGraphItem, Command<Tab> tabClickCommand) {
         super(sceneGraphItem, tabClickCommand);
@@ -35,8 +34,13 @@ public class MaterialTab extends Tab {
     }
 
     @Override
-    public Button getTab() {
-        return createTab("/Interface/material.png", GuiTranslations.getInstance().t("panel.properties.material.tooltip"));
+    protected String getTabIconPath() {
+        return "/Interface/material.png";
+    }
+
+    @Override
+    protected String getTabTooltip() {
+        return GuiTranslations.getInstance().t("panel.properties.material.tooltip");
     }
 
     @Override

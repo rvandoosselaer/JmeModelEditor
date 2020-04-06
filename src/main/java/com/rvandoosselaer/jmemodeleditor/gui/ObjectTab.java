@@ -4,29 +4,25 @@ import com.jme3.math.Quaternion;
 import com.jme3.scene.Node;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.simsilica.lemur.Axis;
-import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Command;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.FillMode;
 import com.simsilica.lemur.Label;
 import com.simsilica.lemur.Panel;
 import com.simsilica.lemur.component.SpringGridLayout;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author: rvandoosselaer
  */
 public class ObjectTab extends Tab {
 
-    private static final String ID = "object-tab";
+    public static final String ID = "object-tab";
 
-    @Getter
-    @Setter
-    private Command<Void> refreshSceneGraphCommand;
+    private final Command<Void> refreshSceneGraphCommand;
 
-    public ObjectTab(SceneGraphItem sceneGraphItem, Command<Tab> tabClickCommand) {
+    public ObjectTab(SceneGraphItem sceneGraphItem, Command<Tab> tabClickCommand, Command<Void> refreshSceneGraphCommand) {
         super(sceneGraphItem, tabClickCommand);
+        this.refreshSceneGraphCommand = refreshSceneGraphCommand;
     }
 
     @Override
@@ -35,8 +31,13 @@ public class ObjectTab extends Tab {
     }
 
     @Override
-    public Button getTab() {
-        return createTab("/Interface/object.png", GuiTranslations.getInstance().t("panel.properties.object.tooltip"));
+    protected String getTabIconPath() {
+        return "/Interface/object.png";
+    }
+
+    @Override
+    protected String getTabTooltip() {
+        return  GuiTranslations.getInstance().t("panel.properties.object.tooltip");
     }
 
     @Override

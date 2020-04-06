@@ -24,7 +24,6 @@ import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.core.VersionedList;
 import com.simsilica.lemur.list.CellRenderer;
 import com.simsilica.lemur.style.ElementId;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -35,31 +34,48 @@ import java.util.List;
  * @author: rvandoosselaer
  */
 @Slf4j
-@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class Tab {
 
     public static final ElementId ELEMENT_ID = PropertiesPanel.ELEMENT_ID.child("properties").child("tabs");
 
+    private Button tab;
+    private Panel content;
     @Setter
     @EqualsAndHashCode.Include
     protected SceneGraphItem sceneGraphItem;
     protected Command<Tab> tabClickCommand;
 
+    public Tab(SceneGraphItem sceneGraphItem, Command<Tab> tabClickCommand) {
+        this.sceneGraphItem = sceneGraphItem;
+        this.tabClickCommand = tabClickCommand;
+    }
+
     @EqualsAndHashCode.Include
     public abstract String getId();
 
-    public abstract Button getTab();
-
     public abstract Panel getContent();
 
-    protected Button createTab(String iconPath, String tooltip) {
-        Button button = new Button("", ELEMENT_ID.child(Button.ELEMENT_ID));
-        button.setIcon(createTabIcon(iconPath));
-        button.addClickCommands(cmd -> tabClickCommand.execute(this));
-        getTooltipState().addTooltip(button, tooltip);
+    protected abstract String getTabIconPath();
 
-        return button;
+    protected abstract String getTabTooltip();
+
+    public Button getTab() {
+        if (tab == null) {
+            tab = createTab(getTabIconPath(), getTabTooltip());
+        }
+
+        return tab;
+    }
+
+    public void setActive(boolean active) {
+        if (tab != null) {
+            tab.setUserData("active", active);
+        }
+    }
+
+    public boolean isActive() {
+        return tab != null && (boolean) tab.getUserData("active");
     }
 
     protected Container createTextFieldInput(String string, String value, Command<String> updateValueAction) {
@@ -295,6 +311,15 @@ public abstract class Tab {
 
     private static ElementId getCheckboxElementId() {
         return PropertiesPanel.ELEMENT_ID.child("properties").child(Checkbox.ELEMENT_ID);
+    }
+
+    private Button createTab(String iconPath, String tooltip) {
+        Button button = new Button("", ELEMENT_ID.child(Button.ELEMENT_ID));
+        button.setIcon(createTabIcon(iconPath));
+        button.addClickCommands(cmd -> tabClickCommand.execute(this));
+        getTooltipState().addTooltip(button, tooltip);
+
+        return button;
     }
 
     private static IconComponent createTabIcon(String iconPath) {
