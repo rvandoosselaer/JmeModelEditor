@@ -55,7 +55,7 @@ def tooltipBackgroundColor = color(0.106, 0.106, 0.106, 1)
 
 def separatorColor = color(0.137, 0.137, 0.137, 1)
 
-def tabActiveColor = color(0.5, 0.5, 0.5, 1)
+def tabActiveColor = color(0.282, 0.463, 0.718, 1)
 def tabColor = color(0.345, 0.345, 0.345, 1)
 def tabPressedColor = color(0.416, 0.416, 0.416, 1)
 def tabHighlightColor = color(0.416, 0.416, 0.416, 1)
