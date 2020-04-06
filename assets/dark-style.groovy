@@ -55,6 +55,11 @@ def tooltipBackgroundColor = color(0.106, 0.106, 0.106, 1)
 
 def separatorColor = color(0.137, 0.137, 0.137, 1)
 
+def tabActiveColor = color(0.5, 0.5, 0.5, 1)
+def tabColor = color(0.345, 0.345, 0.345, 1)
+def tabPressedColor = color(0.416, 0.416, 0.416, 1)
+def tabHighlightColor = color(0.416, 0.416, 0.416, 1)
+
 //
 // Global styling
 //
@@ -369,15 +374,15 @@ def tabButtonCmd = new Command<Button>() {
     @Override
     void execute(Button source) {
         if (source.getUserData("active")) {
-            source.background = new QuadBackgroundComponent(buttonHighlightColor)
+            source.background = new QuadBackgroundComponent(tabActiveColor)
         } else {
             if (source.pressed) {
-                source.background = new QuadBackgroundComponent(buttonPressedColor)
+                source.background = new QuadBackgroundComponent(tabPressedColor)
             } else {
                 if (source.highlightOn) {
-                    source.background = new QuadBackgroundComponent(buttonHighlightColor)
+                    source.background = new QuadBackgroundComponent(tabHighlightColor)
                 } else {
-                    source.background = new QuadBackgroundComponent(buttonColor)
+                    source.background = new QuadBackgroundComponent(tabColor)
                 }
             }
         }
