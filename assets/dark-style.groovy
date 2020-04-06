@@ -341,7 +341,7 @@ selector("panel", "editor-style") {
 }
 
 selector("panel", "scenegraph", "editor-style") {
-    insets = new Insets3f(0, 2, 0, 0)
+    insets = new Insets3f(0, 2, 0, 2)
     background = new QuadBackgroundComponent(panelContainerColor)
 }
 
@@ -363,7 +363,7 @@ selector("panel.list.item", "odd", "editor-style") {
 }
 
 selector("panel", "properties", "editor-style") {
-    insets = new Insets3f(2, 2, 0, 0)
+    insets = new Insets3f(2, 2, 0, 2)
 }
 
 selector("panel.properties", "tabs", "editor-style") {

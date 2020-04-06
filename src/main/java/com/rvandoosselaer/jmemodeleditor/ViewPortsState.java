@@ -128,7 +128,7 @@ public class ViewPortsState extends BaseAppState {
         // handle the resizing of the viewport.
         // another option is to set the camera size to (1, 1) and position the viewport to (0, 0.75, 0, 1). In this case
         // we don't need to take care of the resizing of the viewport. A caveat in this scenario is that we should adapt
-        // the aspect of then camera! We created it with a size of (1, 1) although it's only (0.75, 1). That's why we update
+        // the aspect of the camera! We created it with a size of (1, 1) although it's only (0.75, 1). That's why we update
         // the frustum!
         Camera camera = new Camera(GuiUtils.getWidth(), GuiUtils.getHeight());
         camera.setFrustumPerspective(45, (camera.getWidth() * 0.75f) / camera.getHeight(), 0.1f, 1000f);

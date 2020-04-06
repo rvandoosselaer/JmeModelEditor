@@ -19,14 +19,12 @@ public class CoordinateAxesState extends BaseAppState {
     private Node coordinateAxesNode;
     private Spatial coordinateAxes;
     private Camera editorCamera;
-    private Camera coordinateAxesCamera;
 
     @Override
     protected void initialize(Application app) {
         coordinateAxesNode = getState(ViewPortsState.class).getCoordinateAxesNode();
         coordinateAxes = GeometryUtils.createCoordinateAxes();
         editorCamera = getState(ViewPortsState.class).getEditorCamera();
-        coordinateAxesCamera = getState(ViewPortsState.class).getCoordinateAxesCamera();
     }
 
     @Override
@@ -45,6 +43,8 @@ public class CoordinateAxesState extends BaseAppState {
 
     @Override
     public void update(float tpf) {
+        Camera coordinateAxesCamera = getState(ViewPortsState.class).getCoordinateAxesCamera();
+
         Vector3f dir = new Vector3f(editorCamera.getDirection());
 
         coordinateAxesCamera.setLocation(dir.negateLocal().mult(3));
