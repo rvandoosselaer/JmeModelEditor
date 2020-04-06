@@ -365,8 +365,34 @@ selector("panel.properties", "tabs", "editor-style") {
     // tabs container
 }
 
+def tabButtonCmd = new Command<Button>() {
+    @Override
+    void execute(Button source) {
+        if (source.getUserData("active")) {
+            source.background = new QuadBackgroundComponent(buttonHighlightColor)
+        } else {
+            if (source.pressed) {
+                source.background = new QuadBackgroundComponent(buttonPressedColor)
+            } else {
+                if (source.highlightOn) {
+                    source.background = new QuadBackgroundComponent(buttonHighlightColor)
+                } else {
+                    source.background = new QuadBackgroundComponent(buttonColor)
+                }
+            }
+        }
+        source.background.setMargin(2, 2)
+    }
+}
+
 selector("panel.properties.tabs", "button", "editor-style") {
     insets = new Insets3f(0, 0, 0, 2)
+    buttonCommands = [
+            (ButtonAction.Down)        : [tabButtonCmd],
+            (ButtonAction.Up)          : [tabButtonCmd],
+            (ButtonAction.HighlightOn) : [tabButtonCmd],
+            (ButtonAction.HighlightOff): [tabButtonCmd]
+    ]
 }
 
 selector("panel.properties", "content", "editor-style") {
