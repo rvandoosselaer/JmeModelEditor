@@ -66,7 +66,7 @@ public class ControlsTab extends Tab {
         for (int i = 0; i < sceneGraphItem.getSpatial().getNumControls(); i++) {
             Control control = sceneGraphItem.getSpatial().getControl(i);
             if (control instanceof AnimComposer) {
-                container.addChild(new Label(GuiTranslations.getInstance().t("common.animcomposer"), PropertiesPanel.ELEMENT_ID.child("title")));
+                container.addChild(new Label(GuiTranslations.getInstance().t("panel.properties.controls.animcomposer"), PropertiesPanel.ELEMENT_ID.child("title")));
 
                 container.addChild(createStringListBox(GuiTranslations.getInstance().t("panel.properties.controls.anim.names"), new ArrayList<>(((AnimComposer) control).getAnimClipsNames())));
 
@@ -82,7 +82,7 @@ public class ControlsTab extends Tab {
                     stop.setInsets(new Insets3f(2, 0, 2, 2 + listBox.get().getSlider().getPreferredSize().x));
                 }
             } else if (control instanceof SkinningControl) {
-                container.addChild(new Label(GuiTranslations.getInstance().t("common.skinningcontrol"), PropertiesPanel.ELEMENT_ID.child("title")));
+                container.addChild(new Label(GuiTranslations.getInstance().t("panel.properties.controls.skinningcontrol"), PropertiesPanel.ELEMENT_ID.child("title")));
                 container.addChild(createBooleanInput(GuiTranslations.getInstance().t("panel.properties.controls.skinning.skeleton"),
                         isSkeletonVisible((SkinningControl) control), source -> showSkeleton(source, (SkinningControl) control)));
 
