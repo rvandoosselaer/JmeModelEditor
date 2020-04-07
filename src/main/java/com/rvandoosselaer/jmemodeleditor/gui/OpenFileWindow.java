@@ -201,6 +201,7 @@ public class OpenFileWindow extends Window {
 
     private void closeWindow() {
         fileBrowser.deselect();
+        bookmarkLocations.deselect();
         removeFromParent();
     }
 
