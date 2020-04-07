@@ -106,6 +106,13 @@ public class GuiState extends BaseAppState {
         }
     }
 
+    private void onReload() {
+        boolean reloaded = editorState.reloadModel();
+        if (reloaded) {
+            propertiesPanel.setModel(editorState.getModel());
+        }
+    }
+
     private void refreshLayout() {
         int w = GuiUtils.getWidth();
         int h = GuiUtils.getHeight();
@@ -161,6 +168,9 @@ public class GuiState extends BaseAppState {
         tooltipState.addTooltip(open, GuiTranslations.getInstance().t("toolbar.open.tooltip"));
         Button save = container.addChild(createToolbarButton("/Interface/save.png"));
         tooltipState.addTooltip(save, GuiTranslations.getInstance().t("toolbar.save.tooltip"));
+        Button reload = container.addChild(createToolbarButton("/Interface/reload.png"));
+        reload.addClickCommands(source -> onReload());
+        tooltipState.addTooltip(reload, GuiTranslations.getInstance().t("toolbar.reload.tooltip"));
 
         return container;
     }

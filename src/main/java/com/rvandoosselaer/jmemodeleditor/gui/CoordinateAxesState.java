@@ -43,10 +43,9 @@ public class CoordinateAxesState extends BaseAppState {
 
     @Override
     public void update(float tpf) {
-        Camera coordinateAxesCamera = getState(ViewPortsState.class).getCoordinateAxesCamera();
-
         Vector3f dir = new Vector3f(editorCamera.getDirection());
 
+        Camera coordinateAxesCamera = getState(ViewPortsState.class).getCoordinateAxesCamera();
         coordinateAxesCamera.setLocation(dir.negateLocal().mult(3));
         coordinateAxesCamera.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
     }
