@@ -335,18 +335,18 @@ selector("open-file.list.item", "odd", "editor-style") {
     background = new QuadBackgroundComponent(listItemOddColor)
 }
 
-selector("open-file.favorites", "container", "editor-style") {
+selector("open-file.bookmarks", "container", "editor-style") {
     insets = new Insets3f(8, 8, 8, 0)
     background = new QuadBackgroundComponent(panelContainerColor)
 }
 
-selector("open-file.favorites", "button", "editor-style") {
+selector("open-file.bookmarks", "button", "editor-style") {
     insets = new Insets3f(2, 2, 0, 2)
     textHAlignment = HAlignment.Center
     textVAlignment = VAlignment.Center
 }
 
-selector("open-file.favorites", "title", "editor-style") {
+selector("open-file.bookmarks", "title", "editor-style") {
     background = new QuadBackgroundComponent(panelTitleColor)
     background.setMargin(10, 4)
 }

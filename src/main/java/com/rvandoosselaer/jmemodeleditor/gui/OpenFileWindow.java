@@ -66,12 +66,6 @@ public class OpenFileWindow extends Window {
         buildGUI();
     }
 
-    private void refreshBookmarks() {
-        bookmarkLocations.getModel().clear();
-        bookmarkLocations.getModel().addAll(guiState.getBookmarks());
-        bookmarkLocations.deselect();
-    }
-
     private void buildGUI() {
         Container mainContainer = getContainer().addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Last, FillMode.Even)));
         Container locationsContainer = mainContainer.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even)));
@@ -184,6 +178,12 @@ public class OpenFileWindow extends Window {
         refreshBookmarks();
     }
 
+    private void refreshBookmarks() {
+        bookmarkLocations.getModel().clear();
+        bookmarkLocations.getModel().addAll(guiState.getBookmarks());
+        bookmarkLocations.deselect();
+    }
+
     /**
      * Set the directory to load in the file browser
      *
@@ -216,8 +216,7 @@ public class OpenFileWindow extends Window {
      * @return the folder to open when the window is created
      */
     private Path getStartFolder() {
-        //return Paths.get(System.getProperty("user.home"));
-        return Paths.get("/Users/remy/Projects/rvandoosselaer/desolated-woods/assets/Models/Human");
+        return Paths.get(System.getProperty("user.home"));
     }
 
     /**
