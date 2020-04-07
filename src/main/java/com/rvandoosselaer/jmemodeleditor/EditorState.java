@@ -3,7 +3,9 @@ package com.rvandoosselaer.jmemodeleditor;
 import com.jme3.app.Application;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
+import com.jme3.asset.ModelKey;
 import com.jme3.asset.plugins.FileLocator;
+import com.jme3.export.binary.BinaryExporter;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.scene.Geometry;
@@ -13,8 +15,10 @@ import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Sphere;
 import com.rvandoosselaer.jmeutils.util.GeometryUtils;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -64,8 +68,11 @@ public class EditorState extends BaseAppState {
         removeModel();
     }
 
-    public Spatial loadModel(Path path) {
+    public Spatial loadModel(@NonNull Path path) {
         log.info("Opening {}", path);
+
+        // make sure there is no previous loaded model in the cache
+        assetManager.deleteFromCache(new ModelKey(path.getFileName().toString()));
 
         // remove the previous model
         removeModel();
@@ -86,6 +93,20 @@ public class EditorState extends BaseAppState {
     public boolean reloadModel() {
         if (modelPath != null) {
             return loadModel(modelPath) != null;
+        }
+
+        return false;
+    }
+
+    public boolean saveModel() {
+        if (modelPath != null && model != null) {
+            log.info("Saving {} to {}", model, modelPath.toAbsolutePath().toString());
+            try {
+                BinaryExporter.getInstance().save(model, modelPath.toFile());
+                return true;
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
         }
 
         return false;

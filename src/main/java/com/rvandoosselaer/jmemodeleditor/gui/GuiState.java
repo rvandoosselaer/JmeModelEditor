@@ -113,6 +113,10 @@ public class GuiState extends BaseAppState {
         }
     }
 
+    private void onSave() {
+        editorState.saveModel();
+    }
+
     private void refreshLayout() {
         int w = GuiUtils.getWidth();
         int h = GuiUtils.getHeight();
@@ -163,11 +167,15 @@ public class GuiState extends BaseAppState {
 
     private Container createToolbar() {
         Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.None, FillMode.None), new ElementId("toolbar"));
+
         Button open = container.addChild(createToolbarButton("/Interface/open.png"));
         open.addClickCommands(source -> onOpenFile());
         tooltipState.addTooltip(open, GuiTranslations.getInstance().t("toolbar.open.tooltip"));
+
         Button save = container.addChild(createToolbarButton("/Interface/save.png"));
+        save.addClickCommands(source -> onSave());
         tooltipState.addTooltip(save, GuiTranslations.getInstance().t("toolbar.save.tooltip"));
+
         Button reload = container.addChild(createToolbarButton("/Interface/reload.png"));
         reload.addClickCommands(source -> onReload());
         tooltipState.addTooltip(reload, GuiTranslations.getInstance().t("toolbar.reload.tooltip"));
