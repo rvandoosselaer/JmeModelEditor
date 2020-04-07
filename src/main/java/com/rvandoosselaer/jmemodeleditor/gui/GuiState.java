@@ -135,7 +135,8 @@ public class GuiState extends BaseAppState {
         recentLocations.remove(path);
         recentLocations.add(0, path);
 
-        for (int i = 0; i < recentLocations.size(); i++) {
+        // we only store the last 6 locations. older ones are discarded
+        for (int i = 0; i < Math.min(6, recentLocations.size()); i++) {
             getPreferences().put(String.format(RECENT_KEY_FORMAT, i), recentLocations.get(i).toString());
         }
 
