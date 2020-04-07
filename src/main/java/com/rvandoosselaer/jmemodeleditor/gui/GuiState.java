@@ -42,6 +42,7 @@ public class GuiState extends BaseAppState {
     public static final String DARK_STYLE_RESOURCE = "dark-style.groovy";
 
     private static final String BOOKMARK_KEY_FORMAT = "bookmark.%d";
+    private static final String RECENT_KEY_FORMAT = "recent.%d";
 
     @Getter
     private Node guiNode;
@@ -103,6 +104,49 @@ public class GuiState extends BaseAppState {
     public void loadModel(Path path) {
         Spatial model = editorState.loadModel(path);
         propertiesPanel.setModel(model);
+    }
+
+    /**
+     * @return list of recent locations
+     */
+    public List<Path> getRecentFolders() {
+        List<Path> recentLocations = new ArrayList<>();
+
+        int i = 0;
+        while (getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null) != null) {
+            String pathString = getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null);
+            recentLocations.add(Paths.get(pathString));
+            i++;
+        }
+
+        return recentLocations;
+    }
+
+    public void addRecentLocation(Path path) {
+        if (path == null) {
+            return;
+        }
+
+        List<Path> recentLocations = getRecentFolders();
+
+        clearRecentLocations();
+
+        // if the path was already in the list, remove it and add it at the top
+        recentLocations.remove(path);
+        recentLocations.add(0, path);
+
+        for (int i = 0; i < recentLocations.size(); i++) {
+            getPreferences().put(String.format(RECENT_KEY_FORMAT, i), recentLocations.get(i).toString());
+        }
+
+    }
+
+    public void clearRecentLocations() {
+        int i = 0;
+        while (getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null) != null) {
+            getPreferences().remove(String.format(RECENT_KEY_FORMAT, i));
+            i++;
+        }
     }
 
     /**

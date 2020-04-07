@@ -350,6 +350,22 @@ selector("open-file.bookmarks", "title", "editor-style") {
     background = new QuadBackgroundComponent(panelTitleColor)
     background.setMargin(10, 4)
 }
+
+selector("open-file.recent", "container", "editor-style") {
+    insets = new Insets3f(8, 8, 8, 0)
+    background = new QuadBackgroundComponent(panelContainerColor)
+}
+
+selector("open-file.recent", "button", "editor-style") {
+    insets = new Insets3f(2, 2, 0, 2)
+    textHAlignment = HAlignment.Center
+    textVAlignment = VAlignment.Center
+}
+
+selector("open-file.recent", "title", "editor-style") {
+    background = new QuadBackgroundComponent(panelTitleColor)
+    background.setMargin(10, 4)
+}
 //
 // panel
 //

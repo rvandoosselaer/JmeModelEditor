@@ -4,6 +4,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.rvandoosselaer.jmeutils.ApplicationGlobals;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
@@ -54,6 +55,7 @@ public class OpenFileWindow extends Window {
     private TextField currentDirTextField;
     private PathListBox fileBrowser;
     private PathListBox bookmarkLocations;
+    private PathListBox recentLocations;
     private GuiState guiState;
     private TooltipState tooltipState;
 
@@ -66,10 +68,20 @@ public class OpenFileWindow extends Window {
         buildGUI();
     }
 
+    @Override
+    protected void setParent(Node parent) {
+        super.setParent(parent);
+
+        if (parent != null) {
+            onAttached();
+        }
+    }
+
     private void buildGUI() {
         Container mainContainer = getContainer().addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Last, FillMode.Even)));
         Container locationsContainer = mainContainer.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even)));
         locationsContainer.addChild(createBookmarkLocationsList());
+        locationsContainer.addChild(createRecentLocationsList());
 
         Container fileBrowserContainer = mainContainer.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.Even, FillMode.Even)));
         fileBrowserContainer.addChild(createTopBar());
@@ -124,14 +136,36 @@ public class OpenFileWindow extends Window {
         return container;
     }
 
+    private Container createRecentLocationsList() {
+        ElementId elementId = ELEMENT_ID.child("recent");
+        Container container = new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), elementId.child(Container.ELEMENT_ID));
+        container.addChild(new Label(GuiTranslations.getInstance().t("window.open-file.recent"), elementId.child("title")));
+
+        Container locations = container.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even)));
+        recentLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getRecentFolders())));
+        recentLocations.setVisibleItems(6);
+        recentLocations.addClickCommands(source -> recentLocations.getSelectedItem().ifPresent(this::setDirectory));
+
+        Container buttons = locations.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.None)));
+        Button clearRecentLocations = buttons.addChild(new Button("x", elementId.child("button")));
+        tooltipState.addTooltip(clearRecentLocations, GuiTranslations.getInstance().t("window.open-file.recent.clear"));
+        clearRecentLocations.addClickCommands(source -> onClearRecentLocations());
+        clearRecentLocations.setPreferredSize(clearRecentLocations.getPreferredSize().setX(clearRecentLocations.getPreferredSize().y));
+
+        // make the container a bit wider when the listBox is empty
+        if (recentLocations.getModel().isEmpty()) {
+            container.setPreferredSize(container.getPreferredSize().multLocal(1.5f, 1, 1));
+        }
+        return container;
+    }
+
     private Container createBookmarkLocationsList() {
         ElementId elementId = ELEMENT_ID.child("bookmarks");
         Container bookmarks = new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), elementId.child(Container.ELEMENT_ID));
         bookmarks.addChild(new Label(GuiTranslations.getInstance().t("window.open-file.bookmarks"), elementId.child("title")));
 
         Container locations = bookmarks.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even)));
-        bookmarkLocations = locations.addChild(new PathListBox(new VersionedList<>()));
-        bookmarkLocations.getModel().addAll(guiState.getBookmarks());
+        bookmarkLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getBookmarks())));
         bookmarkLocations.setVisibleItems(6);
         bookmarkLocations.addClickCommands(source -> bookmarkLocations.getSelectedItem().ifPresent(this::setDirectory));
 
@@ -160,6 +194,7 @@ public class OpenFileWindow extends Window {
             } else {
                 guiState.loadModel(selection.get());
                 closeWindow();
+                guiState.addRecentLocation(currentDir);
             }
         }
     }
@@ -178,10 +213,21 @@ public class OpenFileWindow extends Window {
         refreshBookmarks();
     }
 
+    private void onClearRecentLocations() {
+        guiState.clearRecentLocations();
+        refreshRecentLocations();
+    }
+
     private void refreshBookmarks() {
         bookmarkLocations.getModel().clear();
         bookmarkLocations.getModel().addAll(guiState.getBookmarks());
         bookmarkLocations.deselect();
+    }
+
+    private void refreshRecentLocations() {
+        recentLocations.getModel().clear();
+        recentLocations.getModel().addAll(guiState.getRecentFolders());
+        recentLocations.deselect();
     }
 
     /**
@@ -202,7 +248,13 @@ public class OpenFileWindow extends Window {
     private void closeWindow() {
         fileBrowser.deselect();
         bookmarkLocations.deselect();
+        recentLocations.deselect();
         removeFromParent();
+    }
+
+    private void onAttached() {
+        refreshBookmarks();
+        refreshRecentLocations();
     }
 
     private void goDirectoryUp() {
