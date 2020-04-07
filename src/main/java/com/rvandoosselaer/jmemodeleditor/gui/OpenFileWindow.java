@@ -65,9 +65,14 @@ public class OpenFileWindow extends Window {
     }
 
     private void buildGUI() {
-        getContainer().addChild(createTopBar());
+        Container mainContainer = getContainer().addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Last, FillMode.Even)));
+        Container locationsContainer = mainContainer.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even)));
+        locationsContainer.addChild(createFavoriteLocationsList());
 
-        fileBrowser = getContainer().addChild(new ListBox<>(new VersionedList<>(), ELEMENT_ID.child(ListBox.ELEMENT_ID), GuiState.STYLE));
+        Container fileBrowserContainer = mainContainer.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.Even, FillMode.Even)));
+        fileBrowserContainer.addChild(createTopBar());
+
+        fileBrowser = fileBrowserContainer.addChild(new ListBox<>(new VersionedList<>(), ELEMENT_ID.child(ListBox.ELEMENT_ID), GuiState.STYLE));
         fileBrowser.setCellRenderer(new FileBrowserItemRenderer());
         fileBrowser.setVisibleItems(20);
         fileBrowser.addControl(new ListBoxSliderControl());
@@ -117,6 +122,27 @@ public class OpenFileWindow extends Window {
         open.addClickCommands(source -> onOpen());
 
         return container;
+    }
+
+    private Container createFavoriteLocationsList() {
+        ElementId elementId = ELEMENT_ID.child("favorites");
+        Container favorites = new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), elementId.child(Container.ELEMENT_ID));
+        Label title = favorites.addChild(new Label("Favorites", elementId.child("title")));
+
+        Container locations = favorites.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even)));
+        ListBox<Path> favoriteLocationsListBox = locations.addChild(new ListBox<>(new VersionedList<>(), new FileBrowserItemRenderer(), GuiState.STYLE));
+        favoriteLocationsListBox.setVisibleItems(6);
+        favoriteLocationsListBox.addControl(new ListBoxSliderControl());
+
+        Container buttons = locations.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.None)));
+        Button addLocation = buttons.addChild(new Button("+", elementId.child("button")));
+        Button removeLocation = buttons.addChild(new Button("-", elementId.child("button")));
+
+        // make the container a bit wider when the listBox is empty
+        if (favoriteLocationsListBox.getModel().isEmpty()) {
+            favorites.setPreferredSize(favorites.getPreferredSize().multLocal(1.5f, 1, 1));
+        }
+        return favorites;
     }
 
     private void onOpen() {

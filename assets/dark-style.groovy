@@ -333,6 +333,23 @@ selector("open-file.list.item", "even", "editor-style") {
 selector("open-file.list.item", "odd", "editor-style") {
     background = new QuadBackgroundComponent(listItemOddColor)
 }
+
+selector("open-file.favorites", "container", "editor-style") {
+    insets = new Insets3f(8, 8, 8, 0)
+    background = new QuadBackgroundComponent(panelContainerColor)
+}
+
+selector("open-file.favorites", "button", "editor-style") {
+    insets = new Insets3f(2, 2, 0, 2)
+    preferredSize = vec3(18, 18, 0)
+    textHAlignment = HAlignment.Center
+    textVAlignment = VAlignment.Center
+}
+
+selector("open-file.favorites", "title", "editor-style") {
+    background = new QuadBackgroundComponent(panelTitleColor)
+    background.setMargin(10, 4)
+}
 //
 // panel
 //
