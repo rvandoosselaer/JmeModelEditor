@@ -7,6 +7,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.rvandoosselaer.jmemodeleditor.EditorState;
+import com.rvandoosselaer.jmemodeleditor.Main;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.rvandoosselaer.jmeutils.gui.GuiUtils;
 import com.simsilica.lemur.Axis;
@@ -23,7 +24,12 @@ import com.simsilica.lemur.core.VersionedReference;
 import com.simsilica.lemur.style.ElementId;
 import lombok.Getter;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * The state that manages all GUI elements and user interactions.
@@ -34,6 +40,8 @@ public class GuiState extends BaseAppState {
 
     public static final String STYLE = "editor-style";
     public static final String DARK_STYLE_RESOURCE = "dark-style.groovy";
+
+    private static final String BOOKMARK_KEY_FORMAT = "bookmark.%d";
 
     @Getter
     private Node guiNode;
@@ -95,6 +103,51 @@ public class GuiState extends BaseAppState {
     public void loadModel(Path path) {
         Spatial model = editorState.loadModel(path);
         propertiesPanel.setModel(model);
+    }
+
+    /**
+     * @return list of bookmark locations
+     */
+    public List<Path> getBookmarks() {
+        List<Path> bookmarks = new ArrayList<>();
+
+        Preferences prefs = getPreferences();
+        int i = 0;
+        while (prefs.get(String.format(BOOKMARK_KEY_FORMAT, i), null) != null) {
+            String pathString = prefs.get(String.format(BOOKMARK_KEY_FORMAT, i), null);
+            bookmarks.add(Paths.get(pathString));
+            i++;
+        }
+
+        return bookmarks;
+    }
+
+    public void addBookmark(Path path) {
+        if (path == null) {
+            return;
+        }
+
+        List<Path> bookmarks = getBookmarks();
+        String pathString = Files.isDirectory(path) ? path.toAbsolutePath().toString() : path.toAbsolutePath().getParent().toString();
+
+        getPreferences().put(String.format(BOOKMARK_KEY_FORMAT, bookmarks.size()), pathString);
+    }
+
+    public void removeBookmark(Path path) {
+        if (path == null) {
+            return;
+        }
+
+        List<Path> bookmarks = getBookmarks();
+        for (int i = 0; i < bookmarks.size(); i++) {
+            getPreferences().remove(String.format(BOOKMARK_KEY_FORMAT, i));
+        }
+
+        bookmarks.remove(path);
+
+        for (int i = 0; i < bookmarks.size(); i++) {
+            getPreferences().put(String.format(BOOKMARK_KEY_FORMAT, i), bookmarks.get(i).toString());
+        }
     }
 
     private void onOpenFile() {
@@ -198,4 +251,9 @@ public class GuiState extends BaseAppState {
 
         return button;
     }
+
+    private static Preferences getPreferences() {
+        return Preferences.userNodeForPackage(Main.class);
+    }
+
 }

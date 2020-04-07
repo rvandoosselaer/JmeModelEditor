@@ -206,6 +206,7 @@ def sliderButtonCommands = [
 
 selector("slider", "editor-style") {
     background = new QuadBackgroundComponent(sliderColor)
+    insets = new Insets3f(2, 0, 2, 0)
 }
 
 selector("slider.up.button", "editor-style") {
@@ -341,7 +342,6 @@ selector("open-file.favorites", "container", "editor-style") {
 
 selector("open-file.favorites", "button", "editor-style") {
     insets = new Insets3f(2, 2, 0, 2)
-    preferredSize = vec3(18, 18, 0)
     textHAlignment = HAlignment.Center
     textVAlignment = VAlignment.Center
 }
