@@ -20,6 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The state for rendering 3D scene
@@ -28,6 +31,8 @@ import java.nio.file.Path;
  */
 @Slf4j
 public class EditorState extends BaseAppState {
+
+    private static final String ASSET_ROOT_FORMAT = "assetPath.%d";
 
     private Geometry grid;
     private Geometry centerPoint;
@@ -47,6 +52,7 @@ public class EditorState extends BaseAppState {
         editorNode = getState(ViewPortsState.class).getEditorNode();
 
         assetManager = app.getAssetManager();
+        getAssetRootPaths().forEach(this::registerLocator);
 
         setBackgroundColor();
     }
@@ -110,6 +116,48 @@ public class EditorState extends BaseAppState {
         }
 
         return false;
+    }
+
+    public List<Path> getAssetRootPaths() {
+        List<Path> assetRootPaths = new ArrayList<>();
+
+        int i = 0;
+        while (Main.getPreferences().get(String.format(ASSET_ROOT_FORMAT, i), null) != null) {
+            String stringPath = Main.getPreferences().get(String.format(ASSET_ROOT_FORMAT, i), null);
+            assetRootPaths.add(Paths.get(stringPath));
+            i++;
+        }
+
+        return assetRootPaths;
+    }
+
+    public void setAssetRootPaths(List<Path> paths) {
+        List<Path> assetRootPaths = getAssetRootPaths();
+        // remove all paths
+        for (int i = 0; i < assetRootPaths.size(); i++) {
+            String key = String.format(ASSET_ROOT_FORMAT, i);
+            Main.getPreferences().remove(key);
+            log.trace("Removing preferences {}", key);
+            unregisterLocator(assetRootPaths.get(i));
+        }
+
+        // set new paths
+        for (int i = 0; i < paths.size(); i++) {
+            String key = String.format(ASSET_ROOT_FORMAT, i);
+            Main.getPreferences().put(key, paths.get(i).toAbsolutePath().toString());
+            log.trace("Saving preference {} = {}", key, paths.get(i).toAbsolutePath());
+            registerLocator(paths.get(i));
+        }
+    }
+
+    private void registerLocator(Path path) {
+        log.trace("Registering {} to assetmanager", path);
+        assetManager.registerLocator(path.toAbsolutePath().toString(), FileLocator.class);
+    }
+
+    private void unregisterLocator(Path path) {
+        log.trace("Removing {} from assetmanager", path);
+        assetManager.unregisterLocator(path.toAbsolutePath().toString(), FileLocator.class);
     }
 
     private void removeModel() {

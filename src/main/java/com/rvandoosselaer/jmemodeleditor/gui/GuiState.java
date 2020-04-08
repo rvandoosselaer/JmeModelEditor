@@ -53,6 +53,7 @@ public class GuiState extends BaseAppState {
     private float zIndex = 99;
     private EditorState editorState;
     private TooltipState tooltipState;
+    private SettingsWindow settingsWindow;
     private Label fpsLabel;
     private VersionedHolder<Integer> fps = new VersionedHolder<>(0);
     private VersionedReference<Integer> fpsRef = fps.createReference();
@@ -69,6 +70,7 @@ public class GuiState extends BaseAppState {
         fpsLabel = createFpsLabel();
         openFileWindow = createOpenFileWindow();
         propertiesPanel = createPropertiesPanel();
+        settingsWindow = createSettingsWindow();
     }
 
     @Override
@@ -114,8 +116,8 @@ public class GuiState extends BaseAppState {
         List<Path> recentLocations = new ArrayList<>();
 
         int i = 0;
-        while (getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null) != null) {
-            String pathString = getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null);
+        while (Main.getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null) != null) {
+            String pathString = Main.getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null);
             recentLocations.add(Paths.get(pathString));
             i++;
         }
@@ -138,15 +140,15 @@ public class GuiState extends BaseAppState {
 
         // we only store the last 6 locations. older ones are discarded
         for (int i = 0; i < Math.min(6, recentLocations.size()); i++) {
-            getPreferences().put(String.format(RECENT_KEY_FORMAT, i), recentLocations.get(i).toString());
+            Main.getPreferences().put(String.format(RECENT_KEY_FORMAT, i), recentLocations.get(i).toString());
         }
 
     }
 
     public void clearRecentLocations() {
         int i = 0;
-        while (getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null) != null) {
-            getPreferences().remove(String.format(RECENT_KEY_FORMAT, i));
+        while (Main.getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null) != null) {
+            Main.getPreferences().remove(String.format(RECENT_KEY_FORMAT, i));
             i++;
         }
     }
@@ -157,7 +159,7 @@ public class GuiState extends BaseAppState {
     public List<Path> getBookmarks() {
         List<Path> bookmarks = new ArrayList<>();
 
-        Preferences prefs = getPreferences();
+        Preferences prefs = Main.getPreferences();
         int i = 0;
         while (prefs.get(String.format(BOOKMARK_KEY_FORMAT, i), null) != null) {
             String pathString = prefs.get(String.format(BOOKMARK_KEY_FORMAT, i), null);
@@ -176,7 +178,7 @@ public class GuiState extends BaseAppState {
         List<Path> bookmarks = getBookmarks();
         String pathString = Files.isDirectory(path) ? path.toAbsolutePath().toString() : path.toAbsolutePath().getParent().toString();
 
-        getPreferences().put(String.format(BOOKMARK_KEY_FORMAT, bookmarks.size()), pathString);
+        Main.getPreferences().put(String.format(BOOKMARK_KEY_FORMAT, bookmarks.size()), pathString);
     }
 
     public void removeBookmark(Path path) {
@@ -186,13 +188,13 @@ public class GuiState extends BaseAppState {
 
         List<Path> bookmarks = getBookmarks();
         for (int i = 0; i < bookmarks.size(); i++) {
-            getPreferences().remove(String.format(BOOKMARK_KEY_FORMAT, i));
+            Main.getPreferences().remove(String.format(BOOKMARK_KEY_FORMAT, i));
         }
 
         bookmarks.remove(path);
 
         for (int i = 0; i < bookmarks.size(); i++) {
-            getPreferences().put(String.format(BOOKMARK_KEY_FORMAT, i), bookmarks.get(i).toString());
+            Main.getPreferences().put(String.format(BOOKMARK_KEY_FORMAT, i), bookmarks.get(i).toString());
         }
     }
 
@@ -214,6 +216,13 @@ public class GuiState extends BaseAppState {
 
     private void onSave() {
         editorState.saveModel();
+    }
+
+    private void onOpenSettings() {
+        if (!settingsWindow.isAttached()) {
+            guiNode.attachChild(settingsWindow);
+            getApplication().enqueue(() -> layoutSettingsWindow(settingsWindow, GuiUtils.getWidth(), GuiUtils.getHeight()));
+        }
     }
 
     private void refreshLayout() {
@@ -243,6 +252,12 @@ public class GuiState extends BaseAppState {
         window.setPreferredSize(window.getPreferredSize().setX(width * 0.8f));
         GuiUtils.center(window);
         window.move(0, 0, zIndex + 10);
+    }
+
+    private void layoutSettingsWindow(SettingsWindow window, int width, int height) {
+        window.setPreferredSize(window.getPreferredSize().setX(width * 0.6f));
+        GuiUtils.center(window);
+        window.move(0, 0, zIndex + 20);
     }
 
     private void calculateFps(float tpf) {
@@ -282,6 +297,7 @@ public class GuiState extends BaseAppState {
         container.addChild(new Panel(container.getElementId().child("separator"), GuiState.STYLE));
 
         Button configuration = container.addChild(createToolbarButton("/Interface/settings.png"));
+        configuration.addClickCommands(source -> onOpenSettings());
         tooltipState.addTooltip(configuration, GuiTranslations.getInstance().t("toolbar.settings.tooltip"));
 
         return container;
@@ -289,6 +305,10 @@ public class GuiState extends BaseAppState {
 
     private OpenFileWindow createOpenFileWindow() {
         return new OpenFileWindow();
+    }
+
+    private SettingsWindow createSettingsWindow() {
+        return new SettingsWindow();
     }
 
     private static Button createToolbarButton(String iconPath) {
@@ -303,8 +323,19 @@ public class GuiState extends BaseAppState {
         return button;
     }
 
-    private static Preferences getPreferences() {
-        return Preferences.userNodeForPackage(Main.class);
+//    public void removeAssetPath(Path path) {
+//        editorState.removeAssetRootPath(path);
+//    }
+//
+//    public void addAssetPath(Path path) {
+//        editorState.addAssetRootPath(path);
+//    }
+
+    public List<Path> getAssetRootPaths() {
+        return editorState.getAssetRootPaths();
     }
 
+    public void setAssetRootPaths(ArrayList<Path> paths) {
+        editorState.setAssetRootPaths(paths);
+    }
 }

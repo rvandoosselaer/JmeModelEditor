@@ -207,7 +207,6 @@ def sliderButtonCommands = [
 
 selector("slider", "editor-style") {
     background = new QuadBackgroundComponent(sliderColor)
-    insets = new Insets3f(2, 0, 2, 0)
 }
 
 selector("slider.up.button", "editor-style") {
@@ -237,6 +236,9 @@ selector("slider.thumb.button", "editor-style") {
 //
 selector("textField", "editor-style") {
     background = new QuadBackgroundComponent(textFieldColor)
+    background.setMargin(2, 2)
+    textHAlignment = HAlignment.Left
+    textVAlignment = VAlignment.Center
 }
 
 //
@@ -373,6 +375,67 @@ selector("open-file.recent", "title", "editor-style") {
     background = new QuadBackgroundComponent(panelTitleColor)
     background.setMargin(10, 4)
 }
+
+//
+// Settings
+//
+selector("settings", "container", "editor-style") {
+    insets = new Insets3f(8, 8, 4, 8)
+}
+
+selector("settings", "button", "editor-style") {
+    insets = new Insets3f(4, 8, 8, 8)
+}
+
+selector("settings", "primary-button", "editor-style") {
+    insets = new Insets3f(4, 0, 8, 8)
+}
+
+selector("settings.assets", "container", "editor-style") {
+    insets = new Insets3f(0, 0, 0, 0)
+    background = new QuadBackgroundComponent(panelContainerColor)
+}
+
+
+selector("settings.assets", "title", "editor-style") {
+    background = new QuadBackgroundComponent(panelTitleColor)
+    background.setMargin(10, 4)
+}
+
+selector("settings.assets", "button", "editor-style") {
+    insetsComponent = new DynamicInsetsComponent(0, 0, 0, 1)
+    preferredSize = vec3(18, 18, 0)
+    textVAlignment = VAlignment.Center
+    textHAlignment = HAlignment.Center
+}
+
+selector("settings.assets.add", "container", "editor-style") {
+    insets = new Insets3f(8, 0, 0, 0)
+}
+
+selector("settings.assets.add", "button", "editor-style") {
+    insets = new Insets3f(0, 4, 0, 0)
+    insetsComponent = null
+    preferredSize = null
+}
+
+selector("settings", "list.container", "editor-style") {
+    insets = new Insets3f(0, 0, 0, 0)
+    background = new QuadBackgroundComponent(listColor)
+}
+
+selector("settings.list", "item", "editor-style") {
+    insets = new Insets3f(4, 4, 4, 4)
+}
+
+selector("settings.list.item", "even", "editor-style") {
+    background = new QuadBackgroundComponent(listItemEvenColor)
+}
+
+selector("settings.list.item", "odd", "editor-style") {
+    background = new QuadBackgroundComponent(listItemOddColor)
+}
+
 //
 // panel
 //

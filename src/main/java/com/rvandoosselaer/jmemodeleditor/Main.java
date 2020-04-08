@@ -14,6 +14,8 @@ import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.style.BaseStyles;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.prefs.Preferences;
+
 /**
  * @author: rvandoosselaer
  */
@@ -56,6 +58,10 @@ public class Main extends SimpleApplication {
     @Override
     public void requestClose(boolean esc) {
         super.requestClose(esc);
+    }
+
+    public static Preferences getPreferences() {
+        return Preferences.userNodeForPackage(Main.class);
     }
 
     private AppSettings createSettings() {
