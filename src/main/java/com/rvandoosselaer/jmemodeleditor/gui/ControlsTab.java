@@ -66,37 +66,45 @@ public class ControlsTab extends Tab {
         for (int i = 0; i < sceneGraphItem.getSpatial().getNumControls(); i++) {
             Control control = sceneGraphItem.getSpatial().getControl(i);
             if (control instanceof AnimComposer) {
-                container.addChild(new Label(GuiTranslations.getInstance().t("panel.properties.controls.animcomposer"), PropertiesPanel.ELEMENT_ID.child("title")));
-
-                container.addChild(createStringListBox(GuiTranslations.getInstance().t("panel.properties.controls.anim.names"), new ArrayList<>(((AnimComposer) control).getAnimClipsNames())));
-
-                Optional<ListBox<String>> listBox = getListBox(container);
-                if (listBox.isPresent()) {
-                    Container animButtons = container.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.None))); // add in the seconds column
-                    animButtons.addChild(new Panel(1, 1, ColorRGBA.BlackNoAlpha)); // spacer
-                    Button play = animButtons.addChild(createIconButton("/Interface/play.png"));
-                    play.addClickCommands(cmd -> getListBoxSelection(listBox.get()).ifPresent(((AnimComposer) control)::setCurrentAction));
-                    Button stop = animButtons.addChild(createIconButton("/Interface/stop.png"));
-                    stop.addClickCommands(cmd -> ((AnimComposer) control).reset());
-                    // add a right margin to the last button, the size of the slider.
-                    stop.setInsets(new Insets3f(2, 0, 2, 2 + listBox.get().getSlider().getPreferredSize().x));
-                }
+                addAnimComposerPanel(container, (AnimComposer) control);
             } else if (control instanceof SkinningControl) {
-                container.addChild(new Label(GuiTranslations.getInstance().t("panel.properties.controls.skinningcontrol"), PropertiesPanel.ELEMENT_ID.child("title")));
-                container.addChild(createBooleanInput(GuiTranslations.getInstance().t("panel.properties.controls.skinning.skeleton"),
-                        isSkeletonVisible((SkinningControl) control), source -> showSkeleton(source, (SkinningControl) control)));
-
-                Button bindPose = container.addChild(new Button(GuiTranslations.getInstance().t("panel.properties.controls.skinning.bindpose")));
-                bindPose.addClickCommands(cmd -> ((SkinningControl) control).getArmature().applyBindPose());
-                bindPose.setInsets(new Insets3f(4, 4, 4, 4));
-
-                List<String> joints = ((SkinningControl) control).getArmature().getJointList().stream()
-                        .map(Joint::getName)
-                        .collect(Collectors.toList());
-                container.addChild(createStringListBox(GuiTranslations.getInstance().t("panel.properties.controls.skinning.joints"), joints));
+                addSkinningControlPanel(container, (SkinningControl) control);
             }
         }
         return container;
+    }
+
+    private void addSkinningControlPanel(Container container, SkinningControl control) {
+        container.addChild(new Label(GuiTranslations.getInstance().t("panel.properties.controls.skinningcontrol"), PropertiesPanel.ELEMENT_ID.child("title")));
+        container.addChild(createBooleanInput(GuiTranslations.getInstance().t("panel.properties.controls.skinning.skeleton"),
+                isSkeletonVisible(control), source -> showSkeleton(source, control)));
+
+        Button bindPose = container.addChild(new Button(GuiTranslations.getInstance().t("panel.properties.controls.skinning.bindpose")));
+        bindPose.addClickCommands(cmd -> control.getArmature().applyBindPose());
+        bindPose.setInsets(new Insets3f(4, 4, 4, 4));
+
+        List<String> joints = control.getArmature().getJointList().stream()
+                .map(Joint::getName)
+                .collect(Collectors.toList());
+        container.addChild(createStringListBox(GuiTranslations.getInstance().t("panel.properties.controls.skinning.joints"), joints));
+    }
+
+    private void addAnimComposerPanel(Container container, AnimComposer control) {
+        container.addChild(new Label(GuiTranslations.getInstance().t("panel.properties.controls.animcomposer"), PropertiesPanel.ELEMENT_ID.child("title")));
+
+        container.addChild(createStringListBox(GuiTranslations.getInstance().t("panel.properties.controls.anim.names"), new ArrayList<>(control.getAnimClipsNames())));
+
+        Optional<ListBox<String>> listBox = getListBox(container);
+        if (listBox.isPresent()) {
+            Container animButtons = container.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.None))); // add in the seconds column
+            animButtons.addChild(new Panel(1, 1, ColorRGBA.BlackNoAlpha)); // spacer
+            Button play = animButtons.addChild(createIconButton("/Interface/play.png"));
+            play.addClickCommands(cmd -> getListBoxSelection(listBox.get()).ifPresent(control::setCurrentAction));
+            Button stop = animButtons.addChild(createIconButton("/Interface/stop.png"));
+            stop.addClickCommands(cmd -> control.reset());
+            // add a right margin to the last button, the size of the slider.
+            stop.setInsets(new Insets3f(2, 0, 2, 2 + listBox.get().getSlider().getPreferredSize().x));
+        }
     }
 
     private static Button createIconButton(String iconPath) {

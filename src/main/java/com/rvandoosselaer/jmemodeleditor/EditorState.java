@@ -15,7 +15,6 @@ import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Sphere;
 import com.rvandoosselaer.jmeutils.util.GeometryUtils;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -74,7 +73,11 @@ public class EditorState extends BaseAppState {
         removeModel();
     }
 
-    public Spatial loadModel(@NonNull Path path) {
+    public Spatial loadModel(Path path) {
+        if (path == null) {
+            return null;
+        }
+
         log.info("Opening {}", path);
 
         // make sure there is no previous loaded model in the cache
@@ -97,11 +100,7 @@ public class EditorState extends BaseAppState {
     }
 
     public boolean reloadModel() {
-        if (modelPath != null) {
-            return loadModel(modelPath) != null;
-        }
-
-        return false;
+        return loadModel(modelPath) != null;
     }
 
     public boolean saveModel() {
