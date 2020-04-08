@@ -142,7 +142,7 @@ public class OpenFileWindow extends Window {
         container.addChild(new Label(GuiTranslations.getInstance().t("window.open-file.recent"), elementId.child("title")));
 
         Container locations = container.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even)));
-        recentLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getRecentFolders())));
+        recentLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getRecentLocations())));
         recentLocations.setVisibleItems(6);
         recentLocations.addClickCommands(source -> recentLocations.getSelectedItem().ifPresent(this::setDirectory));
 
@@ -226,7 +226,7 @@ public class OpenFileWindow extends Window {
 
     private void refreshRecentLocations() {
         recentLocations.getModel().clear();
-        recentLocations.getModel().addAll(guiState.getRecentFolders());
+        recentLocations.getModel().addAll(guiState.getRecentLocations());
         recentLocations.deselect();
     }
 

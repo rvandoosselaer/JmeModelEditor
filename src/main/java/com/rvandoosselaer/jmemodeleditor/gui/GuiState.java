@@ -109,7 +109,7 @@ public class GuiState extends BaseAppState {
     /**
      * @return list of recent locations
      */
-    public List<Path> getRecentFolders() {
+    public List<Path> getRecentLocations() {
         List<Path> recentLocations = new ArrayList<>();
 
         int i = 0;
@@ -127,7 +127,7 @@ public class GuiState extends BaseAppState {
             return;
         }
 
-        List<Path> recentLocations = getRecentFolders();
+        List<Path> recentLocations = getRecentLocations();
 
         clearRecentLocations();
 
