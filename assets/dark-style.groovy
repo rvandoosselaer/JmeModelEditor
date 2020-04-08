@@ -168,9 +168,27 @@ selector("primary-button", "editor-style") {
 //
 // Listbox
 //
+selector("list", "container", "editor-style") {
+    background = new QuadBackgroundComponent(listColor)
+}
 selector("list.selector", "editor-style") {
     background = new QuadBackgroundComponent(listSelectionColor)
     background.material.material.additionalRenderState.blendMode = BlendMode.AlphaAdditive;
+}
+selector("list", "row", "editor-style") {
+    insets = new Insets3f(4, 4, 4, 4)
+    textVAlignment = VAlignment.Center
+    if (icon) {
+        icon.setMargin(4, 2)
+        icon.setHAlignment(HAlignment.Left);
+        icon.setVAlignment(VAlignment.Center);
+    }
+}
+selector("list.row", "odd", "editor-style") {
+    background = new QuadBackgroundComponent(listItemOddColor)
+}
+selector("list.row", "even", "editor-style") {
+    background = new QuadBackgroundComponent(listItemEvenColor)
 }
 
 //
@@ -327,22 +345,22 @@ selector("open-file", "textField", "editor-style") {
     insets = new Insets3f(8, 8, 8, 8)
 }
 
-selector("open-file", "list.container", "editor-style") {
-    insets = new Insets3f(0, 8, 0, 8)
-    background = new QuadBackgroundComponent(listColor)
-}
+//selector("open-file", "list.container", "editor-style") {
+//    insets = new Insets3f(0, 8, 0, 8)
+//    background = new QuadBackgroundComponent(listColor)
+//}
 
-selector("open-file.list", "item", "editor-style") {
-    insets = new Insets3f(4, 4, 4, 4)
-}
+//selector("open-file.list", "item", "editor-style") {
+//    insets = new Insets3f(4, 4, 4, 4)
+//}
 
-selector("open-file.list.item", "even", "editor-style") {
-    background = new QuadBackgroundComponent(listItemEvenColor)
-}
+//selector("open-file.list.item", "even", "editor-style") {
+//    background = new QuadBackgroundComponent(listItemEvenColor)
+//}
 
-selector("open-file.list.item", "odd", "editor-style") {
-    background = new QuadBackgroundComponent(listItemOddColor)
-}
+//selector("open-file.list.item", "odd", "editor-style") {
+//    background = new QuadBackgroundComponent(listItemOddColor)
+//}
 
 selector("open-file.bookmarks", "container", "editor-style") {
     insets = new Insets3f(8, 8, 8, 0)
@@ -419,22 +437,22 @@ selector("settings.assets.add", "button", "editor-style") {
     preferredSize = null
 }
 
-selector("settings", "list.container", "editor-style") {
-    insets = new Insets3f(0, 0, 0, 0)
-    background = new QuadBackgroundComponent(listColor)
-}
-
-selector("settings.list", "item", "editor-style") {
-    insets = new Insets3f(4, 4, 4, 4)
-}
-
-selector("settings.list.item", "even", "editor-style") {
-    background = new QuadBackgroundComponent(listItemEvenColor)
-}
-
-selector("settings.list.item", "odd", "editor-style") {
-    background = new QuadBackgroundComponent(listItemOddColor)
-}
+//selector("settings", "list.container", "editor-style") {
+//    insets = new Insets3f(0, 0, 0, 0)
+//    background = new QuadBackgroundComponent(listColor)
+//}
+//
+//selector("settings.list", "item", "editor-style") {
+//    insets = new Insets3f(4, 4, 4, 4)
+//}
+//
+//selector("settings.list.item", "even", "editor-style") {
+//    background = new QuadBackgroundComponent(listItemEvenColor)
+//}
+//
+//selector("settings.list.item", "odd", "editor-style") {
+//    background = new QuadBackgroundComponent(listItemOddColor)
+//}
 
 //
 // panel

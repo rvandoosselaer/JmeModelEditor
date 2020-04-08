@@ -16,8 +16,6 @@ import com.simsilica.lemur.FillMode;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.HAlignment;
 import com.simsilica.lemur.Label;
-import com.simsilica.lemur.ListBox;
-import com.simsilica.lemur.Panel;
 import com.simsilica.lemur.TextField;
 import com.simsilica.lemur.VAlignment;
 import com.simsilica.lemur.component.IconComponent;
@@ -26,7 +24,6 @@ import com.simsilica.lemur.core.VersionedList;
 import com.simsilica.lemur.event.KeyAction;
 import com.simsilica.lemur.event.KeyModifiers;
 import com.simsilica.lemur.event.MouseEventControl;
-import com.simsilica.lemur.list.CellRenderer;
 import com.simsilica.lemur.style.ElementId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +83,8 @@ public class OpenFileWindow extends Window {
         Container fileBrowserContainer = mainContainer.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.Even, FillMode.Even)));
         fileBrowserContainer.addChild(createTopBar());
 
-        fileBrowser = fileBrowserContainer.addChild(new PathListBox(new VersionedList<>(), ELEMENT_ID.child(ListBox.ELEMENT_ID)));
+        fileBrowser = fileBrowserContainer.addChild(new PathListBox(new VersionedList<>()));
+        fileBrowser.setCellRenderer(new PathListBox.FileNameRenderer());
         fileBrowser.setVisibleItems(20);
         MouseEventControl.addListenersToSpatial(fileBrowser, new PathListBoxDoubleClickListener(fileBrowser));
 
@@ -143,8 +141,10 @@ public class OpenFileWindow extends Window {
 
         Container locations = container.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even)));
         recentLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getRecentLocations())));
+        recentLocations.setCellRenderer(new PathListBox.FileNameRenderer());
         recentLocations.setVisibleItems(6);
-        recentLocations.addClickCommands(source -> recentLocations.getSelectedItem().ifPresent(this::setDirectory));
+        recentLocations.addSelectionCommand(this::setDirectory);
+        recentLocations.addClickCommands(listBox -> recentLocations.getSelection().ifPresent(this::setDirectory));
 
         Container buttons = locations.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.None)));
         Button clearRecentLocations = buttons.addChild(new Button("x", elementId.child("button")));
@@ -166,8 +166,10 @@ public class OpenFileWindow extends Window {
 
         Container locations = bookmarks.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even)));
         bookmarkLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getBookmarks())));
+        bookmarkLocations.setCellRenderer(new PathListBox.FileNameRenderer());
         bookmarkLocations.setVisibleItems(6);
-        bookmarkLocations.addClickCommands(source -> bookmarkLocations.getSelectedItem().ifPresent(this::setDirectory));
+        bookmarkLocations.addSelectionCommand(this::setDirectory);
+        bookmarkLocations.addClickCommands(source -> bookmarkLocations.getSelection().ifPresent(this::setDirectory));
 
         Container buttons = locations.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.None)));
         Button addLocation = buttons.addChild(new Button("+", elementId.child("button")));
@@ -187,7 +189,7 @@ public class OpenFileWindow extends Window {
     }
 
     private void onOpen() {
-        Optional<Path> selection = fileBrowser.getSelectedItem();
+        Optional<Path> selection = fileBrowser.getSelection();
         if (selection.isPresent()) {
             if (Files.isDirectory(selection.get())) {
                 setDirectory(selection.get());
@@ -209,7 +211,7 @@ public class OpenFileWindow extends Window {
     }
 
     private void onRemoveBookmark() {
-        bookmarkLocations.getSelectedItem().ifPresent(guiState::removeBookmark);
+        bookmarkLocations.getSelection().ifPresent(guiState::removeBookmark);
         refreshBookmarks();
     }
 
@@ -303,47 +305,6 @@ public class OpenFileWindow extends Window {
         return button;
     }
 
-    private static class PathRenderer implements CellRenderer<Path> {
-
-        public static final ElementId ELEMENT_ID = OpenFileWindow.ELEMENT_ID.child(ListBox.ELEMENT_ID).child("item");
-        private boolean odd;
-
-        @Override
-        public Panel getView(Path item, boolean selected, Panel existing) {
-            Container container = new Container(new SpringGridLayout(), updateAlternatingRowElementId());
-
-            Label label = container.addChild(new Label(item.getFileName().toString(), ELEMENT_ID));
-            label.setTextVAlignment(VAlignment.Center);
-            label.setIcon(createIcon(item));
-
-            return container;
-        }
-
-        private IconComponent createIcon(Path item) {
-            IconComponent icon = new IconComponent(getIconPath(item));
-            icon.setMargin(4, 2);
-            icon.setHAlignment(HAlignment.Left);
-            icon.setVAlignment(VAlignment.Center);
-            return icon;
-        }
-
-        private String getIconPath(Path item) {
-            return Files.isDirectory(item) ? "/Interface/folder.png" : isJ3o(item) ? "/Interface/jme-monkey.png" : "/Interface/file.png";
-        }
-
-        private boolean isJ3o(Path item) {
-            return item.getFileName().toString().toLowerCase().endsWith(".j3o");
-        }
-
-        private ElementId updateAlternatingRowElementId() {
-            ElementId elementId = ELEMENT_ID.child(odd ? "odd" : "even");
-            odd = !odd;
-
-            return elementId;
-        }
-
-    }
-
     @RequiredArgsConstructor
     private class PathListBoxDoubleClickListener extends DoubleClickMouseListener {
 
@@ -352,35 +313,8 @@ public class OpenFileWindow extends Window {
         @Override
         protected void doubleClick(MouseButtonEvent event, Spatial target, Spatial capture) {
             if (event.getButtonIndex() == 0) {
-                listBox.getSelectedItem().ifPresent(OpenFileWindow.this::setDirectory);
+                listBox.getSelection().ifPresent(OpenFileWindow.this::setDirectory);
             }
-        }
-
-    }
-
-    private static class PathListBox extends ListBox<Path> {
-
-        public PathListBox(VersionedList<Path> model) {
-            this(model, new ElementId(ELEMENT_ID));
-        }
-
-        public PathListBox(VersionedList<Path> model, ElementId elementId) {
-            super(model, elementId, GuiState.STYLE);
-            setCellRenderer(new PathRenderer());
-            addControl(new ListBoxSliderControl());
-        }
-
-        public Optional<Path> getSelectedItem() {
-            Integer index = getSelectionModel().getSelection();
-            if (index != null && index >= 0 && index < getModel().size()) {
-                return Optional.of(getModel().get(index));
-            }
-
-            return Optional.empty();
-        }
-
-        public void deselect() {
-            getSelectionModel().setSelection(-1);
         }
 
     }
