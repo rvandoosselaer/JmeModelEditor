@@ -70,19 +70,20 @@ public class SettingsWindow extends Window {
     }
 
     private Container createAssetRootsPanel() {
-        Container wrapper = new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), ELEMENT_ID.child(Container.ELEMENT_ID));
+        Container wrapper = new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), ELEMENT_ID.child("assets").child(Container.ELEMENT_ID));
 
-        Container assetPaths = wrapper.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), new ElementId("panel")));
+        Container assetPaths = wrapper.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even)));
         assetPaths.addChild(new Label(GuiTranslations.getInstance().t("window.settings.assets.title"), new ElementId("panel.title")));
         assetRootPaths = assetPaths.addChild(new PathListBox(new VersionedList<>(guiState.getAssetRootPaths())));
         assetRootPaths.setCellRenderer(new FullPathRenderer());
         assetRootPaths.setVisibleItems(4);
         assetRootPaths.addControl(new ListBoxSliderControl());
-        Button removeAssetPath = assetPaths.addChild(new Button("-", ELEMENT_ID.child("removeAssetPath").child(Button.ELEMENT_ID)));
+        Container removeAssetPathContainer = wrapper.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.None, FillMode.Even), ELEMENT_ID.child("removeAssetPath").child(Container.ELEMENT_ID)));
+        Button removeAssetPath = removeAssetPathContainer.addChild(new Button("-", ELEMENT_ID.child("removeAssetPath").child(Button.ELEMENT_ID)));
         tooltipState.addTooltip(removeAssetPath, GuiTranslations.getInstance().t("window.settings.assets.remove.tooltip"));
         removeAssetPath.addClickCommands(button -> assetRootPaths.getSelection().ifPresent(this::onRemovePath));
 
-        Container addAssetPathContainer = wrapper.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), ELEMENT_ID.child("addAssetPath").child("panel")));
+        Container addAssetPathContainer = wrapper.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), ELEMENT_ID.child("addAssetPath").child(Container.ELEMENT_ID)));
         assetPath = addAssetPathContainer.addChild(new TextField(""));
         KeyAction pasteKeyCombo = new KeyAction(KeyInput.KEY_V, KeyModifiers.CONTROL_DOWN);
         assetPath.getActionMap().put(pasteKeyCombo, (textEntryComponent, keyAction) -> textEntryComponent.setText(Sys.getClipboard() != null ? Sys.getClipboard() : ""));

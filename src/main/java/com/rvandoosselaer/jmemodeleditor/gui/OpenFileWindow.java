@@ -2,7 +2,6 @@ package com.rvandoosselaer.jmemodeleditor.gui;
 
 import com.jme3.input.KeyInput;
 import com.jme3.input.event.MouseButtonEvent;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -97,11 +96,12 @@ public class OpenFileWindow extends Window {
      * Creates the top bar of the open file modal containing the full path textfield and a directory buttons
      */
     private Container createTopBar() {
-        Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Last, FillMode.Even));
-        Button homeDir = container.addChild(createButton("/Interface/home.png"));
+        ElementId elementId = ELEMENT_ID.child("fileBrowser.controls");
+        Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Last, FillMode.Even), elementId.child(Container.ELEMENT_ID));
+        Button homeDir = container.addChild(createButton("/Interface/home.png", elementId.child(Button.ELEMENT_ID)));
         homeDir.addClickCommands(source -> setDirectory(getHomeDirectory()));
         tooltipState.addTooltip(homeDir, GuiTranslations.getInstance().t("window.open-file.home.tooltip"));
-        Button upDir = container.addChild(createButton("/Interface/up-arrow.png"));
+        Button upDir = container.addChild(createButton("/Interface/up-arrow.png", elementId.child(Button.ELEMENT_ID)));
         upDir.addClickCommands(source -> goDirectoryUp());
         tooltipState.addTooltip(upDir, GuiTranslations.getInstance().t("window.open-file.up.tooltip"));
 
@@ -293,10 +293,9 @@ public class OpenFileWindow extends Window {
         return Collections.emptyList();
     }
 
-    private static Button createButton(String iconPath) {
-        Button button = new Button("", ELEMENT_ID.child(Button.ELEMENT_ID));
+    private static Button createButton(String iconPath, ElementId elementId) {
+        Button button = new Button("", elementId);
         IconComponent icon = new IconComponent(iconPath);
-        icon.setIconSize(new Vector2f(16, 16));
         icon.setMargin(2, 2);
         icon.setHAlignment(HAlignment.Center);
         icon.setVAlignment(VAlignment.Center);

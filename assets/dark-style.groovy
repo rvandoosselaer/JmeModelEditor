@@ -326,14 +326,19 @@ selector("window", "button-wrapper", "editor-style") {
 selector("open-file.fileBrowser", "container", "editor-style") {
     insets = new Insets3f(8, 4, 4, 8)
 }
+selector("open-file.fileBrowser.controls", "container", "editor-style") {
+    insets = new Insets3f(0, 0, 8, 0)
+}
+selector("open-file.fileBrowser.controls", "button", "editor-style") {
+    insets = new Insets3f(0, 0, 0, 8)
+    preferredSize = vec3(32, 24, 0)
+}
+//TODO
 selector("open-file", "button", "editor-style") {
     insets = new Insets3f(4, 8, 8, 4)
 }
 selector("open-file", "primary-button", "editor-style") {
     insets = new Insets3f(4, 4, 8, 8)
-}
-selector("open-file", "textField", "editor-style") {
-    insets = new Insets3f(8, 8, 8, 8)
 }
 selector("open-file.bookmarks", "container", "editor-style") {
     insets = new Insets3f(8, 8, 4, 4)
@@ -364,26 +369,29 @@ selector("open-file.recent", "title", "editor-style") {
 //
 // Settings
 //
-selector("settings", "container", "editor-style") {
+selector("settings.assets", "container", "editor-style") {
     insets = new Insets3f(8, 8, 4, 8)
-}
-selector("settings", "button", "editor-style") {
-    insets = new Insets3f(4, 8, 8, 4)
-}
-selector("settings", "primary-button", "editor-style") {
-    insets = new Insets3f(4, 4, 8, 8)
 }
 selector("settings.removeAssetPath", "button", "editor-style") {
     insets3f = new Insets3f(2, 2, 2, 2)
     insetsComponent = new DynamicInsetsComponent(0, 0, 0, 1)
     preferredSize = vec3(18, 18, 0)
 }
-selector("settings.addAssetPath", "panel", "editor-style") {
+selector("settings.removeAssetPath", "container", "editor-style") {
+    background = new QuadBackgroundComponent(listColor)
+}
+selector("settings.addAssetPath", "container", "editor-style") {
     insets = new Insets3f(8, 0, 0, 0)
     background = new QuadBackgroundComponent(windowColor)
 }
 selector("settings.addAssetPath", "button", "editor-style") {
     insets = new Insets3f(0, 2, 0, 0)
+}
+selector("settings", "button", "editor-style") {
+    insets = new Insets3f(4, 8, 8, 4)
+}
+selector("settings", "primary-button", "editor-style") {
+    insets = new Insets3f(4, 4, 8, 8)
 }
 //
 // panel
