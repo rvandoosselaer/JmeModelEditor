@@ -36,6 +36,7 @@ def listItemOddColor = color(0.176, 0.176, 0.176, 1)
 def textFieldColor = color(0.114, 0.114, 0.114, 1)
 
 def toolBarColor = color(0.137, 0.137, 0.137, 1)
+def toolBarSeparatorColor = color(0.294, 0.294, 0.294, 1)
 
 def buttonToolBarPressedColor = color(0.282, 0.463, 0.718, 1)
 def buttonToolBarHighlightColor = color(0.282, 0.463, 0.718, 1)
@@ -280,6 +281,12 @@ selector("toolbar", "button", "editor-style") {
     insets = new Insets3f(4, 4, 4, 0)
     background = new QuadBackgroundComponent(buttonToolBarColor)
     buttonCommands = toolbarCmds
+}
+
+selector("toolbar", "separator", "editor-style") {
+    insets = new Insets3f(4, 4, 4, 0)
+    preferredSize = vec3(6, 6, 0)
+    background = new QuadBackgroundComponent(toolBarSeparatorColor)
 }
 
 //

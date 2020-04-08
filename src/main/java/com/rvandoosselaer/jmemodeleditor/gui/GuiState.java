@@ -16,6 +16,7 @@ import com.simsilica.lemur.Container;
 import com.simsilica.lemur.FillMode;
 import com.simsilica.lemur.HAlignment;
 import com.simsilica.lemur.Label;
+import com.simsilica.lemur.Panel;
 import com.simsilica.lemur.VAlignment;
 import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.SpringGridLayout;
@@ -277,6 +278,11 @@ public class GuiState extends BaseAppState {
         Button reload = container.addChild(createToolbarButton("/Interface/reload.png"));
         reload.addClickCommands(source -> onReload());
         tooltipState.addTooltip(reload, GuiTranslations.getInstance().t("toolbar.reload.tooltip"));
+
+        container.addChild(new Panel(container.getElementId().child("separator"), GuiState.STYLE));
+
+        Button configuration = container.addChild(createToolbarButton("/Interface/settings.png"));
+        tooltipState.addTooltip(configuration, GuiTranslations.getInstance().t("toolbar.settings.tooltip"));
 
         return container;
     }
