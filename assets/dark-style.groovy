@@ -455,6 +455,7 @@ selector("panel.properties", "label-ro", "editor-style") {
     textHAlignment = HAlignment.Left
     textVAlignment = VAlignment.Center
     background = new QuadBackgroundComponent(textFieldColor);
+    maxWidth = 150
 }
 def setButtonCmd = new Command<Button>() {
     @Override
