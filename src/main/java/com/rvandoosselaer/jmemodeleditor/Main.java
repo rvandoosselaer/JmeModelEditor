@@ -14,6 +14,9 @@ import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.style.BaseStyles;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.prefs.Preferences;
 
 /**
@@ -73,6 +76,16 @@ public class Main extends SimpleApplication {
         Resolution resolution = ResolutionHelper.getFirstHDResolution();
         settings.setResolution(resolution.getWidth(), resolution.getHeight());
         settings.setBitsPerPixel(resolution.getBpp());
+        try {
+            settings.setIcons(new BufferedImage[]{
+                    ImageIO.read(Main.class.getResourceAsStream("/Icons/icon-16.png")),
+                    ImageIO.read(Main.class.getResourceAsStream("/Icons/icon-32.png")),
+                    ImageIO.read(Main.class.getResourceAsStream("/Icons/icon-128.png")),
+                    ImageIO.read(Main.class.getResourceAsStream("/Icons/icon-256.png"))
+            });
+        } catch (IOException e) {
+            log.error("Unable to load icons: {}", e.getMessage());
+        }
 
         log.debug("Settings: {}", settings);
 
