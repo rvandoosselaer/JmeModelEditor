@@ -84,7 +84,7 @@ public class OpenFileWindow extends Window {
         fileBrowserContainer.addChild(createTopBar());
 
         fileBrowser = fileBrowserContainer.addChild(new PathListBox(new VersionedList<>()));
-        fileBrowser.setCellRenderer(new PathListBox.FileNameRenderer());
+        fileBrowser.setCellRenderer(new FileNameRenderer());
         fileBrowser.setVisibleItems(20);
         MouseEventControl.addListenersToSpatial(fileBrowser, new PathListBoxDoubleClickListener(fileBrowser));
 
@@ -141,7 +141,7 @@ public class OpenFileWindow extends Window {
 
         Container locations = container.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even)));
         recentLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getRecentLocations())));
-        recentLocations.setCellRenderer(new PathListBox.FileNameRenderer());
+        recentLocations.setCellRenderer(new FileNameRenderer());
         recentLocations.setVisibleItems(6);
         recentLocations.addSelectionCommand(this::setDirectory);
         recentLocations.addClickCommands(listBox -> recentLocations.getSelection().ifPresent(this::setDirectory));
@@ -166,7 +166,7 @@ public class OpenFileWindow extends Window {
 
         Container locations = bookmarks.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even)));
         bookmarkLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getBookmarks())));
-        bookmarkLocations.setCellRenderer(new PathListBox.FileNameRenderer());
+        bookmarkLocations.setCellRenderer(new FileNameRenderer());
         bookmarkLocations.setVisibleItems(6);
         bookmarkLocations.addSelectionCommand(this::setDirectory);
         bookmarkLocations.addClickCommands(source -> bookmarkLocations.getSelection().ifPresent(this::setDirectory));

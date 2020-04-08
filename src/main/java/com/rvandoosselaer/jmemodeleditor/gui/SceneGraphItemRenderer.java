@@ -13,24 +13,19 @@ import com.simsilica.lemur.VAlignment;
 import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.QuadBackgroundComponent;
 import com.simsilica.lemur.component.SpringGridLayout;
-import com.simsilica.lemur.list.CellRenderer;
-import com.simsilica.lemur.style.ElementId;
 
 /**
  * Renders a {@link SceneGraphItem} in the {@link SceneGraphListBox}
  *
  * @author: rvandoosselaer
  */
-public class SceneGraphItemRenderer implements CellRenderer<SceneGraphItem> {
+public class SceneGraphItemRenderer extends AlternatingRowRenderer<SceneGraphItem> {
 
-    public static final ElementId ELEMENT_ID = SceneGraphListBox.ELEMENT_ID.child("item");
     private static final int INDENT_SIZE = 10;
-
-    private boolean odd;
 
     @Override
     public Panel getView(SceneGraphItem value, boolean selected, Panel existing) {
-        Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), updateAlternatingRowElementId());
+        Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), getAlternatingRowElementId());
 
         Label label = container.addChild(new Label(value.getSpatial().getName(), ELEMENT_ID));
         label.setIcon(createSpatialIcon(value.getSpatial()));
@@ -68,13 +63,6 @@ public class SceneGraphItemRenderer implements CellRenderer<SceneGraphItem> {
         icon.setVAlignment(VAlignment.Center);
 
         return icon;
-    }
-
-    private ElementId updateAlternatingRowElementId() {
-        ElementId elementId = ELEMENT_ID.child(odd ? "odd" : "even");
-        odd = !odd;
-
-        return elementId;
     }
 
 }

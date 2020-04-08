@@ -198,7 +198,8 @@ def repeatCommand = new Command<Button>() {
     private long startTime;
     private long lastClick;
 
-    public void execute(Button source) {
+    @Override
+    void execute(Button source) {
         // Only do the repeating click while the mouse is
         // over the button (and pressed of course)
         if (source.pressed && source.highlightOn) {
@@ -217,6 +218,7 @@ def repeatCommand = new Command<Button>() {
             lastClick = 0
         }
     }
+
 }
 
 def sliderButtonCommands = [
@@ -226,26 +228,20 @@ def sliderButtonCommands = [
 selector("slider", "editor-style") {
     background = new QuadBackgroundComponent(sliderColor)
 }
-
-selector("slider.up.button", "editor-style") {
+selector("slider", "button", "editor-style") {
     text = ""
-    insets = null
     buttonCommands = sliderButtonCommands
+}
+selector("slider.up.button", "editor-style") {
     icon = new IconComponent("/Interface/scroll-up.png", 1f, 2, 2, 1f, false)
 }
-
 selector("slider.down.button", "editor-style") {
-    text = ""
-    insets = null
-    buttonCommands = sliderButtonCommands
     icon = new IconComponent("/Interface/scroll-down.png", 1f, 2, 2, 1f, false)
 }
-
 selector("slider.thumb.button", "editor-style") {
-    text = ""
-    insets = new Insets3f(4, 4, 4, 4)
     buttonCommands = null
     preferredSize = vec3(20, 60, 2)
+    insets = new Insets3f(4, 4, 4, 4)
     background = new QuadBackgroundComponent(sliderThumbColor)
 }
 
@@ -469,18 +465,6 @@ selector("panel", "scenegraph", "editor-style") {
 selector("panel", "title", "editor-style") {
     background = new QuadBackgroundComponent(panelTitleColor)
     background.setMargin(10, 4)
-}
-
-selector("panel.list", "item", "editor-style") {
-    insets = new Insets3f(4, 4, 4, 4)
-}
-
-selector("panel.list.item", "even", "editor-style") {
-    background = new QuadBackgroundComponent(listItemEvenColor)
-}
-
-selector("panel.list.item", "odd", "editor-style") {
-    background = new QuadBackgroundComponent(listItemOddColor)
 }
 
 selector("panel", "properties", "editor-style") {

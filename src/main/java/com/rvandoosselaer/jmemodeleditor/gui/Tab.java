@@ -22,7 +22,6 @@ import com.simsilica.lemur.VAlignment;
 import com.simsilica.lemur.component.IconComponent;
 import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.core.VersionedList;
-import com.simsilica.lemur.list.CellRenderer;
 import com.simsilica.lemur.style.ElementId;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
@@ -249,7 +248,7 @@ public abstract class Tab {
 
         ListBox<String> listBox = container.addChild(new ListBox<>(new VersionedList<>(list), PropertiesPanel.ELEMENT_ID.child(ListBox.ELEMENT_ID), GuiState.STYLE));
         listBox.setVisibleItems(Math.min(list.size(), 6));
-        listBox.setCellRenderer(createStringCellRenderer());
+        listBox.setCellRenderer(new StringRenderer());
         listBox.addControl(new ListBoxSliderControl());
 
         return container;
@@ -257,28 +256,6 @@ public abstract class Tab {
 
     protected Panel createSeparator() {
         return new Panel(2, 2, PropertiesPanel.ELEMENT_ID.child("properties").child("separator"), GuiState.STYLE);
-    }
-
-    private static CellRenderer<String> createStringCellRenderer() {
-        return new CellRenderer<String>() {
-
-            private boolean odd;
-
-            @Override
-            public Panel getView(String value, boolean selected, Panel existing) {
-                Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Even, FillMode.Even), updateAlternatingRowElementId());
-                container.addChild(new Label(value, SceneGraphItemRenderer.ELEMENT_ID));
-
-                return container;
-            }
-
-            private ElementId updateAlternatingRowElementId() {
-                ElementId elementId = SceneGraphItemRenderer.ELEMENT_ID.child(odd ? "odd" : "even");
-                odd = !odd;
-
-                return elementId;
-            }
-        };
     }
 
     private static String cleanFloat(TextField textField) {

@@ -10,14 +10,11 @@ import com.simsilica.lemur.Button;
 import com.simsilica.lemur.Container;
 import com.simsilica.lemur.FillMode;
 import com.simsilica.lemur.Label;
-import com.simsilica.lemur.ListBox;
-import com.simsilica.lemur.Panel;
 import com.simsilica.lemur.TextField;
 import com.simsilica.lemur.component.SpringGridLayout;
 import com.simsilica.lemur.core.VersionedList;
 import com.simsilica.lemur.event.KeyAction;
 import com.simsilica.lemur.event.KeyModifiers;
-import com.simsilica.lemur.list.CellRenderer;
 import com.simsilica.lemur.style.ElementId;
 import org.lwjgl.Sys;
 
@@ -25,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Optional;
 
 /**
  * @author: rvandoosselaer
@@ -34,7 +30,7 @@ public class SettingsWindow extends Window {
 
     public static final ElementId ELEMENT_ID = new ElementId("settings");
 
-    private ListBox<Path> assetRootPaths;
+    private PathListBox assetRootPaths;
     private TextField assetPath;
     private TooltipState tooltipState;
     private GuiState guiState;
@@ -80,14 +76,14 @@ public class SettingsWindow extends Window {
         Container assetPaths = wrapper.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), elementId.child(Container.ELEMENT_ID)));
         assetPaths.addChild(new Label(GuiTranslations.getInstance().t("window.settings.assets.title"), elementId.child("title")));
 
-        assetRootPaths = assetPaths.addChild(new ListBox<>(new VersionedList<>(), new AssetRootPathRenderer(), ELEMENT_ID.child(ListBox.ELEMENT_ID), GuiState.STYLE));
-        assetRootPaths.getModel().addAll(guiState.getAssetRootPaths());
+        assetRootPaths = assetPaths.addChild(new PathListBox(new VersionedList<>(guiState.getAssetRootPaths())));
+        assetRootPaths.setCellRenderer(new FullPathRenderer());
         assetRootPaths.setVisibleItems(4);
         assetRootPaths.addControl(new ListBoxSliderControl());
 
         Button removeAssetPath = assetPaths.addChild(new Button("-", elementId.child(Button.ELEMENT_ID)));
         tooltipState.addTooltip(removeAssetPath, GuiTranslations.getInstance().t("window.settings.assets.remove.tooltip"));
-        removeAssetPath.addClickCommands(source -> getSelectedItem(assetRootPaths).ifPresent(this::onRemovePath));
+        removeAssetPath.addClickCommands(button -> assetRootPaths.getSelection().ifPresent(this::onRemovePath));
 
         Container addAssetPathContainer = wrapper.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), elementId.child("add").child(Container.ELEMENT_ID)));
         assetPath = addAssetPathContainer.addChild(new TextField(""));
@@ -129,38 +125,6 @@ public class SettingsWindow extends Window {
         assetRootPaths.getSelectionModel().setSelection(-1);
         assetRootPaths.getModel().clear();
         assetRootPaths.getModel().addAll(guiState.getAssetRootPaths());
-    }
-
-    public static Optional<Path> getSelectedItem(ListBox<Path> listBox) {
-        Integer index = listBox.getSelectionModel().getSelection();
-        if (index != null && index >= 0 && index < listBox.getModel().size()) {
-            return Optional.of(listBox.getModel().get(index));
-        }
-
-        return Optional.empty();
-    }
-
-    private static class AssetRootPathRenderer implements CellRenderer<Path> {
-
-        public static final ElementId ELEMENT_ID = SettingsWindow.ELEMENT_ID.child(ListBox.ELEMENT_ID).child("item");
-
-        private boolean odd;
-
-        @Override
-        public Panel getView(Path item, boolean selected, Panel existing) {
-            Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Even, FillMode.Even), updateAlternatingRowElementId());
-            container.addChild(new Label(item.toAbsolutePath().toString(), ELEMENT_ID));
-
-            return container;
-        }
-
-        private ElementId updateAlternatingRowElementId() {
-            ElementId elementId = ELEMENT_ID.child(odd ? "odd" : "even");
-            odd = !odd;
-
-            return elementId;
-        }
-
     }
 
 }
