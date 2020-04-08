@@ -74,8 +74,6 @@ selector("editor-style") {
     focusShadowColor = textShadowFocusColor
     shadowOffset = new Vector3f(1, -1, -1);
 }
-
-
 //
 // Tooltip
 //
@@ -83,7 +81,6 @@ selector("tooltip", "editor-style") {
     background = new QuadBackgroundComponent(tooltipBackgroundColor)
     background.setMargin(6, 6)
 }
-
 //
 // Button
 //
@@ -117,14 +114,12 @@ def buttonCmds = [
         (ButtonAction.HighlightOn) : [buttonHoverCmd],
         (ButtonAction.HighlightOff): [buttonHoverCmd]
 ]
-
 selector("button", "editor-style") {
     background = new QuadBackgroundComponent(buttonColor)
     buttonCommands = buttonCmds
     textHAlignment = HAlignment.Center
     textVAlignment = VAlignment.Center
 }
-
 //
 // primary button
 //
@@ -164,7 +159,6 @@ selector("primary-button", "editor-style") {
     textHAlignment = HAlignment.Center
     textVAlignment = VAlignment.Center
 }
-
 //
 // Listbox
 //
@@ -190,7 +184,6 @@ selector("list.row", "odd", "editor-style") {
 selector("list.row", "even", "editor-style") {
     background = new QuadBackgroundComponent(listItemEvenColor)
 }
-
 //
 // Slider
 //
@@ -220,11 +213,9 @@ def repeatCommand = new Command<Button>() {
     }
 
 }
-
 def sliderButtonCommands = [
         (ButtonAction.Hover): [repeatCommand]
 ]
-
 selector("slider", "editor-style") {
     background = new QuadBackgroundComponent(sliderColor)
 }
@@ -244,7 +235,6 @@ selector("slider.thumb.button", "editor-style") {
     insets = new Insets3f(4, 4, 4, 4)
     background = new QuadBackgroundComponent(sliderThumbColor)
 }
-
 //
 // TextField
 //
@@ -254,14 +244,25 @@ selector("textField", "editor-style") {
     textHAlignment = HAlignment.Left
     textVAlignment = VAlignment.Center
 }
-
+//
+// Panel
+//
+selector("panel", "editor-style") {
+    background = new QuadBackgroundComponent(panelColor)
+}
+selector("panel", "title", "editor-style") {
+    background = new QuadBackgroundComponent(panelTitleColor)
+    background.setMargin(10, 4)
+}
+selector("panel", "container", "editor-style") {
+    background = new QuadBackgroundComponent(panelContainerColor)
+}
 //
 // Toolbar
 //
 selector("toolbar", "editor-style") {
     background = new QuadBackgroundComponent(toolBarColor)
 }
-
 def toolbarPressedCmd = new Command<Button>() {
     @Override
     void execute(Button source) {
@@ -292,189 +293,111 @@ def toolbarCmds = [
         (ButtonAction.HighlightOn) : [toolbarHoverCmd],
         (ButtonAction.HighlightOff): [toolbarHoverCmd]
 ]
-
 selector("toolbar", "button", "editor-style") {
     insets = new Insets3f(4, 4, 4, 0)
     background = new QuadBackgroundComponent(buttonToolBarColor)
     buttonCommands = toolbarCmds
 }
-
 selector("toolbar", "separator", "editor-style") {
     insets = new Insets3f(4, 4, 4, 0)
     preferredSize = vec3(6, 6, 0)
     background = new QuadBackgroundComponent(toolBarSeparatorColor)
 }
-
 //
 // Window
 //
 selector("window", "editor-style") {
     background = new QuadBackgroundComponent(windowColor)
 }
-
 selector("window", "title-wrapper", "editor-style") {
     background = new QuadBackgroundComponent(windowTitleColor)
 }
-
 selector("window", "title", "editor-style") {
     insets = new Insets3f(2, 0, 2, 0)
     textHAlignment = HAlignment.Center
     textVAlignment = VAlignment.Center
 }
-
 selector("window", "button-wrapper", "editor-style") {
     insetsComponent = new DynamicInsetsComponent(0.5, 1, 0.5, 0)
 }
-
 //
 // Open file
 //
+selector("open-file.fileBrowser", "container", "editor-style") {
+    insets = new Insets3f(8, 4, 4, 8)
+}
 selector("open-file", "button", "editor-style") {
-    insets = new Insets3f(8, 8, 8, 0)
+    insets = new Insets3f(4, 8, 8, 4)
 }
-
 selector("open-file", "primary-button", "editor-style") {
-    insets = new Insets3f(8, 8, 8, 8)
+    insets = new Insets3f(4, 4, 8, 8)
 }
-
 selector("open-file", "textField", "editor-style") {
     insets = new Insets3f(8, 8, 8, 8)
 }
-
-//selector("open-file", "list.container", "editor-style") {
-//    insets = new Insets3f(0, 8, 0, 8)
-//    background = new QuadBackgroundComponent(listColor)
-//}
-
-//selector("open-file.list", "item", "editor-style") {
-//    insets = new Insets3f(4, 4, 4, 4)
-//}
-
-//selector("open-file.list.item", "even", "editor-style") {
-//    background = new QuadBackgroundComponent(listItemEvenColor)
-//}
-
-//selector("open-file.list.item", "odd", "editor-style") {
-//    background = new QuadBackgroundComponent(listItemOddColor)
-//}
-
 selector("open-file.bookmarks", "container", "editor-style") {
-    insets = new Insets3f(8, 8, 8, 0)
+    insets = new Insets3f(8, 8, 4, 4)
     background = new QuadBackgroundComponent(panelContainerColor)
 }
-
 selector("open-file.bookmarks", "button", "editor-style") {
     insets = new Insets3f(2, 2, 0, 2)
     textHAlignment = HAlignment.Center
     textVAlignment = VAlignment.Center
 }
-
 selector("open-file.bookmarks", "title", "editor-style") {
     background = new QuadBackgroundComponent(panelTitleColor)
     background.setMargin(10, 4)
 }
-
 selector("open-file.recent", "container", "editor-style") {
-    insets = new Insets3f(8, 8, 8, 0)
+    insets = new Insets3f(4, 8, 8, 4)
     background = new QuadBackgroundComponent(panelContainerColor)
 }
-
 selector("open-file.recent", "button", "editor-style") {
     insets = new Insets3f(2, 2, 0, 2)
     textHAlignment = HAlignment.Center
     textVAlignment = VAlignment.Center
 }
-
 selector("open-file.recent", "title", "editor-style") {
     background = new QuadBackgroundComponent(panelTitleColor)
     background.setMargin(10, 4)
 }
-
 //
 // Settings
 //
 selector("settings", "container", "editor-style") {
     insets = new Insets3f(8, 8, 4, 8)
 }
-
 selector("settings", "button", "editor-style") {
-    insets = new Insets3f(4, 8, 8, 8)
+    insets = new Insets3f(4, 8, 8, 4)
 }
-
 selector("settings", "primary-button", "editor-style") {
-    insets = new Insets3f(4, 0, 8, 8)
+    insets = new Insets3f(4, 4, 8, 8)
 }
-
-selector("settings.assets", "container", "editor-style") {
-    insets = new Insets3f(0, 0, 0, 0)
-    background = new QuadBackgroundComponent(panelContainerColor)
-}
-
-
-selector("settings.assets", "title", "editor-style") {
-    background = new QuadBackgroundComponent(panelTitleColor)
-    background.setMargin(10, 4)
-}
-
-selector("settings.assets", "button", "editor-style") {
+selector("settings.removeAssetPath", "button", "editor-style") {
+    insets3f = new Insets3f(2, 2, 2, 2)
     insetsComponent = new DynamicInsetsComponent(0, 0, 0, 1)
     preferredSize = vec3(18, 18, 0)
-    textVAlignment = VAlignment.Center
-    textHAlignment = HAlignment.Center
 }
-
-selector("settings.assets.add", "container", "editor-style") {
+selector("settings.addAssetPath", "panel", "editor-style") {
     insets = new Insets3f(8, 0, 0, 0)
+    background = new QuadBackgroundComponent(windowColor)
 }
-
-selector("settings.assets.add", "button", "editor-style") {
-    insets = new Insets3f(0, 4, 0, 0)
-    insetsComponent = null
-    preferredSize = null
+selector("settings.addAssetPath", "button", "editor-style") {
+    insets = new Insets3f(0, 2, 0, 0)
 }
-
-//selector("settings", "list.container", "editor-style") {
-//    insets = new Insets3f(0, 0, 0, 0)
-//    background = new QuadBackgroundComponent(listColor)
-//}
-//
-//selector("settings.list", "item", "editor-style") {
-//    insets = new Insets3f(4, 4, 4, 4)
-//}
-//
-//selector("settings.list.item", "even", "editor-style") {
-//    background = new QuadBackgroundComponent(listItemEvenColor)
-//}
-//
-//selector("settings.list.item", "odd", "editor-style") {
-//    background = new QuadBackgroundComponent(listItemOddColor)
-//}
-
 //
 // panel
 //
-selector("panel", "editor-style") {
-    background = new QuadBackgroundComponent(panelColor)
-}
-
 selector("panel", "scenegraph", "editor-style") {
     insets = new Insets3f(0, 2, 0, 2)
     background = new QuadBackgroundComponent(panelContainerColor)
 }
-
-selector("panel", "title", "editor-style") {
-    background = new QuadBackgroundComponent(panelTitleColor)
-    background.setMargin(10, 4)
-}
-
 selector("panel", "properties", "editor-style") {
     insets = new Insets3f(2, 2, 0, 2)
 }
-
 selector("panel.properties", "tabs", "editor-style") {
     // tabs container
 }
-
 def tabButtonCmd = new Command<Button>() {
     @Override
     void execute(Button source) {
@@ -494,7 +417,6 @@ def tabButtonCmd = new Command<Button>() {
         source.background.setMargin(2, 2)
     }
 }
-
 selector("panel.properties.tabs", "button", "editor-style") {
     insets = new Insets3f(0, 0, 0, 2)
     buttonCommands = [
@@ -504,18 +426,15 @@ selector("panel.properties.tabs", "button", "editor-style") {
             (ButtonAction.HighlightOff): [tabButtonCmd]
     ]
 }
-
 selector("panel.properties", "content", "editor-style") {
     // tab content container
     insets = new Insets3f(2, 0, 0, 0)
     background = new QuadBackgroundComponent(panelContainerColor)
 }
-
 selector("panel.properties", "separator", "editor-style") {
     background = new QuadBackgroundComponent(separatorColor)
     insets = new Insets3f(0, 4, 0, 4)
 }
-
 selector("panel.properties", "label", "editor-style") {
     // key of an item
     insets = new Insets3f(4, 4, 4, 4)
@@ -523,14 +442,12 @@ selector("panel.properties", "label", "editor-style") {
     textVAlignment = VAlignment.Center
 
 }
-
 selector("panel.properties", "label-ro", "editor-style") {
     insets = new Insets3f(4, 4, 4, 4)
     textHAlignment = HAlignment.Left
     textVAlignment = VAlignment.Center
     background = new QuadBackgroundComponent(textFieldColor);
 }
-
 def setButtonCmd = new Command<Button>() {
     @Override
     void execute(Button source) {
@@ -546,7 +463,6 @@ def setButtonCmd = new Command<Button>() {
         source.background.setMargin(2, 2)
     }
 }
-
 selector("panel.properties", "button", "editor-style") {
     insets = new Insets3f(2, 0, 2, 2)
     background = new QuadBackgroundComponent(buttonColor)
@@ -558,7 +474,6 @@ selector("panel.properties", "button", "editor-style") {
             (ButtonAction.HighlightOff): [setButtonCmd]
     ]
 }
-
 selector("panel.properties", "textField", "editor-style") {
     // textField value of an item
     insets = new Insets3f(2, 2, 2, 2)
@@ -566,7 +481,6 @@ selector("panel.properties", "textField", "editor-style") {
     textVAlignment = VAlignment.Center
     singleLine = true
 }
-
 selector("panel.properties", "checkbox", "editor-style") {
     def on = new IconComponent("/Interface/checkbox-on.png", 1f, 0, 0, 1f, false)
     on.setMargin(2, 0);

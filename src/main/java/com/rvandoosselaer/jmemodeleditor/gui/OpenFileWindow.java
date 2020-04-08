@@ -80,7 +80,7 @@ public class OpenFileWindow extends Window {
         locationsContainer.addChild(createBookmarkLocationsList());
         locationsContainer.addChild(createRecentLocationsList());
 
-        Container fileBrowserContainer = mainContainer.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.Even, FillMode.Even)));
+        Container fileBrowserContainer = mainContainer.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.Even, FillMode.Even), ELEMENT_ID.child("fileBrowser").child(Container.ELEMENT_ID)));
         fileBrowserContainer.addChild(createTopBar());
 
         fileBrowser = fileBrowserContainer.addChild(new PathListBox(new VersionedList<>()));

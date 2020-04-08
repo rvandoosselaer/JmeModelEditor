@@ -41,8 +41,7 @@ public class SettingsWindow extends Window {
         guiState = ApplicationGlobals.getInstance().getApplication().getStateManager().getState(GuiState.class);
         tooltipState = ApplicationGlobals.getInstance().getApplication().getStateManager().getState(TooltipState.class);
 
-        Container container = getContainer().addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), ELEMENT_ID.child(Container.ELEMENT_ID)));
-        container.addChild(createAssetRootsPanel());
+        getContainer().addChild(createAssetRootsPanel());
 
         getButtonContainer().addChild(createButtonBar());
     }
@@ -71,25 +70,23 @@ public class SettingsWindow extends Window {
     }
 
     private Container createAssetRootsPanel() {
-        ElementId elementId = ELEMENT_ID.child("assets");
-        Container wrapper = new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even));
-        Container assetPaths = wrapper.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), elementId.child(Container.ELEMENT_ID)));
-        assetPaths.addChild(new Label(GuiTranslations.getInstance().t("window.settings.assets.title"), elementId.child("title")));
+        Container wrapper = new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), ELEMENT_ID.child(Container.ELEMENT_ID));
 
+        Container assetPaths = wrapper.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even), new ElementId("panel")));
+        assetPaths.addChild(new Label(GuiTranslations.getInstance().t("window.settings.assets.title"), new ElementId("panel.title")));
         assetRootPaths = assetPaths.addChild(new PathListBox(new VersionedList<>(guiState.getAssetRootPaths())));
         assetRootPaths.setCellRenderer(new FullPathRenderer());
         assetRootPaths.setVisibleItems(4);
         assetRootPaths.addControl(new ListBoxSliderControl());
-
-        Button removeAssetPath = assetPaths.addChild(new Button("-", elementId.child(Button.ELEMENT_ID)));
+        Button removeAssetPath = assetPaths.addChild(new Button("-", ELEMENT_ID.child("removeAssetPath").child(Button.ELEMENT_ID)));
         tooltipState.addTooltip(removeAssetPath, GuiTranslations.getInstance().t("window.settings.assets.remove.tooltip"));
         removeAssetPath.addClickCommands(button -> assetRootPaths.getSelection().ifPresent(this::onRemovePath));
 
-        Container addAssetPathContainer = wrapper.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), elementId.child("add").child(Container.ELEMENT_ID)));
+        Container addAssetPathContainer = wrapper.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), ELEMENT_ID.child("addAssetPath").child("panel")));
         assetPath = addAssetPathContainer.addChild(new TextField(""));
         KeyAction pasteKeyCombo = new KeyAction(KeyInput.KEY_V, KeyModifiers.CONTROL_DOWN);
         assetPath.getActionMap().put(pasteKeyCombo, (textEntryComponent, keyAction) -> textEntryComponent.setText(Sys.getClipboard() != null ? Sys.getClipboard() : ""));
-        Button addAssetPath = addAssetPathContainer.addChild(new Button("Add", elementId.child("add").child(Button.ELEMENT_ID)));
+        Button addAssetPath = addAssetPathContainer.addChild(new Button(GuiTranslations.getInstance().t("window.settings.assets.add"), ELEMENT_ID.child("addAssetPath").child(Button.ELEMENT_ID)));
         addAssetPath.addClickCommands(source -> onAddAssetPath(assetPath.getText()));
         Vector3f size = addAssetPath.getPreferredSize();
         addAssetPath.setPreferredSize(size.multLocal(1.5f, 1.2f, 1f));
@@ -112,6 +109,7 @@ public class SettingsWindow extends Window {
 
     private void onRemovePath(Path path) {
         assetRootPaths.getModel().remove(path);
+        assetRootPaths.deselect();
     }
 
     private void onAddAssetPath(String text) {
