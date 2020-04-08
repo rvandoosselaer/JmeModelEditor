@@ -106,10 +106,7 @@ public class OpenFileWindow extends Window {
         tooltipState.addTooltip(upDir, GuiTranslations.getInstance().t("window.open-file.up.tooltip"));
 
         currentDirTextField = container.addChild(new TextField(getStartFolder().toAbsolutePath().toString(), ELEMENT_ID.child(TextField.ELEMENT_ID)));
-        currentDirTextField.getActionMap().put(new KeyAction(KeyInput.KEY_RETURN), (textEntryComponent, key) -> {
-            setDirectory(Paths.get(textEntryComponent.getText()));
-            GuiGlobals.getInstance().releaseFocus(currentDirTextField);
-        });
+        currentDirTextField.getActionMap().put(new KeyAction(KeyInput.KEY_RETURN), (textEntryComponent, key) -> onReturnDirTextField());
         KeyAction pasteKeyCombo = new KeyAction(KeyInput.KEY_V, KeyModifiers.CONTROL_DOWN);
         currentDirTextField.getActionMap().put(pasteKeyCombo, (textEntryComponent, keyAction) -> textEntryComponent.setText(Sys.getClipboard() != null ? Sys.getClipboard() : ""));
 
@@ -218,6 +215,13 @@ public class OpenFileWindow extends Window {
     private void onClearRecentLocations() {
         guiState.clearRecentLocations();
         refreshRecentLocations();
+    }
+
+    private void onReturnDirTextField() {
+        GuiState.parsePath(currentDirTextField.getText()).ifPresent(path -> {
+            setDirectory(path);
+            GuiGlobals.getInstance().releaseFocus(currentDirTextField);
+        });
     }
 
     private void refreshBookmarks() {

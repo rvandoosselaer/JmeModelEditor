@@ -13,13 +13,13 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Grid;
 import com.jme3.scene.shape.Sphere;
+import com.rvandoosselaer.jmemodeleditor.gui.GuiState;
 import com.rvandoosselaer.jmeutils.util.GeometryUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,7 +123,7 @@ public class EditorState extends BaseAppState {
         int i = 0;
         while (Main.getPreferences().get(String.format(ASSET_ROOT_FORMAT, i), null) != null) {
             String stringPath = Main.getPreferences().get(String.format(ASSET_ROOT_FORMAT, i), null);
-            assetRootPaths.add(Paths.get(stringPath));
+            GuiState.parsePath(stringPath).ifPresent(assetRootPaths::add);
             i++;
         }
 

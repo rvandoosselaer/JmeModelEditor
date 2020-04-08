@@ -20,7 +20,6 @@ import org.lwjgl.Sys;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
@@ -114,10 +113,14 @@ public class SettingsWindow extends Window {
     }
 
     private void onAddAssetPath(String text) {
-        Path path = Paths.get(text);
-        //TODO: check for null!
-        assetRootPaths.getModel().add(Files.isDirectory(path) ? path : path.getParent());
-        assetPath.setText("");
+        GuiState.parsePath(text).ifPresent(this::addAssetPath);
+    }
+
+    private void addAssetPath(Path path) {
+        if (Files.isDirectory(path)) {
+            assetRootPaths.getModel().add(path);
+            assetPath.setText("");
+        }
     }
 
     private void onAttached() {

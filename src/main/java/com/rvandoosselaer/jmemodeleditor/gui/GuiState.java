@@ -24,12 +24,14 @@ import com.simsilica.lemur.core.VersionedHolder;
 import com.simsilica.lemur.core.VersionedReference;
 import com.simsilica.lemur.style.ElementId;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 
 /**
@@ -37,6 +39,7 @@ import java.util.prefs.Preferences;
  *
  * @author: rvandoosselaer
  */
+@Slf4j
 public class GuiState extends BaseAppState {
 
     public static final String STYLE = "editor-style";
@@ -109,16 +112,13 @@ public class GuiState extends BaseAppState {
         propertiesPanel.setModel(model);
     }
 
-    /**
-     * @return list of recent locations
-     */
     public List<Path> getRecentLocations() {
         List<Path> recentLocations = new ArrayList<>();
 
         int i = 0;
         while (Main.getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null) != null) {
             String pathString = Main.getPreferences().get(String.format(RECENT_KEY_FORMAT, i), null);
-            recentLocations.add(Paths.get(pathString));
+            parsePath(pathString).ifPresent(recentLocations::add);
             i++;
         }
 
@@ -153,9 +153,6 @@ public class GuiState extends BaseAppState {
         }
     }
 
-    /**
-     * @return list of bookmark locations
-     */
     public List<Path> getBookmarks() {
         List<Path> bookmarks = new ArrayList<>();
 
@@ -163,7 +160,7 @@ public class GuiState extends BaseAppState {
         int i = 0;
         while (prefs.get(String.format(BOOKMARK_KEY_FORMAT, i), null) != null) {
             String pathString = prefs.get(String.format(BOOKMARK_KEY_FORMAT, i), null);
-            bookmarks.add(Paths.get(pathString));
+            parsePath(pathString).ifPresent(bookmarks::add);
             i++;
         }
 
@@ -196,6 +193,23 @@ public class GuiState extends BaseAppState {
         for (int i = 0; i < bookmarks.size(); i++) {
             Main.getPreferences().put(String.format(BOOKMARK_KEY_FORMAT, i), bookmarks.get(i).toString());
         }
+    }
+
+    public List<Path> getAssetRootPaths() {
+        return editorState.getAssetRootPaths();
+    }
+
+    public void setAssetRootPaths(ArrayList<Path> paths) {
+        editorState.setAssetRootPaths(paths);
+    }
+
+    public static Optional<Path> parsePath(String path) {
+        try {
+            return Optional.of(Paths.get(path));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        return Optional.empty();
     }
 
     private void onOpenFile() {
@@ -321,21 +335,5 @@ public class GuiState extends BaseAppState {
         button.setIcon(icon);
 
         return button;
-    }
-
-//    public void removeAssetPath(Path path) {
-//        editorState.removeAssetRootPath(path);
-//    }
-//
-//    public void addAssetPath(Path path) {
-//        editorState.addAssetRootPath(path);
-//    }
-
-    public List<Path> getAssetRootPaths() {
-        return editorState.getAssetRootPaths();
-    }
-
-    public void setAssetRootPaths(ArrayList<Path> paths) {
-        editorState.setAssetRootPaths(paths);
     }
 }
