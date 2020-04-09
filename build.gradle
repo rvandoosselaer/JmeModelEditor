@@ -2,12 +2,10 @@ plugins {
     id 'java'
     id 'idea'
     id 'application'
-    id 'maven-publish'
-    id 'com.jfrog.bintray' version "1.8.4"
 }
 
 group = "com.rvandoosselaer"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.0"
 
 sourceCompatibility = 1.8
 
@@ -21,8 +19,6 @@ ext {
     lemurProtoVersion = "[1.11,)"
     lombokVersion = "[1.18,)"
     groovyVersion = "[3.0,)"
-//    commonsLang3Version = "[3.10,)"
-//    simMathVersion = "[1,)"
 }
 
 repositories {
@@ -48,8 +44,6 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     runtime "org.codehaus.groovy:groovy-all:${groovyVersion}"
     implementation "com.github.stephengold:Heart:5.2.0for33"
-//    implementation "com.simsilica:sim-math:${simMathVersion}"
-//    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
 
     // Logging
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -135,43 +129,6 @@ startScripts.doLast {
     windowsScript.text = windowsScript.text.replace('[MY_APP_HOME]', '%~dp0..')
 }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier = 'sources'
-}
-
-task javadocJar(type: Jar) {
-    from javadoc
-    archiveClassifier = 'javadoc'
-}
-
 javadoc {
     failOnError = false
-}
-
-publishing {
-    publications {
-        MyPublication(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            artifactId 'jmemodeleditor'
-        }
-    }
-}
-
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_APIKEY')
-    publications = ['MyPublication']
-    pkg {
-        repo = 'rvandoosselaer'
-        name = rootProject.getName()
-        licenses = ['BSD 3-Clause']
-        vcsUrl = 'https://github.com/rvandoosselaer/JmeModelEditor.git'
-        version {
-            name = '1.0.0-SNAPSHOT'
-            released = new Date()
-        }
-    }
 }
