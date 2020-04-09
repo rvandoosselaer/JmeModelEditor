@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,9 +106,10 @@ public class EditorState extends BaseAppState {
 
     public boolean saveModel() {
         if (modelPath != null && model != null) {
-            log.info("Saving {} to {}", model, modelPath.toAbsolutePath().toString());
+            Path path = checkFileName(modelPath);
+            log.info("Saving {} to {}", model, path.toAbsolutePath().toString());
             try {
-                BinaryExporter.getInstance().save(model, modelPath.toFile());
+                BinaryExporter.getInstance().save(model, path.toFile());
                 return true;
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
@@ -147,6 +149,15 @@ public class EditorState extends BaseAppState {
             log.trace("Saving preference {} = {}", key, paths.get(i).toAbsolutePath());
             registerLocator(paths.get(i));
         }
+    }
+
+    private Path checkFileName(Path path) {
+        String fileName = path.toAbsolutePath().getFileName().toString();
+        if (!fileName.toLowerCase().endsWith(".j3o")) {
+            return Paths.get(path.toAbsolutePath().getParent().toString(), fileName + ".j3o");
+        }
+
+        return path;
     }
 
     private void registerLocator(Path path) {
