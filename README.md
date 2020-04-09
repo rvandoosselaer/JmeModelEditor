@@ -1,7 +1,7 @@
 # ![JmeModelEditor](icon-64.png) JmeModelEditor
 A utility to load, view and perform basic operations on JME compatible models
 
-[![Build Status](https://travis-ci.com/rvandoosselaer/JmeModelEditor.svg?branch=master)](https://travis-ci.com/rvandoosselaer/JmeModelEditor)
+[![Build Status](https://travis-ci.com/rvandoosselaer/JmeModelEditor.svg?branch=master)](https://travis-ci.com/rvandoosselaer/JmeModelEditor) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/709236eab32f47af9dfa080fbe67b3ff)](https://www.codacy.com/manual/rvandoosselaer/JmeModelEditor?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rvandoosselaer/JmeModelEditor&amp;utm_campaign=Badge_Grade)
 
 ## Acknowledgements
 -   Icon made by [Smashicons](https://www.flaticon.com/authors/smashicons) from www.flaticon.com
