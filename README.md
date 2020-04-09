@@ -7,7 +7,7 @@ A utility to load, view and perform basic operations on JME compatible models
 General documentation can be found on the [wiki](https://github.com/rvandoosselaer/JmeModelEditor/wiki).
 
 ## Contributing
-If you have a bug or an idea, you can create a ticket for it [here](https://github.com/rvandoosselaer/JmeModelEditor/issues/new).
+If you have a bug or an idea, you can create a ticket for it [here](https://github.com/rvandoosselaer/JmeModelEditor/issues).
 
 ## License
 This project is licensed under the BSD 3-Clause License - see the [LICENSE](LICENSE) file for details
