@@ -35,6 +35,8 @@ dependencies {
     implementation "org.jmonkeyengine:jme3-core:${jmeVersion}"
     implementation "org.jmonkeyengine:jme3-desktop:${jmeVersion}"
     implementation "org.jmonkeyengine:jme3-lwjgl:${jmeVersion}"
+    implementation "org.jmonkeyengine:jme3-plugins:${jmeVersion}"
+    implementation "org.jmonkeyengine:jme3-blender:${jmeVersion}"
 
     // Utils
     implementation "com.rvandoosselaer:jme-utils:${jmeUtilsVersion}"
