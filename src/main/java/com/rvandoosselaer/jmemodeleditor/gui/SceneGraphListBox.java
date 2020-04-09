@@ -7,6 +7,7 @@ import com.simsilica.lemur.style.ElementId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The Scene graph component
@@ -52,7 +53,7 @@ public class SceneGraphListBox extends ListBox<SceneGraphItem> {
     }
 
     private void setSelectedItem(SceneGraphItem item) {
-        if (selected == item) {
+        if (Objects.equals(selected, item)) {
             return;
         }
 

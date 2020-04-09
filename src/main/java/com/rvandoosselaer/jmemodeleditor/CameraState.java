@@ -19,6 +19,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
+
 /**
  * @author: rvandoosselaer
  */
@@ -140,17 +142,17 @@ public class CameraState extends BaseAppState implements AnalogFunctionListener,
     public void valueActive(FunctionId func, double value, double tpf) {
         boolean isMouseOverViewPort = viewPortsState.isMouseOverViewPort(viewPortsState.getEditorViewPort());
 
-        if (func == FUNCTION_X_ROTATE && (dragging || !dragToRotate)) {
+        if (Objects.equals(func, FUNCTION_X_ROTATE) && (dragging || !dragToRotate)) {
             calculateYaw(value, tpf);
-        } else if (func == FUNCTION_Y_ROTATE && (dragging || !dragToRotate)) {
+        } else if (Objects.equals(func, FUNCTION_Y_ROTATE) && (dragging || !dragToRotate)) {
             calculatePitch(value, tpf);
-        } else if (func == FUNCTION_ZOOM && isMouseOverViewPort) {
+        } else if (Objects.equals(func, FUNCTION_ZOOM) && isMouseOverViewPort) {
             calculateZoom(value, tpf);
-        } else if (func == FUNCTION_MOVE) {
+        } else if (Objects.equals(func, FUNCTION_MOVE)) {
             calculateMove(value, tpf);
-        } else if (func == FUNCTION_STRAFE) {
+        } else if (Objects.equals(func, FUNCTION_STRAFE)) {
             calculateStrafe(value, tpf);
-        } else if (func == FUNCTION_BOUNCE) {
+        } else if (Objects.equals(func, FUNCTION_BOUNCE)) {
             calculateBounce(value, tpf);
         }
     }
@@ -163,11 +165,11 @@ public class CameraState extends BaseAppState implements AnalogFunctionListener,
             return;
         }
 
-        if (func == FUNCTION_DRAG && dragToRotate) {
+        if (Objects.equals(func, FUNCTION_DRAG) && dragToRotate) {
             // update the dragging boolean and set the cursor accordingly
             dragging = value != InputState.Off;
             GuiGlobals.getInstance().setCursorEventsEnabled(!dragging);
-        } else if (func == FUNCTION_CENTER && value == InputState.Positive) {
+        } else if (Objects.equals(func, FUNCTION_CENTER) && value == InputState.Positive) {
             pivotPoint.set(center);
         }
     }

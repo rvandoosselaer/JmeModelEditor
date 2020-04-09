@@ -39,7 +39,6 @@ public abstract class Tab {
     public static final ElementId ELEMENT_ID = PropertiesPanel.ELEMENT_ID.child("properties").child("tabs");
 
     private Button tab;
-    private Panel content;
     @Setter
     @EqualsAndHashCode.Include
     protected SceneGraphItem sceneGraphItem;
