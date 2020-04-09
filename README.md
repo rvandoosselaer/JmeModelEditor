@@ -3,6 +3,18 @@ A utility to load, view and perform basic operations on JME compatible models
 
 [![Build Status](https://travis-ci.com/rvandoosselaer/JmeModelEditor.svg?branch=master)](https://travis-ci.com/rvandoosselaer/JmeModelEditor) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/709236eab32f47af9dfa080fbe67b3ff)](https://www.codacy.com/manual/rvandoosselaer/JmeModelEditor?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rvandoosselaer/JmeModelEditor&amp;utm_campaign=Badge_Grade)
 
+View and edit material parameters:
+
+![](https://i.imgur.com/sfq9KLH.png)
+
+Play animations, debug the armature and view the available bones:
+
+![](https://i.imgur.com/lZVSrTG.png)
+
+Find the best lighting settings to visualize the model
+
+![](https://i.imgur.com/ceQVjyV.png)
+
 ## Documentation
 General documentation can be found on the [wiki](https://github.com/rvandoosselaer/JmeModelEditor/wiki).
 
