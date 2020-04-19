@@ -3,6 +3,7 @@ package com.rvandoosselaer.jmemodeleditor.gui;
 import com.simsilica.lemur.Command;
 import com.simsilica.lemur.ListBox;
 import com.simsilica.lemur.core.VersionedList;
+import com.simsilica.lemur.list.CellRenderer;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -17,8 +18,8 @@ public class PathListBox extends ListBox<Path> {
     private Path selection;
     private List<Command<Path>> selectionCommands = new ArrayList<>();
 
-    public PathListBox(VersionedList<Path> model) {
-        super(model);
+    public PathListBox(VersionedList<Path> model, CellRenderer<Path> renderer) {
+        super(model, renderer, GuiState.STYLE);
 
         addControl(new ListBoxSliderControl());
     }

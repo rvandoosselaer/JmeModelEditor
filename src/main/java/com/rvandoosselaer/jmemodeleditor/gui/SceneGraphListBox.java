@@ -22,8 +22,7 @@ public class SceneGraphListBox extends ListBox<SceneGraphItem> {
     private List<Command<SceneGraphListBox>> selectItemCommands = new ArrayList<>();
 
     public SceneGraphListBox() {
-        super(new VersionedList<>(), ELEMENT_ID, GuiState.STYLE);
-        setCellRenderer(new SceneGraphItemRenderer());
+        super(new VersionedList<>(), new SceneGraphItemRenderer(), ELEMENT_ID, GuiState.STYLE);
     }
 
     public void addItem(SceneGraphItem item) {

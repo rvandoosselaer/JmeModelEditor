@@ -82,8 +82,7 @@ public class OpenFileWindow extends Window {
         Container fileBrowserContainer = mainContainer.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.Even, FillMode.Even), ELEMENT_ID.child("fileBrowser").child(Container.ELEMENT_ID)));
         fileBrowserContainer.addChild(createTopBar());
 
-        fileBrowser = fileBrowserContainer.addChild(new PathListBox(new VersionedList<>()));
-        fileBrowser.setCellRenderer(new FileNameRenderer());
+        fileBrowser = fileBrowserContainer.addChild(new PathListBox(new VersionedList<>(), new FileNameRenderer()));
         fileBrowser.setVisibleItems(20);
         MouseEventControl.addListenersToSpatial(fileBrowser, new PathListBoxDoubleClickListener(fileBrowser));
 
@@ -137,8 +136,7 @@ public class OpenFileWindow extends Window {
         container.addChild(new Label(GuiTranslations.getInstance().t("window.open-file.recent"), elementId.child("title")));
 
         Container locations = container.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even)));
-        recentLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getRecentLocations())));
-        recentLocations.setCellRenderer(new FileNameRenderer());
+        recentLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getRecentLocations()), new FileNameRenderer()));
         recentLocations.setVisibleItems(6);
         recentLocations.addSelectionCommand(this::setDirectory);
         recentLocations.addClickCommands(listBox -> recentLocations.getSelection().ifPresent(this::setDirectory));
@@ -162,8 +160,7 @@ public class OpenFileWindow extends Window {
         bookmarks.addChild(new Label(GuiTranslations.getInstance().t("window.open-file.bookmarks"), elementId.child("title")));
 
         Container locations = bookmarks.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even)));
-        bookmarkLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getBookmarks())));
-        bookmarkLocations.setCellRenderer(new FileNameRenderer());
+        bookmarkLocations = locations.addChild(new PathListBox(new VersionedList<>(guiState.getBookmarks()), new FileNameRenderer()));
         bookmarkLocations.setVisibleItems(6);
         bookmarkLocations.addSelectionCommand(this::setDirectory);
         bookmarkLocations.addClickCommands(source -> bookmarkLocations.getSelection().ifPresent(this::setDirectory));

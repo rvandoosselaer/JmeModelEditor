@@ -21,12 +21,20 @@ public class FileNameRenderer extends AlternatingRowRenderer<Path> {
 
     @Override
     public Panel getView(Path value, boolean selected, Panel existing) {
-        Container container = new Container(new SpringGridLayout(), getAlternatingRowElementId());
+        if (existing == null) {
+            existing = new Container(new SpringGridLayout(), getAlternatingRowElementId());
 
-        Label label = container.addChild(new Label(value.getFileName().toString(), ELEMENT_ID));
+            Label label = ((Container) existing).addChild(new Label(value.getFileName().toString(), ELEMENT_ID));
+            label.setIcon(createIcon(value));
+
+            return existing;
+        }
+
+        Label label = (Label) ((SpringGridLayout) ((Container) existing).getLayout()).getChild(0, 0);
+        label.setText(value.getFileName().toString());
         label.setIcon(createIcon(value));
 
-        return container;
+        return existing;
     }
 
     private IconComponent createIcon(Path item) {
