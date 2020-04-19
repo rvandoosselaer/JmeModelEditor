@@ -25,21 +25,40 @@ public class SceneGraphItemRenderer extends AlternatingRowRenderer<SceneGraphIte
 
     @Override
     public Panel getView(SceneGraphItem value, boolean selected, Panel existing) {
-        Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), getAlternatingRowElementId());
+        if (existing == null) {
+            existing = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.First, FillMode.Even), getAlternatingRowElementId());
 
-        Label label = container.addChild(new Label(value.getSpatial().getName(), ELEMENT_ID));
-        label.setIcon(createSpatialIcon(value.getSpatial()));
-        QuadBackgroundComponent background = new QuadBackgroundComponent(ColorRGBA.BlackNoAlpha);
-        background.setMargin(INDENT_SIZE * value.getDepth(), 0);
-        label.setBackground(background);
+            Label label = ((Container) existing).addChild(new Label(value.getSpatial().getName(), ELEMENT_ID));
+            label.setIcon(createSpatialIcon(value.getSpatial()));
+            QuadBackgroundComponent background = new QuadBackgroundComponent(ColorRGBA.BlackNoAlpha);
+            background.setMargin(INDENT_SIZE * value.getDepth(), 0);
+            label.setBackground(background);
 
-        if (hasControls(value.getSpatial())) {
-            Label controls = container.addChild(new Label(""));
-            controls.setIcon(createControlIcon());
-            container.addChild(controls);
+            if (hasControls(value.getSpatial())) {
+                Label controls = ((Container) existing).addChild(new Label(""));
+                controls.setIcon(createControlIcon());
+            }
+
+            return existing;
         }
 
-        return container;
+        Label label = (Label) ((SpringGridLayout) ((Container) existing).getLayout()).getChild(0, 0);
+        label.setText(value.getSpatial().getName());
+        label.setIcon(createSpatialIcon(value.getSpatial()));
+        QuadBackgroundComponent background = (QuadBackgroundComponent) label.getBackground();
+        background.setMargin(INDENT_SIZE * value.getDepth(), 0);
+
+        if (hasControls(value.getSpatial())) {
+            Label controls = ((Container) existing).addChild(new Label(""), 1, 0);
+            controls.setIcon(createControlIcon());
+        } else {
+            Label controls = (Label) ((SpringGridLayout) ((Container) existing).getLayout()).getChild(1, 0);
+            if (controls != null) {
+                controls.removeFromParent();
+            }
+        }
+
+        return existing;
     }
 
     private boolean hasControls(Spatial spatial) {

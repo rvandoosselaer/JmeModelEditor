@@ -73,8 +73,7 @@ public class SettingsWindow extends Window {
 
         Container assetPaths = wrapper.addChild(new Container(new SpringGridLayout(Axis.Y, Axis.X, FillMode.None, FillMode.Even)));
         assetPaths.addChild(new Label(GuiTranslations.getInstance().t("window.settings.assets.title"), new ElementId("panel.title")));
-        assetRootPaths = assetPaths.addChild(new PathListBox(new VersionedList<>(guiState.getAssetRootPaths())));
-        assetRootPaths.setCellRenderer(new FullPathRenderer());
+        assetRootPaths = assetPaths.addChild(new PathListBox(new VersionedList<>(guiState.getAssetRootPaths()), new FullPathRenderer()));
         assetRootPaths.setVisibleItems(4);
         assetRootPaths.addControl(new ListBoxSliderControl());
         Container removeAssetPathContainer = wrapper.addChild(new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.None, FillMode.Even), ELEMENT_ID.child("removeAssetPath").child(Container.ELEMENT_ID)));

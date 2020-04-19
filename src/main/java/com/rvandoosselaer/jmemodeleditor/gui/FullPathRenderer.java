@@ -18,10 +18,17 @@ public class FullPathRenderer extends AlternatingRowRenderer<Path> {
 
     @Override
     public Panel getView(Path value, boolean selected, Panel existing) {
-        Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Even, FillMode.Even), getAlternatingRowElementId());
-        container.addChild(new Label(value.toAbsolutePath().toString(), ELEMENT_ID));
+        if (existing == null) {
+            existing = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Even, FillMode.Even), getAlternatingRowElementId());
+            ((Container) existing).addChild(new Label(value.toAbsolutePath().toString(), ELEMENT_ID));
 
-        return container;
+            return existing;
+        }
+
+        Label label = (Label) ((SpringGridLayout) (((Container) existing).getLayout())).getChild(0, 0);
+        label.setText(value.toAbsolutePath().toString());
+
+        return existing;
     }
 
 }

@@ -16,10 +16,17 @@ public class StringRenderer extends AlternatingRowRenderer<String> {
 
     @Override
     public Panel getView(String value, boolean selected, Panel existing) {
-        Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Even, FillMode.Even), getAlternatingRowElementId());
-        container.addChild(new Label(value, ELEMENT_ID));
+        if (existing == null) {
+            Container container = new Container(new SpringGridLayout(Axis.X, Axis.Y, FillMode.Even, FillMode.Even), getAlternatingRowElementId());
+            container.addChild(new Label(value, ELEMENT_ID));
 
-        return container;
+            return container;
+        }
+
+        Label label = (Label) ((SpringGridLayout) (((Container) existing).getLayout())).getChild(0, 0);
+        label.setText(value);
+
+        return existing;
     }
 
 }
