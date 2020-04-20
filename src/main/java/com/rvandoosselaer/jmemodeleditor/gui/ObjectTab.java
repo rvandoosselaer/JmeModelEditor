@@ -2,6 +2,7 @@ package com.rvandoosselaer.jmemodeleditor.gui;
 
 import com.jme3.math.Quaternion;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.simsilica.lemur.Axis;
 import com.simsilica.lemur.Command;
@@ -72,6 +73,10 @@ public class ObjectTab extends Tab {
         container.addChild(createSeparator());
         // cullhint
         container.addChild(createLabelInput(GuiTranslations.getInstance().t("panel.properties.object.cullhint"), sceneGraphItem.getSpatial().getCullHint().toString()));
+        // visibility
+        container.addChild(createBooleanInput(GuiTranslations.getInstance().t("panel.properties.object.visibility"),
+                !Spatial.CullHint.Always.equals(sceneGraphItem.getSpatial().getCullHint()),
+                source -> sceneGraphItem.getSpatial().setCullHint(source ? Spatial.CullHint.Inherit : Spatial.CullHint.Always)));
 
         return container;
     }
