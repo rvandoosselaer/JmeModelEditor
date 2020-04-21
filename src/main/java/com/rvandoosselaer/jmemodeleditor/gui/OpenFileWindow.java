@@ -233,6 +233,10 @@ public class OpenFileWindow extends Window {
         recentLocations.deselect();
     }
 
+    private void refreshFileBrowser() {
+        setDirectory(currentDir);
+    }
+
     /**
      * Set the directory to load in the file browser
      *
@@ -258,6 +262,7 @@ public class OpenFileWindow extends Window {
     private void onAttached() {
         refreshBookmarks();
         refreshRecentLocations();
+        refreshFileBrowser();
     }
 
     private void goDirectoryUp() {
