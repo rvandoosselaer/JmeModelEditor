@@ -212,6 +212,10 @@ public class GuiState extends BaseAppState {
         return Optional.empty();
     }
 
+    public Node getBBoxNode() {
+        return editorState.getBboxNode();
+    }
+
     private void onOpenFile() {
         if (!openFileWindow.isAttached()) {
             // the Lemur ListBox has soms 'quirks'. It needs to be rendered before it's size is correctly calculated.

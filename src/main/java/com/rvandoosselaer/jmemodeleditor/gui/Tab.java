@@ -1,5 +1,6 @@
 package com.rvandoosselaer.jmemodeleditor.gui;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
@@ -254,6 +255,14 @@ public abstract class Tab {
 
     protected Panel createSeparator() {
         return new Panel(2, 2, PropertiesPanel.ELEMENT_ID.child("properties").child("separator"), GuiState.STYLE);
+    }
+
+    protected GuiState getGuiState() {
+        return ApplicationGlobals.getInstance().getApplication().getStateManager().getState(GuiState.class);
+    }
+
+    protected AssetManager getAssetManager() {
+        return ApplicationGlobals.getInstance().getApplication().getAssetManager();
     }
 
     private static String cleanFloat(TextField textField) {

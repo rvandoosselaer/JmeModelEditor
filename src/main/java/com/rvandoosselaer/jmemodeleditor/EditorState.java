@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The state for rendering 3D scene
+ * The state responsible for rendering 3D scene
  *
  * @author: rvandoosselaer
  */
@@ -39,6 +39,8 @@ public class EditorState extends BaseAppState {
     private Node overlayNode;
     private Node editorNode;
     @Getter
+    private Node bboxNode;
+    @Getter
     private Spatial model;
     private Path modelPath;
     private AssetManager assetManager;
@@ -48,6 +50,7 @@ public class EditorState extends BaseAppState {
         grid = createGrid(new Vector2f(20, 20), 0.25f);
         centerPoint = createCenterPoint();
 
+        bboxNode = new Node("bbox");
         overlayNode = getState(ViewPortsState.class).getOverlayNode();
         editorNode = getState(ViewPortsState.class).getEditorNode();
 
@@ -64,14 +67,17 @@ public class EditorState extends BaseAppState {
     @Override
     protected void onEnable() {
         editorNode.attachChild(grid);
+        editorNode.attachChild(bboxNode);
         overlayNode.attachChild(centerPoint);
     }
 
     @Override
     protected void onDisable() {
+        clearScene();
+
         grid.removeFromParent();
+        bboxNode.removeFromParent();
         centerPoint.removeFromParent();
-        removeModel();
     }
 
     public Spatial loadModel(Path path) {
@@ -84,8 +90,8 @@ public class EditorState extends BaseAppState {
         // make sure there is no previous loaded model in the cache
         assetManager.deleteFromCache(new ModelKey(path.getFileName().toString()));
 
-        // remove the previous model
-        removeModel();
+        // clears the scene
+        clearScene();
 
         // add the folder of the model to the asset manager; load the model; remove the folder from the asset manager
         Path parent = path.getParent();
@@ -168,6 +174,14 @@ public class EditorState extends BaseAppState {
     private void unregisterLocator(Path path) {
         log.trace("Removing {} from assetmanager", path);
         assetManager.unregisterLocator(path.toAbsolutePath().toString(), FileLocator.class);
+    }
+
+    /**
+     * clears the scene. Remove the model and bounding boxes
+     */
+    private void clearScene() {
+        bboxNode.detachAllChildren();
+        removeModel();
     }
 
     private void removeModel() {

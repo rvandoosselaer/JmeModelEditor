@@ -1,8 +1,11 @@
 package com.rvandoosselaer.jmemodeleditor.gui;
 
+import com.jme3.bounding.BoundingBox;
 import com.jme3.math.Quaternion;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.debug.WireBox;
 import com.rvandoosselaer.jmeutils.gui.GuiTranslations;
 import com.simsilica.lemur.Axis;
 import com.simsilica.lemur.Command;
@@ -38,7 +41,7 @@ public class ObjectTab extends Tab {
 
     @Override
     protected String getTabTooltip() {
-        return  GuiTranslations.getInstance().t("panel.properties.object.tooltip");
+        return GuiTranslations.getInstance().t("panel.properties.object.tooltip");
     }
 
     @Override
@@ -76,8 +79,25 @@ public class ObjectTab extends Tab {
         // visibility
         container.addChild(createBooleanInput(GuiTranslations.getInstance().t("panel.properties.object.visibility"),
                 !Spatial.CullHint.Always.equals(sceneGraphItem.getSpatial().getCullHint()),
-                source -> sceneGraphItem.getSpatial().setCullHint(source ? Spatial.CullHint.Inherit : Spatial.CullHint.Always)));
+                checked -> sceneGraphItem.getSpatial().setCullHint(checked ? Spatial.CullHint.Inherit : Spatial.CullHint.Always)));
+        // bounding box
+        container.addChild(createBooleanInput(GuiTranslations.getInstance().t("panel.properties.object.bbox"),
+                sceneGraphItem.getSpatial().getUserData("bbox") != null,
+                checked -> toggleBBox(sceneGraphItem.getSpatial())));
 
         return container;
+    }
+
+    private void toggleBBox(Spatial spatial) {
+        Geometry bbox = spatial.getUserData("bbox");
+        if (bbox == null) {
+            bbox = WireBox.makeGeometry((BoundingBox) spatial.getWorldBound());
+            bbox.setMaterial(getAssetManager().loadMaterial("/Material/BoundingBox.j3m"));
+            getGuiState().getBBoxNode().attachChild(bbox);
+            spatial.setUserData("bbox", bbox);
+        } else {
+            bbox.removeFromParent();
+            spatial.setUserData("bbox", null);
+        }
     }
 }
