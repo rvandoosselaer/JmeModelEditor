@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
@@ -27,6 +28,8 @@ public class Main extends SimpleApplication {
 
     public static void main(String[] args) {
         LogUtils.forwardJULToSlf4j();
+
+        handleJVMArgs();
 
         Main main = new Main();
         main.start();
@@ -65,6 +68,21 @@ public class Main extends SimpleApplication {
 
     public static Preferences getPreferences() {
         return Preferences.userNodeForPackage(Main.class);
+    }
+
+    public static void clearPreferences() {
+        try {
+            getPreferences().clear();
+        } catch (BackingStoreException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    private static void handleJVMArgs() {
+        if (System.getProperty("clearPreferences") != null) {
+            log.info("Removing preferences");
+            clearPreferences();
+        }
     }
 
     private AppSettings createSettings() {
